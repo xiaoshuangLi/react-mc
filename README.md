@@ -1,1 +1,1 @@
-# react-mc-template
+# react-mc

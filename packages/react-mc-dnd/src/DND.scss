@@ -1,0 +1,23 @@
+$grey: #bbb;
+$grey2: #ccc;
+$grey3: #ddd;
+
+$offset: 3px;
+$size: 12px;
+$halfSize: $size / 2;
+
+[data-dnd-dummy='true'] {
+  cursor: pointer;
+  pointer-events: all;
+
+  *,
+  ~ * {
+    &:not([data-dnd-dummy='true']) {
+      pointer-events: none;
+    }
+  }
+}
+
+[data-dnd-dragging='true'] {
+  opacity: .5;
+}
