@@ -9,6 +9,7 @@
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.13.0",
+    "react-frame-component": "^4.1.1",
     "uuid": "^7.0.2"
   },
   "devDependencies": {

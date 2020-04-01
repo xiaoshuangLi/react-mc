@@ -230,6 +230,7 @@ const createDndHooks = (type = ITEM) => {
     const addListener = useListener();
 
     const {
+      dummy,
       onDrop,
       onDragEnd,
       onDragHover,
@@ -343,6 +344,18 @@ const createDndHooks = (type = ITEM) => {
       () => addListener(dom, data),
       [dom, data, addListener],
     );
+
+    useEffect(() => {
+      if (!dom) {
+        return;
+      }
+
+      if (dummy) {
+        dom.setAttribute('data-dnd-dummy', 'true');
+      } else {
+        dom.removeAttribute('data-dnd-dummy');
+      }
+    }, [dom, dummy]);
 
     useEffect(() => {
       if (!dom) {

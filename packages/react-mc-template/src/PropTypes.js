@@ -7,6 +7,8 @@ const componentType = PropTypes.shape({
 });
 
 export default {
+  document: PropTypes.object,
+  window: PropTypes.object,
   options: PropTypes.shape({
     isRoot: PropTypes.func,
     getComponentClass: PropTypes.func,

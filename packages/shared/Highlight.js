@@ -24,7 +24,7 @@ const getParentElements = (dom) => {
   const { parentElement, tagName } = dom;
   const parentElements = getParentElements(parentElement) || [];
 
-  if (tagName === 'BODY') {
+  if (tagName === 'HTML') {
     return [];
   }
 
@@ -72,7 +72,7 @@ const rectToStyle = (rect = {}) => {
   };
 };
 
-const calcRect = (root = document.body) => (dom) => {
+const calcRect = (root = document.documentElement) => (dom) => {
   const rootRect = root.getBoundingClientRect();
   const { scrollTop, scrollLeft } = root;
   const { top: rootTop, left: rootLeft } = rootRect;
@@ -145,13 +145,13 @@ const calcRect = (root = document.body) => (dom) => {
   return fn(dom);
 };
 
-const calcStyle = (root = document.body) => (dom) => {
+const calcStyle = (root = document.documentElement) => (dom) => {
   const rect = calcRect(root)(dom) || {};
 
   return rectToStyle(rect);
 };
 
-const renderStyle = (root = document.body) => (dom, style = {}) => {
+const renderStyle = (root = document.documentElement) => (dom, style = {}) => {
   Object.entries(style).forEach((entry = []) => {
     const [key, value] = entry;
 
@@ -165,7 +165,7 @@ const renderStyle = (root = document.body) => (dom, style = {}) => {
   !root.contains(dom) && root.appendChild(dom);
 };
 
-function Highlight(root = document.body) {
+function Highlight(root = document.documentElement) {
   let stop;
   let shinyDom;
   let mask = document.createElement('div');

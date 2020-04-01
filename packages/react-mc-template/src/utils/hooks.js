@@ -111,14 +111,15 @@ export const useDndValue = (props = {}) => {
   const {
     value: propsValue = {},
     selectedComponent: propsSelectedComponent = {},
+    document: propsDocument = document,
     onChange = () => {},
     onSelectComponent = () => {},
   } = props;
 
   const core = useCore(props);
   const highlight = useMemo(
-    () => new Highlight(),
-    [],
+    () => new Highlight(propsDocument.documentElement),
+    [propsDocument],
   );
 
   const isInChildren = useEventCallback(
@@ -166,6 +167,7 @@ export const useDndValue = (props = {}) => {
 
 export const useTriggers = (props = {}, ref) => {
   const {
+    document: propsDocument = document,
     value: propsValue = {},
     selectedComponent: propsSelectedComponent = {},
     onChange = () => {},
@@ -252,7 +254,7 @@ export const useTriggers = (props = {}, ref) => {
     }
 
     const container = findDOMNode(current);
-    const hoveredElements = Array.from(document.querySelectorAll('*:hover'));
+    const hoveredElements = Array.from(propsDocument.querySelectorAll('*:hover'));
     const hovered = hoveredElements.includes(container);
 
     if (!hovered) {
@@ -286,7 +288,14 @@ export const useTriggers = (props = {}, ref) => {
   });
 
   useEffect(() => {
-    document.addEventListener('keydown', onKeyDown, true);
-    return () => document.removeEventListener('keydown', onKeyDown, true);
-  }, [onKeyDown, ref]);
+    propsDocument.addEventListener('keydown', onKeyDown, true);
+    return () => propsDocument.removeEventListener('keydown', onKeyDown, true);
+  }, [propsDocument, onKeyDown, ref]);
+
+  useEffect(() => {
+    if (document !== propsDocument) {
+      document.addEventListener('keydown', onKeyDown, true);
+      return () => document.removeEventListener('keydown', onKeyDown, true);
+    }
+  }, [propsDocument, onKeyDown, ref]);
 };

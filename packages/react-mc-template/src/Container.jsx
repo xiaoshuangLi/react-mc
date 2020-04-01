@@ -7,7 +7,7 @@ const Container = React.forwardRef((props = {}, ref) => {
   const { className, style: propsStyle = {}, ...others } = props;
 
   const cls = classnames({
-    'react-mc-template-render': true,
+    'react-mc-template-container-render': true,
     [className]: !!className,
   });
 

@@ -2,10 +2,16 @@ import React from 'react';
 
 export const isRoot = (component = {}) => false;
 
-export const getComponentClass = (component = {}) => 'div';
+export const getComponentClass = (component = {}) => {
+  const { name } = component;
+
+  return /^[a-z]+$/.test(name) ? name : 'div';
+};
+
 export const getComponentRenderDependencies = (...args) => args;
 
 export const getComponentPropsSchema = (component = {}) => ({});
+
 export const getComponentChildrenKeys = (component = {}) => {
   if (component.name === 'div') {
     return ['children'];

@@ -60,8 +60,12 @@ export const setValueByKeys = (obj = {}, keys = [], newValue) => {
 
       curr = prevValue[key] === undefined ? defaultValue : prevValue[key];
 
-      if (Array.isArray(curr)) {
-        curr = Array.from(curr).map(
+      if (typeof key === 'number' && index > 0) {
+        const parentValue = baseValues[index - 1];
+        const length = Math.max(key + 1, parentValue.length);
+        const info = { ...parentValue, length };
+
+        baseValues[index - 1] = Array.from(info).map(
           (item = defaultValue) => item,
         );
       }

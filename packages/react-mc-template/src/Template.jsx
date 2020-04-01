@@ -1,7 +1,5 @@
 import React, { memo, useMemo, createRef } from 'react';
 import classnames from 'classnames';
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 
 import Render from 'react-mc-render';
 import { ConfigContext } from 'react-mc-dnd';
@@ -24,6 +22,8 @@ const Template = React.forwardRef((props = {}, ref) => {
     value,
     selectedComponent,
     options: propsOptions,
+    document: propsDocument = document,
+    window: propsWindow = window,
     onChange,
     onSelectComponent,
     ...others
@@ -44,23 +44,23 @@ const Template = React.forwardRef((props = {}, ref) => {
   const dndValue = useDndValue(props);
 
   return (
-    <DndProvider backend={HTML5Backend} context={window}>
-      <ConfigProvider value={dndValue}>
-        <Container ref={ref} className={cls} {...others}>
-          <Render
-            value={value}
-            options={options}
-            selectedComponent={selectedComponent}
-          />
-        </Container>
-      </ConfigProvider>
-    </DndProvider>
+    <ConfigProvider value={dndValue}>
+      <Container ref={ref} className={cls} {...others}>
+        <Render
+          value={value}
+          options={options}
+          selectedComponent={selectedComponent}
+        />
+      </Container>
+    </ConfigProvider>
   );
 });
 
 Template.propTypes = PropTypes;
 
 Template.defaultProps = {
+  document: undefined,
+  window: undefined,
   options: defaultOptions,
   value: {
     rootComponentIds: [],
