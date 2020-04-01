@@ -38,6 +38,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --config examples/webpack.config.js",
-    "build": "node webpack/build.js"
+    "build": "node webpack/build.js",
+    "prepublishOnly": "npm run build"
   }
 }
