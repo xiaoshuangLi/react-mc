@@ -1,17 +1,15 @@
 {
+  "version": "0.0.0",
   "publish": {
-    "ignoreChanges": ["ignored-file", "*.md"],
-    "message": "chore(release): publish",
-    "registry": "https://npm.pkg.github.com"
+    "ignoreChanges": ["ignored-file", "*.md"]
   },
-  "publishConfig": {
-    "access": "restricted"
-  },
+  // "publishConfig": {
+  //   "access": "restricted"
+  // },
   "bootstrap": {
     "npmClientArgs": ["--no-package-lock"]
   },
   "packages": [
     "packages/*"
-  ],
-  "version": "0.0.0"
+  ]
 }
