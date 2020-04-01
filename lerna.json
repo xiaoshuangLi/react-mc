@@ -1,5 +1,14 @@
 {
   "version": "0.0.0",
+  "publish": {
+    "ignoreChanges": ["ignored-file", "*.md"]
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "bootstrap": {
+    "npmClientArgs": ["--no-package-lock"]
+  },
   "packages": [
     "packages/*"
   ]
