@@ -1,6 +1,14 @@
 {
+  "publish": {
+    "ignoreChanges": ["ignored-file", "*.md"],
+    "message": "chore(release): publish",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "bootstrap": {
+    "npmClientArgs": ["--no-package-lock"]
+  },
   "packages": [
     "packages/*"
   ],
-  "version": "0.0.0"
+  "version": "0.0.1-aplha.1"
 }

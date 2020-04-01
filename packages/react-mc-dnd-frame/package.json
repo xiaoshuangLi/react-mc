@@ -1,16 +1,10 @@
 {
-  "name": "react-mc-template",
+  "name": "react-mc-dnd-frame",
   "version": "0.0.0",
-  "description": "react-mc-template",
-  "keywords": [
-    "react"
-  ],
+  "description": "react-mc-dnd-frame",
   "author": "xiaoshuang.li <qq1157502759@gmail.com>",
   "homepage": "https://github.com/xiaoshuangLi/react-mc#readme",
   "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
-  },
   "files": [
     "lib"
   ],
@@ -26,9 +20,10 @@
     "react-dom": ">=16.8.6"
   },
   "dependencies": {
-    "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
-    "uuid": "^7.0.2"
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "react-frame-component": "^4.1.1"
   }
 }

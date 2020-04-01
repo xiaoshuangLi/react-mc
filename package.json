@@ -1,17 +1,7 @@
 {
   "name": "react-mc",
-  "dependencies": {
-    "classnames": "^2.2.6",
-    "json-schema-traverse": "^0.4.1",
-    "lodash": "^4.17.15",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.0",
-    "react-dnd": "^10.0.2",
-    "react-dnd-html5-backend": "^10.0.2",
-    "react-dom": "^16.13.0",
-    "react-frame-component": "^4.1.1",
-    "uuid": "^7.0.2"
-  },
+  "private": true,
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -41,11 +31,13 @@
     "react-scripts": "3.4.0",
     "sass": "^1.26.3",
     "webpack": "^4.42.0",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.10.3"
   },
   "scripts": {
-    "start": "webpack-dev-server --config examples/webpack.config.js"
+    "start": "webpack-dev-server --config examples/webpack.config.js",
+    "build": "node webpack/build.js"
   }
 }

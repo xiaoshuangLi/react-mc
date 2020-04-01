@@ -8,10 +8,6 @@
   "author": "xiaoshuang.li <qq1157502759@gmail.com>",
   "homepage": "https://github.com/xiaoshuangLi/react-mc#readme",
   "main": "lib/index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
   "files": [
     "lib"
   ],
@@ -19,10 +15,15 @@
     "type": "git",
     "url": "git+https://github.com/xiaoshuangLi/react-mc.git"
   },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
   "bugs": {
     "url": "https://github.com/xiaoshuangLi/react-mc/issues"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "prop-types": "^15.7.2"
   }
 }

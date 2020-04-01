@@ -10,7 +10,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { FrameContext } from 'react-frame-component';
 
 import ReactMCTemplate from 'react-mc-template';
-import Frame from 'react-mc-dnd/src/Frame';
+import Frame from 'react-mc-dnd-Frame';
 import { withDrag } from 'react-mc-dnd';
 
 const list = [
