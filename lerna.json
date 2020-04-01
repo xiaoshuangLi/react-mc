@@ -4,11 +4,14 @@
     "message": "chore(release): publish",
     "registry": "https://npm.pkg.github.com"
   },
+  "publishConfig": {
+    "access": "restricted"
+  },
   "bootstrap": {
     "npmClientArgs": ["--no-package-lock"]
   },
   "packages": [
     "packages/*"
   ],
-  "version": "0.0.1-aplha.1"
+  "version": "0.0.1"
 }
