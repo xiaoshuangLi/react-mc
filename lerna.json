@@ -3,9 +3,6 @@
   "publish": {
     "ignoreChanges": ["ignored-file", "*.md"]
   },
-  // "publishConfig": {
-  //   "access": "restricted"
-  // },
   "bootstrap": {
     "npmClientArgs": ["--no-package-lock"]
   },
