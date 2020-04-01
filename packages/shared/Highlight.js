@@ -16,15 +16,21 @@ const loop = (fn, time = 100) => {
   return () => clearTimeout(timer);
 };
 
+const isDocumentElement = (dom = {}) => {
+  const { tagName } = dom;
+
+  return tagName === 'HTML';
+};
+
 const getParentElements = (dom) => {
   if (!dom) {
     return [];
   }
 
-  const { parentElement, tagName } = dom;
+  const { parentElement } = dom;
   const parentElements = getParentElements(parentElement) || [];
 
-  if (tagName === 'HTML') {
+  if (isDocumentElement(dom)) {
     return [];
   }
 
@@ -54,26 +60,26 @@ const rectToStyle = (rect = {}) => {
     top,
   } = rect;
 
-  const borderWidth = 1;
-
   return {
     position: 'fixed',
     top: '0px',
     left: '0px',
     transition: '.15s',
-    width: `${width - borderWidth * 2}px`,
-    height: `${height - borderWidth * 2}px`,
-    opacity: width * height ? 1 : 0,
+    width: `${Math.max(width, 0)}px`,
+    height: `${Math.max(height, 0)}px`,
+    opacity: width * height > 0 ? 1 : 0,
     transform: `translate(${left}px, ${top}px)`,
-    border: `${borderWidth}px solid #1890ff`,
+    border: '1px solid #1890ff',
     'border-radius': '2px',
     'pointer-events': 'none',
+    'box-sizing': 'border-box',
     'z-index': 99999999999,
   };
 };
 
 const calcRect = (root = document.documentElement) => (dom) => {
   const rootRect = root.getBoundingClientRect();
+
   const { scrollTop, scrollLeft } = root;
   const { top: rootTop, left: rootLeft } = rootRect;
 
@@ -95,24 +101,12 @@ const calcRect = (root = document.documentElement) => (dom) => {
       height: parentHeight,
     } = parentRect;
 
-    const {
+    let {
       width: childWidth,
       height: childHeight,
       top: childTop,
       left: childLeft,
     } = rect;
-
-    if (parentElement === root) {
-      const baseTop = childTop - rootTop;
-      const baseLeft = childLeft - rootLeft;
-
-      return {
-        width: childWidth,
-        height: childHeight,
-        top: baseTop + scrollTop,
-        left: baseLeft + scrollLeft,
-      };
-    }
 
     if (hasScroll(parentElement)) {
       const style = window.getComputedStyle(parentElement);
@@ -139,6 +133,48 @@ const calcRect = (root = document.documentElement) => (dom) => {
       };
     }
 
+    childWidth = rect.width;
+    childHeight = rect.height;
+    childTop = rect.top;
+    childLeft = rect.left;
+
+    if (parentElement === root) {
+      let width;
+      let height;
+      let top;
+      let left;
+
+      if (isDocumentElement(root)) {
+        const { ownerDocument: { body } } = root;
+
+        const bodyRect = body.getBoundingClientRect();
+        const { width: bodyWidth, height: bodyHeight } = bodyRect;
+
+        top = Math.max(0, childTop);
+        left = Math.max(0, childLeft);
+
+        width = Math.max(0, childWidth + Math.min(childLeft, 0));
+        height = Math.max(0, childHeight + Math.min(childTop, 0));
+        width = Math.min(width, bodyWidth - left);
+        height = Math.min(height, bodyHeight - top);
+      } else {
+        const baseTop = childTop - rootTop;
+        const baseLeft = childLeft - rootLeft;
+
+        width = childWidth;
+        height = childHeight;
+        top = baseTop + scrollTop;
+        left = baseLeft + scrollLeft;
+      }
+
+      return {
+        width,
+        height,
+        top,
+        left,
+      };
+    }
+
     return fn(parentElement, rect);
   };
 
@@ -152,6 +188,14 @@ const calcStyle = (root = document.documentElement) => (dom) => {
 };
 
 const renderStyle = (root = document.documentElement) => (dom, style = {}) => {
+  if (!root.contains(dom)) {
+    const parent = isDocumentElement(root)
+      ? root.ownerDocument.body
+      : root;
+
+    parent.appendChild(dom);
+  }
+
   Object.entries(style).forEach((entry = []) => {
     const [key, value] = entry;
 
@@ -161,8 +205,6 @@ const renderStyle = (root = document.documentElement) => (dom, style = {}) => {
 
     dom.style[key] = value;
   });
-
-  !root.contains(dom) && root.appendChild(dom);
 };
 
 function Highlight(root = document.documentElement) {
@@ -203,13 +245,25 @@ function Highlight(root = document.documentElement) {
 
     this.stop();
 
-    parentElements.forEach((parentElement) => {
-      parentElement.addEventListener('scroll', listener);
+    parentElements.forEach((parentElement = {}) => {
+      const { ownerDocument } = parentElement;
+
+      const element = isDocumentElement(parentElement)
+        ? ownerDocument
+        : parentElement;
+
+      element.addEventListener('scroll', listener);
     });
 
     stop = () => {
-      parentElements.forEach((parentElement) => {
-        parentElement.removeEventListener('scroll', listener);
+      parentElements.forEach((parentElement = {}) => {
+        const { ownerDocument } = parentElement;
+
+        const element = isDocumentElement(parentElement)
+          ? ownerDocument
+          : parentElement;
+
+        element.removeEventListener('scroll', listener);
       });
 
       stopLoop();
