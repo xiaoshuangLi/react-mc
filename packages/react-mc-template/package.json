@@ -29,8 +29,8 @@
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
-    "react-mc-dnd": "0.0.1",
-    "react-mc-render": "0.0.1",
+    "react-mc-dnd": "file:../react-mc-dnd",
+    "react-mc-render": "file:../react-mc-render",
     "uuid": "^7.0.2"
   }
 }
