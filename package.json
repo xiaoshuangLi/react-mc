@@ -1,7 +1,12 @@
 {
   "name": "react-mc",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "react-mc-dnd": "file:packages/react-mc-dnd",
+    "react-mc-dnd-frame": "file:packages/react-mc-dnd-frame",
+    "react-mc-render": "file:packages/react-mc-render",
+    "react-mc-template": "file:packages/react-mc-template"
+  },
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -10,6 +15,7 @@
     "@hot-loader/react-dom": "^16.13.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.0.6",
+    "classnames": "^2.2.6",
     "clean-webpack-plugin": "^3.0.0",
     "cssnano": "^4.1.10",
     "eslint": "^6.8.0",
@@ -27,9 +33,15 @@
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
+    "react": "^16.13.1",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "react-dom": "^16.13.1",
+    "react-frame-component": "^4.1.1",
     "react-hot-loader": "^4.12.20",
     "react-scripts": "3.4.0",
     "sass": "^1.26.3",
+    "uuid": "^7.0.3",
     "webpack": "^4.42.0",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
