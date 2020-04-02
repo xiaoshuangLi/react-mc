@@ -1,7 +1,15 @@
 {
   "name": "react-mc",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "react": "^16.13.1",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "react-dom": "^16.13.1",
+    "react-frame-component": "^4.1.1",
+    "uuid": "^7.0.3"
+  },
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
