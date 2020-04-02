@@ -64,6 +64,15 @@ module.exports = {
             plugins: [
               'react-hot-loader/babel',
               '@babel/plugin-proposal-class-properties',
+              [
+                'react-docgen',
+                {
+                  handlers: [
+                    path.resolve(basePath, '../node_modules/react-docgen-props-schema/propDocHandler.js'),
+                    path.resolve(basePath, '../node_modules/react-docgen-props-schema/schemaHandler.js'),
+                  ],
+                },
+              ],
             ],
           },
         },
