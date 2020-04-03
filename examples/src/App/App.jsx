@@ -1,4 +1,6 @@
 import React, {
+  memo,
+  useRef,
   useState,
   useContext,
 } from 'react';
@@ -9,49 +11,20 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import { FrameContext } from 'react-frame-component';
 
-import ReactMCTemplate from 'react-mc-template';
+import { useEventCallback } from 'shared/hooks';
+
 import Frame from 'react-mc-dnd-frame';
-import { withDrag } from 'react-mc-dnd';
+import { useDrag } from 'react-mc-dnd';
+import ReactMCTemplate, { Core } from 'react-mc-template';
 
-const list = [
-  {
-    data: {
-      name: 'div',
-      props: {
-        children: 'container',
-        style: {
-          margin: 5,
-          padding: 10,
-          background: 'rgba(255, 0, 0, .2)',
-          borderRadius: 5,
-        },
-      },
-    },
-  },
-  {
-    data: {
-      name: 'button',
-      props: {
-        children: 'button',
-        style: {
-          padding: 5,
-          margin: 5,
-          border: 'none',
-          background: 'rgba(0, 255, 0, .2)',
-          borderRadius: 5,
-        },
-      },
-    },
-  },
-];
+import * as buildInComponents from '../buildInComponents';
 
-const renderComponent = (curr = {}) => {
-  const { name: ComponentClass, props = {} } = curr;
+import options from './options';
+import { getImgProps } from './tools';
 
-  return (
-    <ComponentClass {...props} />
-  );
-};
+const core = new Core();
+
+const entries = Object.entries(buildInComponents);
 
 const FrameTemplate = React.forwardRef((props = {}, ref) => {
   const context = useContext(FrameContext);
@@ -66,8 +39,46 @@ const FrameTemplate = React.forwardRef((props = {}, ref) => {
       ref={ref}
       document={contextDocument}
       window={contextWindow}
+      core={core}
       {...props}
     />
+  );
+});
+
+// Just for get Random img, sooooo funny ...
+const ComponentRender = memo((props = {}) => {
+  const {
+    entry = [],
+    trigger,
+    onSelect,
+    onClick: propsOnClick,
+    ...others
+  } = props;
+  const [name, ComponentClass] = entry;
+
+  const ref = useRef(null);
+
+  const dataProps = name === 'Img'
+    ? getImgProps()
+    : {};
+
+  const data = {
+    name,
+    id: uuidv4(),
+    props: dataProps,
+  };
+
+  const onClick = (...args) => {
+    onSelect && onSelect(data);
+    propsOnClick && propsOnClick(...args);
+  };
+
+  useDrag(ref, data);
+
+  return (
+    <div ref={ref} onClick={onClick} {...others}>
+      <ComponentClass {...dataProps} />
+    </div>
   );
 });
 
@@ -75,11 +86,19 @@ const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
   const [value = {}, setValue] = useState({});
-  const [component = {}, setComponent] = useState({});
+  const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({
     'components-app-render': true,
     [className]: !!className,
+  });
+
+  const onSelect = useEventCallback((component = {}) => {
+    const targetInfo = { data: selectedComponent, offset: 1 };
+    const newValue = core.appendComponent(value)(targetInfo, component);
+
+    setValue(newValue);
+    setSelectedComponent(component);
   });
 
   const renderFrame = () => {
@@ -89,27 +108,28 @@ const App = React.forwardRef((props = {}, ref) => {
           className="app-template-content"
           ref={ref}
           value={value}
-          selectedComponent={component}
+          selectedComponent={selectedComponent}
+          options={options}
           onChange={setValue}
-          onSelectComponent={setComponent}
+          onSelectComponent={setSelectedComponent}
         />
       </Frame>
     );
   };
 
   const renderComponents = () => {
-    const items = list.map((item, index) => {
-      const { data = {} } = item;
+    const { componentMap = {} } = value;
+    const trigger = Object.values(componentMap).length;
 
-      const ComponentClass = withDrag('div', {
-        id: uuidv4(),
-        ...data,
-      });
-
+    const items = entries.map((entry = [], index) => {
       return (
-        <ComponentClass className="components-item" key={index}>
-          { renderComponent(data) }
-        </ComponentClass>
+        <ComponentRender
+          className="components-item"
+          key={index}
+          entry={entry}
+          trigger={trigger}
+          onSelect={onSelect}
+        />
       );
     });
 

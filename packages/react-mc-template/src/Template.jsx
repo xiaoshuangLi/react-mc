@@ -61,6 +61,7 @@ Template.propTypes = PropTypes;
 Template.defaultProps = {
   document: undefined,
   window: undefined,
+  core: undefined,
   options: defaultOptions,
   value: {
     rootComponentIds: [],

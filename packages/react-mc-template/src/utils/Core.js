@@ -7,11 +7,7 @@ import {
   findRelationComponentIdsGroup,
 } from 'shared/relation';
 
-import {
-  isRoot as defaultIsRoot,
-  getComponentPropsSchema as defaultGetComponentPropsSchema,
-  getComponentChildrenKeys as defaultGetComponentChildrenKeys,
-} from './options';
+import defaultOptions from './options';
 
 let copiedTemplate;
 let copiedComponent;
@@ -47,11 +43,19 @@ const mergeRelation = (template = {}) => (componentId, relation = {}) => {
 };
 
 function Core(options) {
-  const {
-    isRoot = defaultIsRoot,
-    getComponentPropsSchema = defaultGetComponentPropsSchema,
-    getComponentChildrenKeys = defaultGetComponentChildrenKeys,
-  } = options;
+  const run = (key) => (...args) => {
+    const obj = { ...defaultOptions, ...options };
+    const fn = obj[key];
+
+    return fn ? fn(...args) : undefined;
+  };
+
+  const isRoot = run('isRoot');
+  const getComponentChildrenKeys = run('getComponentChildrenKeys');
+
+  const reset = (newOptions = {}) => {
+    options = newOptions;
+  };
 
   const isContainer = (component = {}) => {
     const childrenKeys = getComponentChildrenKeys(component) || [];
@@ -446,6 +450,7 @@ function Core(options) {
     return removeComponent(template)(component);
   };
 
+  this.reset = reset;
   this.getRootComponent = getRootComponent;
   this.getRelation = getRelation;
   this.getRelationComponentIds = getRelationComponentIds;

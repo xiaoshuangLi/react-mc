@@ -13,15 +13,11 @@ export const getComponentRenderDependencies = (...args) => args;
 export const getComponentPropsSchema = (component = {}) => ({});
 
 export const getComponentChildrenKeys = (component = {}) => {
-  if (component.name === 'div') {
-    return ['children'];
-  }
+  const { name } = component;
 
-  const propsSchema = getComponentPropsSchema(component);
-  const { properties = {} } = propsSchema;
-  const { children: { type } = {} } = properties;
-
-  return type === 'node' ? ['children'] : [];
+  return name === 'div'
+    ? ['children']
+    : undefined;
 };
 
 export const render = (ComponentClass = 'div', component = {}) => (props = {}, ref) => {

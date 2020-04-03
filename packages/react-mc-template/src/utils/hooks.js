@@ -63,15 +63,31 @@ export const useOptions = (props = {}) => {
 
   const {
     getComponentClass,
-    getComponentChildrenKeys,
+    getComponentPropsSchema,
+    getComponentChildrenKeys: optionsGetComponentChildrenKeys,
     render,
   } = options;
 
   const denpendencies = Object.values(options);
 
+  const getComponentChildrenKeys = useEventCallback((component = {}) => {
+    const childrenKeys = optionsGetComponentChildrenKeys(component);
+
+    if (childrenKeys !== undefined) {
+      return childrenKeys;
+    }
+
+    const propsSchema = getComponentPropsSchema(component) || {};
+    const { properties = {} } = propsSchema;
+    const { children: { type } = {} } = properties;
+
+    return type === 'node' ? ['children'] : [];
+  });
+
   return useMemo(
     () => ({
       ...options,
+      getComponentChildrenKeys,
       getComponentClass: (component = {}) => {
         const ComponentClass = getComponentClass(component) || 'div';
         const childrenKeys = getComponentChildrenKeys(component) || [];
@@ -94,17 +110,20 @@ export const useOptions = (props = {}) => {
         return render(ComponentClass, component)(renderProps, ref);
       },
     }),
-    denpendencies,
+    [...denpendencies, getComponentChildrenKeys],
   );
 };
 
 export const useCore = (props = {}) => {
+  const { core: propsCore } = props;
   const options = useOptions(props) || {};
 
-  return useMemo(
-    () => new Core(options),
-    [options],
-  );
+  return useMemo(() => {
+    const core = propsCore || new Core(options);
+
+    core.reset(options);
+    return core;
+  }, [options, propsCore]);
 };
 
 export const useDndValue = (props = {}) => {
