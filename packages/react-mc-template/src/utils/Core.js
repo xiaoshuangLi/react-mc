@@ -163,6 +163,23 @@ function Core(options) {
       : findBelongRelationComponentIds(template)(component);
   };
 
+  const findRelatedParentIds = (template = {}) => (component = {}) => {
+    const parent = findParent(template)(component) || {};
+    const { id: parentId } = parent;
+
+    const relationKeys = findBelongRelationKeys(template)(component) || [];
+    const parentChildrenKeys = getComponentChildrenKeys(parent) || [];
+
+    if (parentId) {
+      const res = findRelatedParentIds(template)(parent) || [];
+      const same = isSame(relationKeys, parentChildrenKeys);
+
+      return same ? res : res.concat(parentId);
+    }
+
+    return [];
+  };
+
   const findPrevComponent = (template = {}) => (component) => {
     const { componentMap = {} } = template;
     const { id: componentId } = component;
@@ -459,6 +476,7 @@ function Core(options) {
   this.findBelongRelationKeys = findBelongRelationKeys;
   this.findBelongRelationComponentIds = findBelongRelationComponentIds;
   this.fintBelongComponentIds = fintBelongComponentIds;
+  this.findRelatedParentIds = findRelatedParentIds;
   this.findPrevComponent = findPrevComponent;
   this.findNextComponent = findNextComponent;
   this.findClosestComponent = findClosestComponent;

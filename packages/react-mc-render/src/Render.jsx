@@ -1,4 +1,5 @@
 import React, {
+  useRef,
   useMemo,
   useEffect,
   useContext,
@@ -6,15 +7,15 @@ import React, {
 } from 'react';
 import classnames from 'classnames';
 
-import { getValueByKeys, setValueByKeys } from 'shared/utils';
+import { isSame } from 'shared/array';
 import { findRelationKeysGroup } from 'shared/relation';
+import { getValueByKeys, setValueByKeys } from 'shared/utils';
+import { usePrevious } from 'shared/hooks';
 
 import {
   RenderContext,
-  renderByMemo,
   useOptionsFromProps,
   useOptionsFromContext,
-  useGetDependencies,
 } from './utils/hooks';
 import defaultOptions from './utils/options';
 
@@ -112,22 +113,45 @@ const ComponentRender = React.forwardRef((props = {}, ref) => {
 const ComponentsRender = (props = {}) => {
   const { componentIds = [] } = props;
 
+  const ref = useRef([]);
   const context = useContext(RenderContext);
   const options = useOptionsFromContext();
 
-  const getDependencies = useGetDependencies(options);
-  const ComponentClass = useMemo(
-    () => renderByMemo(ComponentRender, getDependencies),
-    [getDependencies],
-  );
+  const { value = {} } = context;
+  const { componentMap = {}, relationMap = {} } = value;
+  const { getComponentRenderDependencies } = options;
 
-  return componentIds.map((componentId) => (
-    <ComponentClass
-      key={componentId}
-      componentId={componentId}
-      {...context}
-    />
-  ));
+  const { current: prevChildren = [] } = ref;
+
+  const nextDenpendenciesGroup = componentIds.map((componentId) => {
+    const relation = relationMap[componentId];
+    const component = componentMap[componentId];
+    const dependencies = getComponentRenderDependencies(component) || [];
+
+    return [relation, component, ...dependencies];
+  });
+  const prevDenpendenciesGroup = usePrevious(nextDenpendenciesGroup) || [];
+
+  ref.current = componentIds.map((componentId, index) => {
+    const prevDenpendencies = prevDenpendenciesGroup[index] || [];
+    const nextDenpendencies = nextDenpendenciesGroup[index] || [];
+
+    const same = isSame(prevDenpendencies, nextDenpendencies);
+
+    if (same) {
+      return prevChildren[index];
+    }
+
+    return (
+      <ComponentRender
+        key={componentId}
+        componentId={componentId}
+        {...context}
+      />
+    );
+  });
+
+  return ref.current;
 };
 
 const Render = (props = {}) => {

@@ -46,11 +46,7 @@ const Template = React.forwardRef((props = {}, ref) => {
   return (
     <ConfigProvider value={dndValue}>
       <Container ref={ref} className={cls} {...others}>
-        <Render
-          value={value}
-          options={options}
-          selectedComponent={selectedComponent}
-        />
+        <Render value={value} options={options} />
       </Container>
     </ConfigProvider>
   );

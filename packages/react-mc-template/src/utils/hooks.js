@@ -6,6 +6,7 @@ import React, {
 import { findDOMNode } from 'react-dom';
 
 import {
+  useContainer,
   useDragAndHover,
   useDragAndDrop,
 } from 'react-mc-dnd';
@@ -20,6 +21,8 @@ import {
 import Core from './Core';
 import defaultOptions from './options';
 
+const getKey = memoize((...args) => args);
+
 const findRookie = (prevTemplate = {}, nextTemplate = {}) => {
   const { componentMap: prevComponentMap = {} } = prevTemplate;
   const { componentMap: nextComponentMap = {} } = nextTemplate;
@@ -32,6 +35,16 @@ const findRookie = (prevTemplate = {}, nextTemplate = {}) => {
     return prevComponentMap[componentId] === undefined;
   });
 };
+
+const withContainer = memoize((ComponentClass) => forwardRef((props = {}, ref) => {
+  const { __component: data = {}, ...others } = props;
+
+  useContainer(ref, data);
+
+  return (
+    <ComponentClass ref={ref} {...others} />
+  );
+}));
 
 const withDragAndHover = memoize((ComponentClass) => forwardRef((props = {}, ref) => {
   const { __component: data = {}, ...others } = props;
@@ -53,25 +66,30 @@ const withDragAndDrop = memoize((ComponentClass) => forwardRef((props = {}, ref)
   );
 }));
 
-export const useOptions = (props = {}) => {
-  const { options: propsOptions = {} } = props;
-
-  const options = {
-    ...defaultOptions,
-    ...propsOptions,
-  };
-
-  const {
-    getComponentClass,
-    getComponentPropsSchema,
-    getComponentChildrenKeys: optionsGetComponentChildrenKeys,
-    render,
-  } = options;
+const useMergedOptions = (props = {}) => {
+  const { options = {} } = props;
 
   const denpendencies = Object.values(options);
 
-  const getComponentChildrenKeys = useEventCallback((component = {}) => {
-    const childrenKeys = optionsGetComponentChildrenKeys(component);
+  return useMemo(
+    () => ({
+      ...defaultOptions,
+      ...options,
+    }),
+    denpendencies,
+  );
+};
+
+const useGetComponentChildrenKeys = (props = {}) => {
+  const options = useMergedOptions(props) || {};
+
+  const {
+    getComponentPropsSchema,
+    getComponentChildrenKeys,
+  } = options;
+
+  return useEventCallback((component = {}) => {
+    const childrenKeys = getComponentChildrenKeys(component);
 
     if (childrenKeys !== undefined) {
       return childrenKeys;
@@ -83,47 +101,111 @@ export const useOptions = (props = {}) => {
 
     return type === 'node' ? ['children'] : [];
   });
-
-  return useMemo(
-    () => ({
-      ...options,
-      getComponentChildrenKeys,
-      getComponentClass: (component = {}) => {
-        const ComponentClass = getComponentClass(component) || 'div';
-        const childrenKeys = getComponentChildrenKeys(component) || [];
-        const HOC = childrenKeys.length ? withDragAndDrop : withDragAndHover;
-
-        return HOC(ComponentClass);
-      },
-      getComponentRenderDependencies: (component = {}, context = {}) => {
-        const { selectedComponent = {} } = context;
-        const { id: selectedComponentId } = selectedComponent;
-        const { id: componentId } = component;
-
-        const selected = selectedComponentId === componentId;
-
-        return [selected];
-      },
-      render: (ComponentClass, component) => (renderProps = {}, ref) => {
-        renderProps = { ...renderProps, __component: component };
-
-        return render(ComponentClass, component)(renderProps, ref);
-      },
-    }),
-    [...denpendencies, getComponentChildrenKeys],
-  );
 };
 
 export const useCore = (props = {}) => {
   const { core: propsCore } = props;
-  const options = useOptions(props) || {};
+
+  const options = useMergedOptions(props) || {};
+  const getComponentChildrenKeys = useGetComponentChildrenKeys(props);
 
   return useMemo(() => {
-    const core = propsCore || new Core(options);
+    const core = propsCore || new Core();
 
-    core.reset(options);
+    core.reset({
+      ...options,
+      getComponentChildrenKeys,
+    });
+
     return core;
-  }, [options, propsCore]);
+  }, [options, propsCore, getComponentChildrenKeys]);
+};
+
+const useGetComponentClass = (props = {}) => {
+  const { value = {} } = props;
+
+  const core = useCore(props);
+  const options = useMergedOptions(props) || {};
+  const getComponentChildrenKeys = useGetComponentChildrenKeys(props);
+
+  const { getComponentClass } = options;
+
+  return useEventCallback((component = {}) => {
+    const ComponentClass = getComponentClass(component) || 'div';
+
+    let HOC;
+    const relatedParentIds = core.findRelatedParentIds(value)(component) || [];
+    const childrenKeys = getComponentChildrenKeys(component) || [];
+
+    if (relatedParentIds.length) {
+      HOC = withContainer;
+    } else {
+      HOC = childrenKeys.length ? withDragAndDrop : withDragAndHover;
+    }
+
+    return HOC(ComponentClass);
+  });
+};
+
+const useGetComponentRenderDependencies = (props = {}) => {
+  const { value, selectedComponent = {} } = props;
+
+  const core = useCore(props);
+  const options = useMergedOptions(props) || {};
+  const getComponentChildrenKeys = useGetComponentChildrenKeys(props);
+
+  const { getComponentRenderDependencies } = options;
+
+  return useEventCallback((component = {}) => {
+    const { id: selectedComponentId } = selectedComponent;
+    const { id: componentId } = component;
+
+    const childrenKeys = getComponentChildrenKeys(component) || [];
+    const key = childrenKeys.join('/');
+
+    const relatedParentIds = core.findRelatedParentIds(value)(selectedComponent);
+    const contained = relatedParentIds[0] === componentId;
+
+    const selected = selectedComponentId === componentId;
+    const rest = getComponentRenderDependencies(component) || [];
+
+    return [key, contained, selected, ...rest];
+  });
+};
+
+const useRender = (props = {}) => {
+  const options = useMergedOptions(props) || {};
+  const getComponentChildrenKeys = useGetComponentChildrenKeys(props);
+
+  const { render } = options;
+
+  return useEventCallback((ComponentClass, component) => (renderProps = {}, ref) => {
+    let { key } = renderProps;
+    const childrenKeys = getComponentChildrenKeys(component) || [];
+
+    key = getKey(key, ...childrenKeys);
+    renderProps = { ...renderProps, key, __component: component };
+
+    return render(ComponentClass, component)(renderProps, ref);
+  });
+};
+
+export const useOptions = (props = {}) => {
+  const options = useMergedOptions(props);
+
+  const getComponentClass = useGetComponentClass(props);
+  const getComponentRenderDependencies = useGetComponentRenderDependencies(props);
+  const render = useRender(props);
+
+  return useMemo(
+    () => ({
+      ...options,
+      getComponentClass,
+      getComponentRenderDependencies,
+      render,
+    }),
+    [options, getComponentClass, getComponentRenderDependencies, render],
+  );
 };
 
 export const useDndValue = (props = {}) => {
@@ -171,7 +253,23 @@ export const useDndValue = (props = {}) => {
     const { id: selectedComponentId } = propsSelectedComponent;
     const { id: componentId } = component;
 
-    selectedComponentId === componentId && highlight.render(dom);
+    const relatedParentIds = core.findRelatedParentIds(propsValue)(propsSelectedComponent) || [];
+    const contained = relatedParentIds[0] === componentId;
+    const selected = selectedComponentId === componentId;
+
+    if (!dom) {
+      return;
+    }
+
+    if (!selected && !contained) {
+      return;
+    }
+
+    const style = {
+      'border-style': contained ? 'dashed' : 'solid',
+    };
+
+    highlight.render(dom, style);
   });
 
   return useMemo(() => ({
@@ -191,6 +289,7 @@ export const useTriggers = (props = {}, ref) => {
     selectedComponent: propsSelectedComponent = {},
     onChange = () => {},
     onSelectComponent = () => {},
+    onKeyDown: propsOnKeyDown = () => {},
   } = props;
 
   const core = useCore(props);
@@ -304,6 +403,8 @@ export const useTriggers = (props = {}, ref) => {
       template && onChange(template);
       component && onSelectComponent(component);
     }
+
+    propsOnKeyDown(e);
   });
 
   useEffect(() => {

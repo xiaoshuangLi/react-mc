@@ -64,7 +64,7 @@ const rectToStyle = (rect = {}) => {
     position: 'fixed',
     top: '0px',
     left: '0px',
-    transition: '.15s',
+    transition: '.2s',
     width: `${Math.max(width, 0)}px`,
     height: `${Math.max(height, 0)}px`,
     opacity: width * height > 0 ? 1 : 0,
@@ -210,11 +210,14 @@ const renderStyle = (root = document.documentElement) => (dom, style = {}) => {
 function Highlight(root = document.documentElement) {
   let stop;
   let shinyDom;
+  let maskStyle = {};
   let mask = document.createElement('div');
 
   mask.classList.add('highlight-mask-render');
 
-  const render = (dom) => {
+  const render = (dom, moreStyle = {}) => {
+    maskStyle = moreStyle;
+
     if (!dom) {
       return;
     }
@@ -228,6 +231,8 @@ function Highlight(root = document.documentElement) {
       if (num > 2) {
         style['border-radius'] = borderRadius;
       }
+
+      Object.assign(style, maskStyle);
 
       renderStyle(root)(mask, style);
     };
