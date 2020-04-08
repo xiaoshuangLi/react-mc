@@ -13,6 +13,7 @@ import {
 
 import memoize from 'shared/memoize';
 import Highlight from 'shared/Highlight';
+import { findRelationKeysGroup } from 'shared/relation';
 import {
   useEventCallback,
   useThrottleCallback,
@@ -154,6 +155,12 @@ const useGetComponentRenderDependencies = (props = {}) => {
   const options = useMergedOptions(props) || {};
   const getComponentChildrenKeys = useGetComponentChildrenKeys(props);
 
+  const findRelatedParentIds = useMemo(() => {
+    return memoize(
+      (...args) => memoize(core.findRelatedParentIds(...args)),
+    );
+  }, [core]);
+
   const { getComponentRenderDependencies } = options;
 
   return useEventCallback((component = {}) => {
@@ -163,13 +170,13 @@ const useGetComponentRenderDependencies = (props = {}) => {
     const childrenKeys = getComponentChildrenKeys(component) || [];
     const key = childrenKeys.join('/');
 
-    const relatedParentIds = core.findRelatedParentIds(value)(selectedComponent);
-    const contained = relatedParentIds[0] === componentId;
-
     const selected = selectedComponentId === componentId;
     const rest = getComponentRenderDependencies(component) || [];
 
-    return [key, contained, selected, ...rest];
+    const relatedParentIds = findRelatedParentIds(value)(selectedComponent) || [];
+    const contained = relatedParentIds[0] === componentId;
+
+    return [key, selected, contained, ...rest];
   });
 };
 

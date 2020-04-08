@@ -1,4 +1,5 @@
 import React, {
+  memo,
   useRef,
   useMemo,
   useEffect,
@@ -10,7 +11,7 @@ import classnames from 'classnames';
 import { isSame } from 'shared/array';
 import { findRelationKeysGroup } from 'shared/relation';
 import { getValueByKeys, setValueByKeys } from 'shared/utils';
-import { usePrevious } from 'shared/hooks';
+import { useEventCallback } from 'shared/hooks';
 
 import {
   RenderContext,
@@ -121,7 +122,7 @@ const ComponentsRender = (props = {}) => {
   const { componentMap = {}, relationMap = {} } = value;
   const { getComponentRenderDependencies } = options;
 
-  const { current: prevChildren = [] } = ref;
+  const { current: prevDenpendenciesGroup = [] } = ref;
 
   const nextDenpendenciesGroup = componentIds.map((componentId) => {
     const relation = relationMap[componentId];
@@ -130,28 +131,31 @@ const ComponentsRender = (props = {}) => {
 
     return [relation, component, ...dependencies];
   });
-  const prevDenpendenciesGroup = usePrevious(nextDenpendenciesGroup) || [];
 
-  ref.current = componentIds.map((componentId, index) => {
-    const prevDenpendencies = prevDenpendenciesGroup[index] || [];
+  const shouldNotUpdate = useEventCallback((prevProps = {}, nextProps = {}) => {
+    const { componentId } = nextProps;
+
+    const index = componentIds.indexOf(componentId);
     const nextDenpendencies = nextDenpendenciesGroup[index] || [];
+    const prevDenpendencies = prevDenpendenciesGroup[index] || [];
 
-    const same = isSame(prevDenpendencies, nextDenpendencies);
-
-    if (same) {
-      return prevChildren[index];
-    }
-
-    return (
-      <ComponentRender
-        key={componentId}
-        componentId={componentId}
-        {...context}
-      />
-    );
+    return isSame(nextDenpendencies, prevDenpendencies);
   });
 
-  return ref.current;
+  const ComponentClass = useMemo(
+    () => memo(ComponentRender, shouldNotUpdate),
+    [shouldNotUpdate],
+  );
+
+  ref.current = nextDenpendenciesGroup;
+
+  return componentIds.map((componentId) => (
+    <ComponentClass
+      key={componentId}
+      componentId={componentId}
+      {...context}
+    />
+  ));
 };
 
 const Render = (props = {}) => {
