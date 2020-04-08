@@ -13,6 +13,7 @@ import {
 
 import memoize from 'shared/memoize';
 import Highlight from 'shared/Highlight';
+import { isSame } from 'shared/array';
 import { findRelationKeysGroup } from 'shared/relation';
 import {
   useEventCallback,
@@ -23,6 +24,26 @@ import Core from './Core';
 import defaultOptions from './options';
 
 const getKey = memoize((...args) => args);
+
+const isSimilar = (prevTemplate = {}, nextTemplate = {}) => {
+  const {
+    rootComponentIds: prevRootComponentIds = [],
+    relationMap: prevRelationMap = {},
+  } = prevTemplate;
+
+  const {
+    rootComponentIds: nextRootComponentIds = [],
+    relationMap: nextRelationMap = {},
+  } = nextTemplate;
+
+  const same = isSame(prevRootComponentIds, nextRootComponentIds);
+
+  if (!same) {
+    return false;
+  }
+
+  return JSON.stringify(prevRelationMap) === JSON.stringify(nextRelationMap);
+};
 
 const findRookie = (prevTemplate = {}, nextTemplate = {}) => {
   const { componentMap: prevComponentMap = {} } = prevTemplate;
@@ -149,17 +170,12 @@ const useGetComponentClass = (props = {}) => {
 };
 
 const useGetComponentRenderDependencies = (props = {}) => {
-  const { value, selectedComponent = {} } = props;
+  const { value = {}, selectedComponent = {} } = props;
+  const { relationMap = {} } = value;
 
   const core = useCore(props);
   const options = useMergedOptions(props) || {};
   const getComponentChildrenKeys = useGetComponentChildrenKeys(props);
-
-  const findRelatedParentIds = useMemo(() => {
-    return memoize(
-      (...args) => memoize(core.findRelatedParentIds(...args)),
-    );
-  }, [core]);
 
   const { getComponentRenderDependencies } = options;
 
@@ -173,8 +189,18 @@ const useGetComponentRenderDependencies = (props = {}) => {
     const selected = selectedComponentId === componentId;
     const rest = getComponentRenderDependencies(component) || [];
 
-    const relatedParentIds = findRelatedParentIds(value)(selectedComponent) || [];
-    const contained = relatedParentIds[0] === componentId;
+    let contained;
+    const relation = relationMap[componentId] || {};
+    const keysGroup = findRelationKeysGroup(relation) || [];
+
+    if (keysGroup.length <= 1) {
+      contained = false;
+    } else {
+      const relatedParentIds = core.findRelatedParentIds(value)(selectedComponent) || [];
+      const [firstRelatedParentId] = relatedParentIds;
+
+      contained = firstRelatedParentId === componentId;
+    }
 
     return [key, selected, contained, ...rest];
   });
@@ -237,6 +263,12 @@ export const useDndValue = (props = {}) => {
   const onDragHover = useThrottleCallback((targetInfo = {}, component = {}) => {
     let value = core.cutComponent(propsValue)(component);
     value = core.appendComponent(value)(targetInfo, component);
+
+    const similar = isSimilar(propsValue, value);
+
+    if (similar) {
+      return;
+    }
 
     const rookie = findRookie(propsValue, value);
 
