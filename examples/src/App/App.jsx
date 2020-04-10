@@ -119,7 +119,7 @@ const createData = (count = 10) => {
 const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
-  const [value = {}, setValue] = useState(createData(1000));
+  const [value = {}, setValue] = useState(() => createData(10000));
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({

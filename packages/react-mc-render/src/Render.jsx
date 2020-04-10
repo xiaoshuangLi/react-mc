@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useState,
   useEffect,
-  useContext,
   createRef,
 } from 'react';
 import classnames from 'classnames';
@@ -20,23 +19,6 @@ import { traverse } from './utils';
 
 import PropTypes from './PropTypes';
 
-/**
- * const {
- *   options = {
- *     getComponentClass = (component = {}) => 'div',
- *     getComponentRenderDependencies = (...args) => args,
- *     render: (ComponentClass = 'div', component = {}) => (props, ref) => {
- *       return (<ComponentClass ref={ref} {...props} />);
- *     },
- *   },
- *   value = {
- *     rootComponentIds: [],
- *     componentMap: {},
- *     relationMap: {},
- *   },
- *   componentId,
- * } = props;
- */
 const ComponentRender = React.forwardRef((props = {}, ref) => {
   ref = useMemo(() => {
     return ref || createRef();
@@ -146,27 +128,25 @@ const Render = (props = {}) => {
     return [relation, component, ...rest];
   });
 
-  useEffect(() => {
-    const { current: callbackMap = {} } = callbackRef;
-    const { current: denpendenciesMap = {} } = denpendenciesRef;
+  const { current: callbackMap = {} } = callbackRef;
+  const { current: denpendenciesMap = {} } = denpendenciesRef;
 
-    traverse(value, (componentId) => {
-      const prevDenpendencies = denpendenciesMap[componentId];
-      const nextDenpendencies = getDenpendencies(componentId) || [];
+  traverse(value, (componentId) => {
+    const prevDenpendencies = denpendenciesMap[componentId];
+    const nextDenpendencies = getDenpendencies(componentId) || [];
 
-      const same = prevDenpendencies === undefined
-        ? false
-        : isSame(prevDenpendencies, nextDenpendencies);
+    const same = prevDenpendencies === undefined
+      ? false
+      : isSame(prevDenpendencies, nextDenpendencies);
 
-      if (same) {
-        return;
-      }
+    if (same) {
+      return;
+    }
 
-      const callback = callbackMap[componentId];
+    const callback = callbackMap[componentId];
 
-      denpendenciesMap[componentId] = nextDenpendencies;
-      prevDenpendencies !== undefined && callback && callback();
-    });
+    denpendenciesMap[componentId] = nextDenpendencies;
+    prevDenpendencies !== undefined && callback && callback();
   });
 
   useEffect(() => {
