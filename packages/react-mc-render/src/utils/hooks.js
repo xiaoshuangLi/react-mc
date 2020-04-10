@@ -1,21 +1,12 @@
-import {
-  useContext,
-  createContext,
-} from 'react';
+import { useMemo } from 'react';
 
 import defaultOptions from './options';
 
-export const RenderContext = createContext({});
-
-export const useOptionsFromProps = (props = {}) => {
+export const useOptions = (props = {}) => {
   const { options = {} } = props;
 
-  return { ...defaultOptions, ...options };
-};
-
-export const useOptionsFromContext = () => {
-  const context = useContext(RenderContext);
-  const { options } = context;
-
-  return { ...defaultOptions, ...options };
+  return useMemo(
+    () => ({ ...defaultOptions, ...options }),
+    Object.values(options),
+  );
 };

@@ -82,10 +82,44 @@ const ComponentRender = memo((props = {}) => {
   );
 });
 
+const createData = (count = 10) => {
+  const rootComponentIds = ['0'];
+
+  let relationMap = {};
+  let componentMap = {
+    0: { id: '0', name: 'Div' },
+  };
+
+  for (let v = 1; v < count; v += 1) {
+    const moreComponentMap = {
+      [v]: { id: `${v}`, name: 'Div' },
+    };
+    const parentId = `${Math.floor(Math.random() * v)}`;
+    const baseParentRelation = relationMap[parentId] || {};
+    const { children: baseChildren = [] } = baseParentRelation;
+
+    const children = baseChildren.concat(`${v}`);
+    const relation = { children };
+
+    const moreRelationMap = {
+      [parentId]: relation,
+    };
+
+    relationMap = { ...relationMap, ...moreRelationMap };
+    componentMap = { ...componentMap, ...moreComponentMap };
+  }
+
+  return {
+    rootComponentIds,
+    relationMap,
+    componentMap,
+  };
+};
+
 const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
-  const [value = {}, setValue] = useState({});
+  const [value = {}, setValue] = useState(createData(1000));
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({

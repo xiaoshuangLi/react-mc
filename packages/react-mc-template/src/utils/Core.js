@@ -89,6 +89,42 @@ function Core(options) {
     return getValueByKeys(relation, relationKeys);
   };
 
+  let cache = {
+    template: {},
+    result: {},
+  };
+
+  const getCacheResult = (template = {}) => {
+    const keys = ['relationMap', 'rootComponentIds'];
+    const { template: cacheTemplate = {}, result: cacheResult = {} } = cache;
+    const { relationMap = {} } = template;
+
+    const similar = keys.every((key) => {
+      return cacheTemplate[key] === template[key];
+    });
+
+    if (similar) {
+      return cacheResult;
+    }
+
+    const result = Object.entries(relationMap).reduce((res = [], item = []) => {
+      const [parentId, relation = {}] = item;
+      const componentIdsGroup = findRelationComponentIdsGroup(relation);
+
+      componentIdsGroup.forEach((componentIds = []) => {
+        componentIds.forEach((componentId) => {
+          res[componentId] = parentId;
+        });
+      });
+
+      return res;
+    }, {});
+
+    cache = { template, result };
+
+    return result;
+  };
+
   const findParent = (template = {}) => (component = {}) => {
     const { relationMap = {}, componentMap = {}, rootComponentIds = [] } = template;
     const { id } = component;
@@ -101,8 +137,15 @@ function Core(options) {
       return;
     }
 
-    const parentId = Object.keys(relationMap).find((key) => {
-      const relation = relationMap[key] || {};
+    const cacheResult = getCacheResult(template) || {};
+    const cacheParentId = cacheResult[id];
+
+    if (cacheParentId !== undefined) {
+      return componentMap[cacheParentId];
+    }
+
+    const parentId = Object.entries(relationMap).find((item = []) => {
+      const [relation = {}] = item;
       const componentIdsGroup = findRelationComponentIdsGroup(relation);
 
       return componentIdsGroup.some(

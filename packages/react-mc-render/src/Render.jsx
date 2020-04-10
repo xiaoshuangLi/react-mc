@@ -2,6 +2,7 @@ import React, {
   memo,
   useRef,
   useMemo,
+  useState,
   useEffect,
   useContext,
   createRef,
@@ -13,16 +14,11 @@ import { findRelationKeysGroup } from 'shared/relation';
 import { getValueByKeys, setValueByKeys } from 'shared/utils';
 import { useEventCallback } from 'shared/hooks';
 
-import {
-  RenderContext,
-  useOptionsFromProps,
-  useOptionsFromContext,
-} from './utils/hooks';
 import defaultOptions from './utils/options';
+import { useOptions } from './utils/hooks';
+import { traverse } from './utils';
 
 import PropTypes from './PropTypes';
-
-const { Provider: RenderProvider } = RenderContext;
 
 /**
  * const {
@@ -46,10 +42,14 @@ const ComponentRender = React.forwardRef((props = {}, ref) => {
     return ref || createRef();
   }, [ref]);
 
-  const { className, componentId, value = {} } = props;
+  const { className, componentId, ...others } = props;
+  const { subscribe, usingContext } = others;
+
+  const context = usingContext() || {};
+  const { value = {} } = context;
   const { componentMap = {}, relationMap = {} } = value;
 
-  const options = useOptionsFromProps(props);
+  const options = useOptions(context);
   const { getComponentClass, render } = options;
 
   const relation = relationMap[componentId] || {};
@@ -63,9 +63,15 @@ const ComponentRender = React.forwardRef((props = {}, ref) => {
     const componentIds = getValueByKeys(relation, keys) || [];
 
     if (componentIds.length) {
-      res = setValueByKeys(res, keys, (
-        <ComponentsRender componentIds={componentIds} />
+      const node = componentIds.map((currentComponentId) => (
+        <MemoComponentRender
+          key={currentComponentId}
+          componentId={currentComponentId}
+          {...others}
+        />
       ));
+
+      res = setValueByKeys(res, keys, node);
     }
 
     return res;
@@ -75,6 +81,16 @@ const ComponentRender = React.forwardRef((props = {}, ref) => {
     'component-render': true,
     [className]: !!className,
   });
+
+  const [, setState] = useState({});
+
+  useEffect(() => {
+    const forceUpdate = () => setState({});
+
+    return subscribe
+      ? subscribe(componentId, forceUpdate)
+      : undefined;
+  }, [componentId, subscribe]);
 
   if (!componentId) {
     return null;
@@ -94,73 +110,64 @@ const ComponentRender = React.forwardRef((props = {}, ref) => {
   );
 });
 
-/**
- * const {
- *   options = {
- *     getComponentClass = () => 'div',
- *     getComponentRenderDependencies = (...args) => args,
- *     render: (ComponentClass = 'div', component = {}) => (props, ref) => {
- *       return (<ComponentClass ref={ref} {...props} />);
- *     },
- *   },
- *   value = {
- *     rootComponentIds: [],
- *     componentMap: {},
- *     relationMap: {},
- *   },
- *   componentIds = [],
- * } = props;
- */
-const ComponentsRender = (props = {}) => {
-  const { componentIds = [] } = props;
-
-  const ref = useRef([]);
-  const context = useContext(RenderContext);
-  const options = useOptionsFromContext();
-
-  const { value = {} } = context;
-  const { componentMap = {}, relationMap = {} } = value;
-  const { getComponentRenderDependencies } = options;
-
-  const { current: prevDenpendenciesGroup = [] } = ref;
-
-  const nextDenpendenciesGroup = componentIds.map((componentId) => {
-    const relation = relationMap[componentId];
-    const component = componentMap[componentId];
-    const dependencies = getComponentRenderDependencies(component) || [];
-
-    return [relation, component, ...dependencies];
-  });
-
-  const shouldNotUpdate = useEventCallback((prevProps = {}, nextProps = {}) => {
-    const { componentId } = nextProps;
-
-    const index = componentIds.indexOf(componentId);
-    const nextDenpendencies = nextDenpendenciesGroup[index] || [];
-    const prevDenpendencies = prevDenpendenciesGroup[index] || [];
-
-    return isSame(nextDenpendencies, prevDenpendencies);
-  });
-
-  const ComponentClass = useMemo(
-    () => memo(ComponentRender, shouldNotUpdate),
-    [shouldNotUpdate],
-  );
-
-  ref.current = nextDenpendenciesGroup;
-
-  return componentIds.map((componentId) => (
-    <ComponentClass
-      key={componentId}
-      componentId={componentId}
-      {...context}
-    />
-  ));
-};
+const MemoComponentRender = memo(
+  ComponentRender,
+  () => true,
+);
 
 const Render = (props = {}) => {
   const { value = {} } = props;
-  const { rootComponentIds = [] } = value;
+  const {
+    relationMap = {},
+    componentMap = {},
+    rootComponentIds = [],
+  } = value;
+
+  const callbackRef = useRef({});
+  const denpendenciesRef = useRef({});
+  const options = useOptions(props);
+
+  const { getComponentRenderDependencies } = options;
+
+  const subscribe = useEventCallback((componentId, listener) => {
+    const { current = {} } = callbackRef;
+    current[componentId] = listener;
+
+    return () => delete current[componentId];
+  });
+
+  const usingContext = useEventCallback(() => props);
+
+  const getDenpendencies = useEventCallback((componentId) => {
+    const relation = relationMap[componentId];
+    const component = componentMap[componentId];
+    const rest = getComponentRenderDependencies(component) || [];
+
+    return [relation, component, ...rest];
+  });
+
+  useEffect(() => {
+    const { current: callbackMap = {} } = callbackRef;
+    const { current: denpendenciesMap = {} } = denpendenciesRef;
+
+    traverse(value, (componentId) => {
+      const prevDenpendencies = denpendenciesMap[componentId];
+      const nextDenpendencies = getDenpendencies(componentId) || [];
+
+      const same = prevDenpendencies === undefined
+        ? false
+        : isSame(prevDenpendencies, nextDenpendencies);
+
+      if (same) {
+        return;
+      }
+
+      const callback = callbackMap[componentId];
+
+      denpendenciesMap[componentId] = nextDenpendencies;
+      prevDenpendencies !== undefined && callback && callback();
+    });
+  });
 
   useEffect(() => {
     const listener = () => {};
@@ -169,11 +176,15 @@ const Render = (props = {}) => {
     return () => document.removeEventListener('touchstart', listener);
   }, []);
 
-  return (
-    <RenderProvider value={props}>
-      <ComponentsRender componentIds={rootComponentIds} />
-    </RenderProvider>
-  );
+  return rootComponentIds.map((rootComponentId) => (
+    <MemoComponentRender
+      key={rootComponentId}
+      componentId={rootComponentId}
+      subscribe={subscribe}
+      usingContext={usingContext}
+      {...props}
+    />
+  ));
 };
 
 Render.propTypes = PropTypes;
