@@ -523,6 +523,7 @@ function Core(options) {
   this.findPrevComponent = findPrevComponent;
   this.findNextComponent = findNextComponent;
   this.findClosestComponent = findClosestComponent;
+  this.isContainer = isContainer;
   this.isInChildren = isInChildren;
   this.appendComponent = appendComponent;
   this.appendRelation = appendRelation;

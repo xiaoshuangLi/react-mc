@@ -12,7 +12,6 @@ import {
 } from 'react-mc-dnd';
 
 import memoize from 'shared/memoize';
-import Highlight from 'shared/Highlight';
 import { isSame } from 'shared/array';
 import { findRelationKeysGroup } from 'shared/relation';
 import {
@@ -21,6 +20,7 @@ import {
 } from 'shared/hooks';
 
 import Core from './Core';
+import Highlight from './Highlight';
 import defaultOptions from './options';
 
 const getKey = memoize((...args) => args);
@@ -56,6 +56,26 @@ const findRookie = (prevTemplate = {}, nextTemplate = {}) => {
 
     return prevComponentMap[componentId] === undefined;
   });
+};
+
+const findContainer = (dom = {}) => {
+  const { parentElement, ownerDocument } = dom;
+
+  if (!parentElement) {
+    return;
+  }
+
+  if (!ownerDocument) {
+    return;
+  }
+
+  const { body } = ownerDocument;
+
+  if (parentElement === body) {
+    return dom;
+  }
+
+  return findContainer(parentElement);
 };
 
 const withContainer = memoize((ComponentClass) => forwardRef((props = {}, ref) => {
@@ -245,16 +265,18 @@ export const useDndValue = (props = {}) => {
   const {
     value: propsValue = {},
     selectedComponent: propsSelectedComponent = {},
+    highlight: propsHighlight,
     document: propsDocument = document,
     onChange = () => {},
     onSelectComponent = () => {},
   } = props;
 
   const core = useCore(props);
-  const highlight = useMemo(
-    () => new Highlight(propsDocument.documentElement),
-    [propsDocument],
-  );
+  const highlight = useMemo(() => {
+    return propsHighlight === undefined
+      ? new Highlight(propsDocument.documentElement)
+      : propsHighlight;
+  }, [propsDocument, propsHighlight]);
 
   const isInChildren = useEventCallback(
     core.isInChildren(propsValue),
@@ -288,17 +310,29 @@ export const useDndValue = (props = {}) => {
     componentId && onSelectComponent(component);
   });
 
-  const onRender = useEventCallback((dom, component = {}) => {
+  const onRender = useEventCallback((dom = {}, component = {}) => {
     const { id: selectedComponentId } = propsSelectedComponent;
     const { id: componentId } = component;
-
-    const relatedParentIds = core.findRelatedParentIds(propsValue)(propsSelectedComponent) || [];
-    const contained = relatedParentIds[0] === componentId;
-    const selected = selectedComponentId === componentId;
 
     if (!dom) {
       return;
     }
+    const { ownerDocument } = dom;
+    const relatedParentIds = core.findRelatedParentIds(propsValue)(propsSelectedComponent) || [];
+    const contained = relatedParentIds[0] === componentId;
+    const selected = selectedComponentId === componentId;
+
+    if (ownerDocument && ownerDocument !== propsDocument) {
+      const container = findContainer(dom);
+
+      propsDocument.body.appendChild(container);
+    }
+
+    if (!highlight) {
+      return;
+    }
+
+    const { render } = highlight;
 
     if (!selected && !contained) {
       return;
@@ -308,8 +342,18 @@ export const useDndValue = (props = {}) => {
       'border-style': contained ? 'dashed' : 'solid',
     };
 
-    highlight.render(dom, style);
+    render && render(dom, style);
   });
+
+  useEffect(() => {
+    if (!highlight) {
+      return;
+    }
+
+    const { clear } = highlight;
+
+    return () => clear && clear();
+  }, [highlight]);
 
   return useMemo(() => ({
     dummy: true,
@@ -328,7 +372,7 @@ export const useTriggers = (props = {}, ref) => {
     selectedComponent: propsSelectedComponent = {},
     onChange = () => {},
     onSelectComponent = () => {},
-    onKeyDown: propsOnKeyDown = () => {},
+    onKeyDownCapture: propsOnKeyDownCapture = () => {},
   } = props;
 
   const core = useCore(props);
@@ -403,16 +447,16 @@ export const useTriggers = (props = {}, ref) => {
     },
   ];
 
-  const onKeyDown = useEventCallback((e) => {
+  const onKeyDownCapture = useEventCallback((e) => {
     const { current } = ref;
 
     if (!current) {
       return;
     }
 
-    const container = findDOMNode(current);
+    const node = findDOMNode(current);
     const hoveredElements = Array.from(propsDocument.querySelectorAll('*:hover'));
-    const hovered = hoveredElements.includes(container);
+    const hovered = hoveredElements.includes(node);
 
     if (!hovered) {
       return;
@@ -443,18 +487,18 @@ export const useTriggers = (props = {}, ref) => {
       component && onSelectComponent(component);
     }
 
-    propsOnKeyDown(e);
+    propsOnKeyDownCapture(e);
   });
 
   useEffect(() => {
-    propsDocument.addEventListener('keydown', onKeyDown, true);
-    return () => propsDocument.removeEventListener('keydown', onKeyDown, true);
-  }, [propsDocument, onKeyDown, ref]);
+    propsDocument.addEventListener('keydown', onKeyDownCapture, true);
+    return () => propsDocument.removeEventListener('keydown', onKeyDownCapture, true);
+  }, [propsDocument, onKeyDownCapture, ref]);
 
   useEffect(() => {
     if (document !== propsDocument) {
-      document.addEventListener('keydown', onKeyDown, true);
-      return () => document.removeEventListener('keydown', onKeyDown, true);
+      document.addEventListener('keydown', onKeyDownCapture, true);
+      return () => document.removeEventListener('keydown', onKeyDownCapture, true);
     }
-  }, [propsDocument, onKeyDown, ref]);
+  }, [propsDocument, onKeyDownCapture, ref]);
 };

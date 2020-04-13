@@ -285,14 +285,13 @@ function Highlight(root = document.documentElement) {
   this.clear = () => {
     const { parentElement } = mask;
 
+    this.stop();
+    parentElement && parentElement.removeChild(mask);
+
     mask = null;
     shinyDom = null;
     this.mask = null;
-    this.stop();
-    parentElement && parentElement.removeChild(mask);
   };
 }
-
-window.test = new Highlight();
 
 export default Highlight;

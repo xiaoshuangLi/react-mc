@@ -21,6 +21,8 @@ const Template = React.forwardRef((props = {}, ref) => {
     className,
     value,
     selectedComponent,
+    core,
+    highlight,
     options: propsOptions,
     document: propsDocument = document,
     window: propsWindow = window,
@@ -58,6 +60,7 @@ Template.defaultProps = {
   document: undefined,
   window: undefined,
   core: undefined,
+  highlight: undefined,
   options: defaultOptions,
   value: {
     rootComponentIds: [],
