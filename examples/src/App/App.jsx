@@ -15,6 +15,7 @@ import { useEventCallback } from 'shared/hooks';
 
 import Frame from 'react-mc-dnd-frame';
 import { useDrag } from 'react-mc-dnd';
+import ReactMCRunner from 'react-mc-runner';
 import ReactMCTemplate, { Core } from 'react-mc-template';
 
 import * as buildInComponents from '../buildInComponents';
@@ -119,7 +120,8 @@ const createData = (count = 10) => {
 const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
-  const [value = {}, setValue] = useState(() => createData(1000));
+  // const [value = {}, setValue] = useState(() => createData(1000));
+  const [value = {}, setValue] = useState({});
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({
@@ -174,11 +176,24 @@ const App = React.forwardRef((props = {}, ref) => {
     );
   };
 
+  const renderRunner = () => {
+    return (
+      <div className="app-runner">
+        <ReactMCRunner
+          value={value}
+          options={options}
+          onChange={setValue}
+        />
+      </div>
+    );
+  };
+
   return (
     <DndProvider backend={HTML5Backend} context={window}>
       <div className={cls}>
         { renderFrame() }
         { renderComponents() }
+        { renderRunner() }
       </div>
     </DndProvider>
   );

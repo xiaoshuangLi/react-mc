@@ -8,6 +8,7 @@ const packages = [
   'react-mc-dnd',
   'react-mc-dnd-frame',
   'react-mc-render',
+  'react-mc-runner',
   'react-mc-template',
 ];
 

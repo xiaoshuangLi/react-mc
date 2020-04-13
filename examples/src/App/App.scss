@@ -52,6 +52,14 @@ body {
       #{$offset - $halfSize} $offset;
   }
 
+  .app-runner {
+    width: 55vh;
+    border: 5px solid black !important;
+    box-shadow: 0 0 5px rgba(black, .2);
+    border-radius: 10px;
+    overflow: auto;
+  }
+
   .app-components {
     flex: 1;
 

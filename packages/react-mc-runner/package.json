@@ -1,0 +1,33 @@
+{
+  "name": "react-mc-runner",
+  "version": "0.0.1-alpha.3",
+  "description": "react-mc-runner",
+  "keywords": [
+    "react"
+  ],
+  "author": "xiaoshuang.li <qq1157502759@gmail.com>",
+  "homepage": "https://github.com/xiaoshuangLi/react-mc#readme",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaoshuangLi/react-mc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaoshuangLi/react-mc/issues"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "react-mc-render": "file:../react-mc-render"
+  }
+}
