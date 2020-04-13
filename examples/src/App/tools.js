@@ -5,8 +5,18 @@ const list = [
   'https://cdn-health.zhongan.com/magiccube/resources/CNCdj2u8NV.jpg',
 ];
 
+export const getRandom = (max) => {
+  return Math.floor(Math.random() * (max + 0.999999));
+};
+
+export const getRandomItem = (array = []) => {
+  const index = getRandom(array.length - 1);
+
+  return array[index];
+};
+
 export const getImgProps = () => {
-  const index = Math.floor(Math.random() * (list.length - 0.001));
+  const index = getRandom(list.length - 1);
   const backgroundImage = `url(${list[index]})`;
 
   return {

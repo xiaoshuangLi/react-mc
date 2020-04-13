@@ -21,7 +21,7 @@ import ReactMCTemplate, { Core } from 'react-mc-template';
 import * as buildInComponents from '../buildInComponents';
 
 import options from './options';
-import { getImgProps } from './tools';
+import { getRandomItem, getImgProps } from './tools';
 
 const core = new Core();
 
@@ -85,6 +85,7 @@ const ComponentRender = memo((props = {}) => {
 
 const createData = (count = 10) => {
   const rootComponentIds = ['0'];
+  const containerIds = rootComponentIds.slice();
 
   let relationMap = {};
   let componentMap = {
@@ -92,10 +93,16 @@ const createData = (count = 10) => {
   };
 
   for (let v = 1; v < count; v += 1) {
+    const parentId = getRandomItem(containerIds);
+    const entry = getRandomItem(entries) || [];
+
+    const [name] = entry;
+    const id = `${v}`;
+    const props = name === 'Img' ? getImgProps() : {};
+
     const moreComponentMap = {
-      [v]: { id: `${v}`, name: 'Div' },
+      [v]: { id, name, props },
     };
-    const parentId = `${Math.floor(Math.random() * v)}`;
     const baseParentRelation = relationMap[parentId] || {};
     const { children: baseChildren = [] } = baseParentRelation;
 
@@ -105,6 +112,10 @@ const createData = (count = 10) => {
     const moreRelationMap = {
       [parentId]: relation,
     };
+
+    if (name === 'Div') {
+      containerIds.push(id);
+    }
 
     relationMap = { ...relationMap, ...moreRelationMap };
     componentMap = { ...componentMap, ...moreComponentMap };
@@ -120,8 +131,8 @@ const createData = (count = 10) => {
 const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
-  // const [value = {}, setValue] = useState(() => createData(1000));
-  const [value = {}, setValue] = useState({});
+  // const [value = {}, setValue] = useState({});
+  const [value = {}, setValue] = useState(() => createData(1000));
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({
