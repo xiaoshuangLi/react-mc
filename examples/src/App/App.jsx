@@ -132,7 +132,7 @@ const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
   // const [value = {}, setValue] = useState({});
-  const [value = {}, setValue] = useState(() => createData(1000));
+  const [value = {}, setValue] = useState(() => createData(10));
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({
@@ -147,6 +147,15 @@ const App = React.forwardRef((props = {}, ref) => {
     setValue(newValue);
     setSelectedComponent(component);
   });
+
+  const renderMessage = () => {
+    return (
+      <div className="app-message">
+        <div className="message-left">👈 Drag Here</div>
+        <div className="message-right">Preview Here 👉</div>
+      </div>
+    );
+  };
 
   const renderFrame = () => {
     return (
@@ -202,6 +211,7 @@ const App = React.forwardRef((props = {}, ref) => {
   return (
     <DndProvider backend={HTML5Backend} context={window}>
       <div className={cls}>
+        { renderMessage() }
         { renderFrame() }
         { renderComponents() }
         { renderRunner() }

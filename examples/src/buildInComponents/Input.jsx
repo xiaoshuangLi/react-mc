@@ -49,7 +49,7 @@ Input.propTypes = {
 
 Input.defaultProps = {
   value: '',
-  placeholder: 'Input: can\'t type now',
+  placeholder: 'Type when previewing',
   onChange: undefined,
   style: {
     padding: 5,
