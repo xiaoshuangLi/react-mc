@@ -6,6 +6,8 @@ The main concept is to render ```value```, maybe modify when we need to. Render 
 
 This ```value``` consists of ```component```, not the other thing we use in [react](https://github.com/facebook/react). It's an object to save data.
 
+[**Live Demo**](https://codesandbox.io/s/react-mc-mf1is)
+
 ```js
 /**
  *  component example
