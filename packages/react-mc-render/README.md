@@ -33,6 +33,18 @@ The value you can render. [Detail for value](https://github.com/xiaoshuangLi/rea
 
 The parameters you need to configure to render ```value``` in the way you want.
 
+```jsx
+const options = {
+  getComponentClass: (component = {}) => 'div',
+  getComponentRenderDependencies: (component = {}) => [],
+  render: (ComponentClass, component = {}) => (props = {}, ref) => {
+    return (
+      <ComponentClass ref={ref} {...props} />
+    );
+  },
+};
+```
+
 #### options.getComponentClass
 
 Return the ```ComponentClass``` to render the ```component```.
