@@ -33,7 +33,7 @@ The value you can render. [Detail for value](https://github.com/xiaoshuangLi/rea
 
 The parameters you need to configure to render ```value``` in the way you want.
 
-##### options.getComponentClass
+#### options.getComponentClass
 
 Return the ```ComponentClass``` to render the ```component```.
 
@@ -68,7 +68,7 @@ const getComponentClass = (component = {}) => {
 };
 ```
 
-##### options.getComponentRenderDependencies
+#### options.getComponentRenderDependencies
 
 Ruturn the dependencies for rendering.The ```ComponentClass``` will render only if dependencies change.```component``` and ```relation``` are already in the dependencies by default.
 
@@ -86,7 +86,7 @@ const getComponentRenderDependencies = (component = {}) => {
 };
 ```
 
-##### options.render
+#### options.render
 
 The final touch to render ```component``` correctly.This function is useful when you want to do something nasty.
 
