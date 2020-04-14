@@ -12,16 +12,21 @@ export const getHTML = (rootDocument = document) => (selector = '') => {
 export const getLinkStyleHTML = (rootDocument = document) => {
   const styleSheets = Array.from(rootDocument.styleSheets);
 
-  return styleSheets.reduce((res = '', styleSheet = {}) => {
-    const { cssRules: baseCssRules = [] } = styleSheet;
-    const cssRules = Array.from(baseCssRules);
+  try {
+    return styleSheets.reduce((res = '', styleSheet = {}) => {
+      const { cssRules: baseCssRules = [] } = styleSheet;
+      const cssRules = Array.from(baseCssRules);
 
-    return cssRules.reduce((curr = '', cssRule = {}) => {
-      const { cssText = '' } = cssRule;
+      return cssRules.reduce((curr = '', cssRule = {}) => {
+        const { cssText = '' } = cssRule;
 
-      return `${curr} ${cssText}`;
-    }, res);
-  }, '');
+        return `${curr} ${cssText}`;
+      }, res);
+    }, '');
+  } catch (e) {
+    console.error(e);
+    return '';
+  }
 };
 
 export const getStyleHTML = (rootDocument = document) => {

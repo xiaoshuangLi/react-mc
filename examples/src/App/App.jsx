@@ -132,7 +132,7 @@ const App = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
   // const [value = {}, setValue] = useState({});
-  const [value = {}, setValue] = useState(() => createData(10));
+  const [value = {}, setValue] = useState(() => createData(1000));
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({
