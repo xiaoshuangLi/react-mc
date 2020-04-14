@@ -12,9 +12,9 @@ This ```value``` consists of ```component```, not the other thing we use in [rea
 /**
  *  component example
  *  
- *  id: String, should be unique.
- *  name: String, use to determine the ComponentClass we render.
- *  props: Object, the props for ComponentClass to render with.
+ *  id: string, should be unique.
+ *  name: string, use to determine the ComponentClass we render.
+ *  props: object, the props for ComponentClass to render with.
  *
  */
 const component = {
@@ -32,9 +32,9 @@ const component = {
 /**
  *  value example
  *  
- *  componentMap: Object, stor all components data,key means the id of component,value means the data of component.
- *  relationMap: Object, store the association between components,key means the id of component.
- *  rootComponentIds: Array, means the components you render for root.
+ *  componentMap: object, stor all components data,key means the id of component,value means the data of component.
+ *  relationMap: object, store the association between components,key means the id of component.
+ *  rootComponentIds: array, means the components you render for root.
  *
  */
 const value = {
@@ -102,4 +102,4 @@ This repository is a monorepo that we manage using [Lerna](https://github.com/le
 | [`react-mc-template`](/packages/react-mc-template)               | [![](https://img.shields.io/badge/API%20Docs-markdown-lightgrey.svg?style=flat-square)](/packages/react-mc-template)          | Render the ```value``` we got and modify if we want. |
 | [`react-mc-runner`](/packages/react-mc-runner)               | [![](https://img.shields.io/badge/API%20Docs-markdown-lightgrey.svg?style=flat-square)](/packages/react-mc-runner)          | Render the ```value``` we got and bound the events. |
 | [`react-mc-dnd`](/packages/react-mc-dnd)               | [![](https://img.shields.io/badge/API%20Docs-markdown-lightgrey.svg?style=flat-square)](/packages/react-mc-dnd)          | An easy way to use [react-dnd](https://github.com/react-dnd/react-dnd). |
-| [`react-mc-dnd-fram`](/packages/react-mc-dnd-fram)               | [![](https://img.shields.io/badge/API%20Docs-markdown-lightgrey.svg?style=flat-square)](/packages/react-mc-dnd-fram)          | Make [react-dnd](https://github.com/react-dnd/react-dnd) work for ```iframe``` |
+| [`react-mc-dnd-fram`](/packages/react-mc-dnd-fram)               | [![](https://img.shields.io/badge/API%20Docs-markdown-lightgrey.svg?style=flat-square)](/packages/react-mc-dnd-fram)          | Make [react-dnd](https://github.com/react-dnd/react-dnd) work for ```iframe```. |
