@@ -4,7 +4,7 @@
   "description": "react-mc-dnd-frame",
   "author": "xiaoshuang.li <qq1157502759@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/xiaoshuangLi/react-mc#readme",
+  "homepage": "https://github.com/xiaoshuangLi/react-mc-documentation#readme",
   "main": "lib/index.js",
   "files": [
     "lib"
