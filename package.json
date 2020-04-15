@@ -5,6 +5,7 @@
     "react-mc-dnd": "file:packages/react-mc-dnd",
     "react-mc-dnd-frame": "file:packages/react-mc-dnd-frame",
     "react-mc-render": "file:packages/react-mc-render",
+    "react-mc-runner": "file:packages/react-mc-render",
     "react-mc-template": "file:packages/react-mc-template"
   },
   "devDependencies": {
