@@ -44,7 +44,9 @@ export default App;
 
 ## props.value: object
 
-The ```value``` you can render. [Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
+The ```value``` you can render. 
+
+[Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
 
 ## props.onChange: func
 
@@ -58,11 +60,11 @@ The ```component``` you select.
 
 Trigger it when others were selected.
 
-## props.document: object
+## props.document: dom
 
 Set it to ```iframe.contentDocument``` you got when render in ```iframe```.
 
-## props.body: object
+## props.body: dom
 
 Set it to ```iframe.contentDocument.body``` you got when render in ```iframe```.
 
