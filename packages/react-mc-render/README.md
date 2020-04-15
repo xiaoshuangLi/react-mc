@@ -11,10 +11,15 @@ Using [npm](https://www.npmjs.com/):
 ## Usage
 
 ```jsx
-import React, { useState } from 'react';
+import React from 'react';
 
 import ReactMCRender from 'react-mc-render';
 
+/**
+ * In this case,
+ * will only render some "div" with different id.
+ * Because we have not set up options.getComponentClass.
+ */
 const App = (props = {}) => {
   const { value = {} } = props;
 
@@ -25,9 +30,10 @@ const App = (props = {}) => {
 
 export default App;
 ```
+
 ## props.value: object
 
-The value you can render. [Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
+The ```value``` you can render. [Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
 
 ## props.options: object
 
