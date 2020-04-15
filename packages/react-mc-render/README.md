@@ -33,7 +33,9 @@ export default App;
 
 ## props.value: object
 
-The ```value``` you can render. [Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
+The ```value``` you can render.
+
+[Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
 
 ## props.options: object
 
