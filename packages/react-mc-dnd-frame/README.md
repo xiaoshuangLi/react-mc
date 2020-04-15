@@ -1,6 +1,6 @@
 # `react-mc-dnd-frame`
 
-Render the ```value``` we got and modify if we want.
+Make [react-dnd](https://github.com/react-dnd/react-dnd) work for ```iframe```.
 
 ## Installation
 
@@ -29,11 +29,6 @@ const Content = (props = {}) => {
   );
 };
 
-/**
- * In this case,
- * will only render some "div" with different id.
- * Because we have not set up options.getComponentClass.
- */
 const App = (props = {}) => {
   const [value = {}, setValue] = useState({});
 

@@ -1,6 +1,6 @@
 # `react-mc-runner`
 
-Render the ```value``` we got and modify if we want.
+Render the ```value``` we got and bound the events.
 
 ## Installation
 

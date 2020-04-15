@@ -117,10 +117,10 @@ const relationKeysGroup = [
 ];
 
 const targetInfo = {
-  parentData, // object, parent compoent, default: rootComponent
-  parentRelationKeys, // array, parent compoent relationKeys, only work when parentData set up
-  data, // object, component
-  offset, // nnumber, relative offset for component index, only work when data set up
+  parentData: {}, // object, parent compoent, default: rootComponent
+  parentRelationKeys: [], // array, parent compoent relationKeys, only work when parentData set up
+  data: {}, // object, component
+  offset: [], // nnumber, relative offset for component index, only work when data set up
 };
 
 const {
@@ -173,6 +173,10 @@ Return the boolean means the ```component``` is root.If it's root, cannot been m
 #### options.getComponentClass
 
 Return the ```ComponentClass``` to render the ```component```.And automatically used ```react-mc-dnd``` HOC.If you don't need this, use origin ```ComponentClass``` in ```options.render```.
+
+We need ```ref``` for ```ComponentClass``` to get ```dom```.!!!
+We need ```ref``` for ```ComponentClass``` to get ```dom```.!!!
+We need ```ref``` for ```ComponentClass``` to get ```dom```.!!!
 
 ```jsx
 import React from 'react';
