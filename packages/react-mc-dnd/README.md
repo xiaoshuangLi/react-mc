@@ -6,7 +6,7 @@ An easy way to use [react-dnd](https://github.com/react-dnd/react-dnd).
 
 [Group Demo](https://codesandbox.io/s/react-mc-dnd-group-s2smm)
 
-[Paint Demo](https://codesandbox.io/s/react-mc-dnd-paint-z5hky?file=/src/App.js)
+[Paint Demo](https://codesandbox.io/s/react-mc-dnd-paint-z5hky)
 
 [Documentation](https://github.com/xiaoshuangLi/react-mc-documentation/tree/master/packages/react-mc-dnd#readme)
 
