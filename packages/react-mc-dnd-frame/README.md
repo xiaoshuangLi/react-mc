@@ -2,7 +2,7 @@
 
 Make [react-dnd](https://github.com/react-dnd/react-dnd) work for ```iframe```.
 
-[Documentation](https://github.com/xiaoshuangLi/react-mc-documentation#readme)
+[Documentation](https://github.com/xiaoshuangLi/react-mc-documentation/tree/master/packages/react-mc-dnd-frame#readme)
 
 ## Installation
 
