@@ -2,6 +2,12 @@
 
 An easy way to use [react-dnd](https://github.com/react-dnd/react-dnd).
 
+[List Demo](https://codesandbox.io/s/react-mc-dnd-list-t974t)
+
+[Group Demo](https://codesandbox.io/s/react-mc-dnd-group-s2smm)
+
+[Documentation](https://github.com/xiaoshuangLi/react-mc-documentation#readme)
+
 ## Installation
 
 Using [npm](https://www.npmjs.com/):

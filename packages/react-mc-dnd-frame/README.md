@@ -2,6 +2,8 @@
 
 Make [react-dnd](https://github.com/react-dnd/react-dnd) work for ```iframe```.
 
+[Documentation](https://github.com/xiaoshuangLi/react-mc-documentation#readme)
+
 ## Installation
 
 Using [npm](https://www.npmjs.com/):

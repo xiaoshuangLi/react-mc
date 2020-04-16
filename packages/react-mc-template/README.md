@@ -2,6 +2,8 @@
 
 Render the ```value``` we got and modify if we want.
 
+[Documentation](https://github.com/xiaoshuangLi/react-mc-documentation#readme)
+
 ## Installation
 
 Using [npm](https://www.npmjs.com/):
