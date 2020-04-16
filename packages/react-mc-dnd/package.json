@@ -21,6 +21,7 @@
     "react-dom": ">=16.8.6"
   },
   "dependencies": {
+    "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react-dnd": "^10.0.2"
   }
