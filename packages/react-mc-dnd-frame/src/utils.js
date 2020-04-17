@@ -20,11 +20,16 @@ export const getLinkStyleHTML = (rootDocument = document) => {
       return cssRules.reduce((curr = '', cssRule = {}) => {
         const { cssText = '' } = cssRule;
 
-        return `${curr} ${cssText}`;
+        return `${curr} <style>${cssText}</style>`;
       }, res);
     } catch (e) {
+      const { href } = styleSheet;
+      const linkHTML = `
+        <link rel="stylesheet" type="text/css" href="${href}">
+      `;
+
       console.error(e);
-      return res;
+      return `${res}${linkHTML}`;
     }
   }, '');
 };
@@ -33,7 +38,7 @@ export const getStyleHTML = (rootDocument = document) => {
   const baseStyleHTML = getHTML(rootDocument)('style');
   const linkStyleHTML = getLinkStyleHTML(rootDocument);
 
-  return `${baseStyleHTML}<style>${linkStyleHTML}</style>`;
+  return `${baseStyleHTML}${linkStyleHTML}`;
 };
 
 export const getSvgHTML = (rootDocument = document) => getHTML(rootDocument)('svg');
