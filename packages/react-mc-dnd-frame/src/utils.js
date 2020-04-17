@@ -12,8 +12,8 @@ export const getHTML = (rootDocument = document) => (selector = '') => {
 export const getLinkStyleHTML = (rootDocument = document) => {
   const styleSheets = Array.from(rootDocument.styleSheets);
 
-  try {
-    return styleSheets.reduce((res = '', styleSheet = {}) => {
+  return styleSheets.reduce((res = '', styleSheet = {}) => {
+    try {
       const { cssRules: baseCssRules = [] } = styleSheet;
       const cssRules = Array.from(baseCssRules);
 
@@ -22,11 +22,11 @@ export const getLinkStyleHTML = (rootDocument = document) => {
 
         return `${curr} ${cssText}`;
       }, res);
-    }, '');
-  } catch (e) {
-    console.error(e);
-    return '';
-  }
+    } catch (e) {
+      console.error(e);
+      return res;
+    }
+  }, '');
 };
 
 export const getStyleHTML = (rootDocument = document) => {
