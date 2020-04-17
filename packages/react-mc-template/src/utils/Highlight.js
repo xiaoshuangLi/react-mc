@@ -64,16 +64,16 @@ const rectToStyle = (rect = {}) => {
     position: 'fixed',
     top: '0px',
     left: '0px',
-    transition: '.2s',
     width: `${Math.max(width, 0)}px`,
     height: `${Math.max(height, 0)}px`,
-    opacity: width * height > 0 ? 1 : 0,
+    opacity: width * height > 0 ? '1' : '0',
     transform: `translate(${left}px, ${top}px)`,
-    border: '1px solid #1890ff',
+    border: '1px solid rgb(24, 144, 255)',
+    'transition-duration': '0.2s',
     'border-radius': '2px',
     'pointer-events': 'none',
     'box-sizing': 'border-box',
-    'z-index': 99999999999,
+    'z-index': '10000',
   };
 };
 
