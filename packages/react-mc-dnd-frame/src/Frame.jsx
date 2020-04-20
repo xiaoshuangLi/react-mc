@@ -1,22 +1,73 @@
 import React, {
+  useRef,
+  useMemo,
   useEffect,
   useContext,
   forwardRef,
 } from 'react';
 import { DndContext } from 'react-dnd';
 import FrameComponent, { FrameContext } from 'react-frame-component';
-import throttle from 'lodash/throttle';
+
+import { useThrottleCallback } from 'shared/hooks';
 
 import { getStyleHTML, getSvgHTML } from './utils';
+
+const invisibleStyle = {
+  opacity: 0,
+  position: 'fixed',
+  pointerEvents: 'none',
+};
+
+const getStyleAndSVG = () => {
+  const styleHTML = getStyleHTML(document);
+  const svgHTML = getSvgHTML(document);
+
+  return `${styleHTML}${svgHTML}`;
+};
 
 const FrameContent = (props = {}) => {
   const { children } = props;
 
   const { dragDropManager } = useContext(DndContext);
+
   const {
     window: contextWindow = window,
     document: contextDocument = document,
   } = useContext(FrameContext);
+
+  const ref = useRef();
+
+  const styleNode = useMemo(() => {
+    const content = getStyleAndSVG();
+    const dangerouslySetInnerHTML = {
+      __html: content,
+    };
+
+    return (
+      <div
+        ref={ref}
+        style={invisibleStyle}
+        dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+      />
+    );
+  }, []);
+
+  const callback = useThrottleCallback(() => {
+    const { current } = ref;
+
+    if (!current) {
+      return;
+    }
+
+    const { innerHTML } = current;
+    const content = getStyleAndSVG();
+
+    if (innerHTML === content) {
+      return;
+    }
+
+    current.innerHTML = content;
+  }, 100);
 
   useEffect(() => {
     if (contextDocument === document) {
@@ -27,37 +78,14 @@ const FrameContent = (props = {}) => {
       return;
     }
 
-    const container = contextDocument.createElement('div');
-
     const config = { childList: true, subtree: true };
-    const callback = throttle(() => {
-      const { innerHTML } = container;
-
-      const styleHTML = getStyleHTML(document);
-      const svgHTML = getSvgHTML(document);
-
-      const content = `${styleHTML}${svgHTML}`;
-
-      if (innerHTML === content) {
-        return;
-      }
-
-      container.innerHTML = content;
-    }, 100);
-
     const observer = new MutationObserver(callback);
 
-    container.style.opacity = 0;
-    container.style.position = 'fixed';
-    container.style['pointer-events'] = 'none';
-    contextDocument.body.appendChild(container);
-
-    callback();
     observer.observe(document.head, config);
     observer.observe(document.body, config);
 
     return () => observer.disconnect();
-  }, [contextDocument]);
+  }, [callback, contextDocument]);
 
   useEffect(() => {
     if (contextWindow !== window) {
@@ -66,7 +94,12 @@ const FrameContent = (props = {}) => {
     }
   }, [contextWindow, dragDropManager]);
 
-  return children;
+  return (
+    <>
+      { styleNode }
+      { children }
+    </>
+  );
 };
 
 export const Frame = forwardRef((props = {}, ref) => {
