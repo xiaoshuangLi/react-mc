@@ -1,5 +1,5 @@
 export const getElements = (rootDocument = document) => (selector = '') => {
-  const elements = document.querySelectorAll(selector);
+  const elements = rootDocument.querySelectorAll(selector);
 
   return Array.from(elements);
 };
