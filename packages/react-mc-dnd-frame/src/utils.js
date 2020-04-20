@@ -42,7 +42,7 @@ export const getLinkStyleHTML = (rootDocument = document) => {
         const { cssText = '' } = cssRule;
 
         return `${curr} ${cssText}`;
-      }, res);
+      }, '');
 
       return `${res}<style>${css}</style>`;
     } catch (e) {
