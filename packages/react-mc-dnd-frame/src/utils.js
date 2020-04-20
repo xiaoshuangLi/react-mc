@@ -44,7 +44,7 @@ export const getLinkStyleHTML = (rootDocument = document) => {
         return `${curr} ${cssText}`;
       }, res);
 
-      return `<style>${css}</style>`;
+      return `${res}<style>${css}</style>`;
     } catch (e) {
       const { href } = styleSheet;
       const linkHTML = `
