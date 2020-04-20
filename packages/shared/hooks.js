@@ -4,6 +4,7 @@ import {
   useCallback,
 } from 'react';
 import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 
 export const useEventCallback = (fn) => {
   const ref = useRef(fn);
@@ -31,4 +32,10 @@ export const useThrottleCallback = (callback, ...args) => {
   const fn = useEventCallback(callback);
 
   return useCallback(throttle(fn, ...args), [fn]);
+};
+
+export const useDebounceCallback = (callback, ...args) => {
+  const fn = useEventCallback(callback);
+
+  return useCallback(debounce(fn, ...args), [fn]);
 };

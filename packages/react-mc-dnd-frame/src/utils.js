@@ -1,12 +1,33 @@
+export const getElements = (rootDocument = document) => (selector = '') => {
+  const elements = document.querySelectorAll(selector);
+
+  return Array.from(elements);
+};
+
+export const getUsefulElements = (rootDocument = document) => (selector = '') => {
+  const elements = getElements(rootDocument)(selector);
+
+  const ignoredSelector = selector
+    .split(',')
+    .map((text = '') => `[data-frame-ignore] ${text}`)
+    .join(',');
+  const ignoredElements = getElements(rootDocument)(ignoredSelector);
+
+  return elements.filter((element) => {
+    return !ignoredElements.includes(element);
+  });
+};
+
+export const getStyledElments = (rootDocument = document) => {
+  return getUsefulElements(rootDocument)('style,link,svg');
+};
+
 export const getHTML = (rootDocument = document) => (selector = '') => {
-  const eles = rootDocument.querySelectorAll(selector);
-  let html = '';
+  const elements = getUsefulElements(rootDocument)(selector);
 
-  for (let v = 0; v < eles.length; v += 1) {
-    html += eles[v].outerHTML;
-  }
-
-  return html;
+  return elements.reduce((res, element) => {
+    return `${res}${element.outerHTML}`;
+  }, '');
 };
 
 export const getLinkStyleHTML = (rootDocument = document) => {
@@ -17,11 +38,13 @@ export const getLinkStyleHTML = (rootDocument = document) => {
       const { cssRules: baseCssRules = [] } = styleSheet;
       const cssRules = Array.from(baseCssRules);
 
-      return cssRules.reduce((curr = '', cssRule = {}) => {
+      const css = cssRules.reduce((curr = '', cssRule = {}) => {
         const { cssText = '' } = cssRule;
 
-        return `${curr} <style>${cssText}</style>`;
+        return `${curr} ${cssText}`;
       }, res);
+
+      return `<style>${css}</style>`;
     } catch (e) {
       const { href } = styleSheet;
       const linkHTML = `

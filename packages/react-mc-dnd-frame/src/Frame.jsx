@@ -8,9 +8,14 @@ import React, {
 import { DndContext } from 'react-dnd';
 import FrameComponent, { FrameContext } from 'react-frame-component';
 
-import { useThrottleCallback } from 'shared/hooks';
+import { isSame } from 'shared/array';
+import { useDebounceCallback } from 'shared/hooks';
 
-import { getStyleHTML, getSvgHTML } from './utils';
+import {
+  getStyledElments,
+  getStyleHTML,
+  getSvgHTML,
+} from './utils';
 
 const invisibleStyle = {
   opacity: 0,
@@ -36,12 +41,14 @@ const FrameContent = (props = {}) => {
   } = useContext(FrameContext);
 
   const ref = useRef();
+  const elementsRef = useRef([]);
 
   const styleNode = useMemo(() => {
-    const content = getStyleAndSVG();
-    const dangerouslySetInnerHTML = {
-      __html: content,
-    };
+    const html = getStyleAndSVG() || '';
+    const elements = getStyledElments() || [];
+    const dangerouslySetInnerHTML = { __html: html };
+
+    elementsRef.current = elements;
 
     return (
       <div
@@ -52,22 +59,26 @@ const FrameContent = (props = {}) => {
     );
   }, []);
 
-  const callback = useThrottleCallback(() => {
+  const callback = useDebounceCallback(() => {
     const { current } = ref;
+    const { current: prevElements = [] } = elementsRef;
 
     if (!current) {
       return;
     }
 
-    const { innerHTML } = current;
-    const content = getStyleAndSVG();
+    const nextElements = getStyledElments() || [];
+    const same = isSame(prevElements, nextElements);
 
-    if (innerHTML === content) {
+    if (same) {
       return;
     }
 
+    const content = getStyleAndSVG() || '';
+
     current.innerHTML = content;
-  }, 100);
+    elementsRef.current = nextElements;
+  }, 300, { maxWait: 0, leading: true, trailing: true });
 
   useEffect(() => {
     if (contextDocument === document) {
@@ -83,6 +94,7 @@ const FrameContent = (props = {}) => {
 
     observer.observe(document.head, config);
     observer.observe(document.body, config);
+    callback();
 
     return () => observer.disconnect();
   }, [callback, contextDocument]);
