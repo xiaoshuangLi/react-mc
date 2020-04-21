@@ -48,7 +48,6 @@ const useRender = (props = {}) => {
     () => [propsValue, propsOnChange],
   );
 
-
   return useEventCallback((ComponentClass, component = {}) => (renderProps = {}, ref) => {
     const propsSchema = getComponentPropsSchema(component) || {};
     const { properties = {} } = propsSchema;
@@ -80,8 +79,8 @@ const useRender = (props = {}) => {
           partProps,
         );
 
-        listener && listener(...args);
         setValue && setValue(nextValue);
+        listener && listener(...args);
       };
 
       return { ...res, [key]: runner };
