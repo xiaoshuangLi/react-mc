@@ -202,7 +202,7 @@ const App = React.forwardRef((props = {}, ref) => {
         <ReactMCRunner
           value={value}
           options={options}
-          onChange={setValue}
+          setValue={setValue}
         />
       </div>
     );

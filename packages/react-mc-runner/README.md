@@ -28,7 +28,7 @@ const App = (props = {}) => {
   return (
     <ReactMCRunner
       value={value}
-      onChange={setValue}
+      setValue={setValue}
     />
   );
 };
@@ -42,9 +42,32 @@ The ```value``` you can render.
 
 [Detail for value](https://github.com/xiaoshuangLi/react-mc#concept);
 
-## props.onChange: func
+## props.setValue: func
 
-Trigger it when ```value``` was changed.
+Trigger it when ```value``` was changed.The argument is a function which return next ```value```;
+
+```jsx
+const App = (props = {}) => {
+  const [value = {}, setValue] = useState({});
+
+  // Example: deal with setValue
+  const setValueForRunner = (changer) => {
+    const nextValue = changer(value);
+
+    setValue(nextValue);
+  };
+
+  // Or something native
+  const setValueForRunner = setValue;
+
+  return (
+    <ReactMCRunner
+      value={value}
+      setValue={setValueForRunner}
+    />
+  );
+};
+```
 
 ## props.options: object
 

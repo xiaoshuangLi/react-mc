@@ -11,7 +11,7 @@ const Runner = React.forwardRef((props = {}, ref) => {
   const {
     value,
     options: propsOptions,
-    onChange,
+    setValue,
     ...others
   } = props;
 
@@ -37,7 +37,7 @@ Runner.defaultProps = {
     componentMap: {},
     relationMap: {},
   },
-  onChange: undefined,
+  setValue: undefined,
 };
 
 export default memo(Runner);

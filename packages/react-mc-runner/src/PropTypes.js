@@ -18,5 +18,5 @@ export default {
     componentMap: PropTypes.objectOf(componentType),
     relationMap: PropTypes.object,
   }),
-  onChange: PropTypes.func,
+  setValue: PropTypes.func,
 };

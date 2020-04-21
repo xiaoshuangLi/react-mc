@@ -40,13 +40,8 @@ const useRender = (props = {}) => {
   } = options;
 
   const {
-    value: propsValue,
-    onChange: propsOnChange,
+    setValue,
   } = props;
-
-  const usingValue = useEventCallback(
-    () => [propsValue, propsOnChange],
-  );
 
   return useEventCallback((ComponentClass, component = {}) => (renderProps = {}, ref) => {
     const propsSchema = getComponentPropsSchema(component) || {};
@@ -67,19 +62,17 @@ const useRender = (props = {}) => {
 
       const listener = renderProps[key];
       const runner = (...args) => {
-        const [value, setValue] = usingValue();
-
         const partProps = params.reduce((curr = {}, param, index) => {
           curr[param] = getFromEvent(args[index]);
           return curr;
         }, {});
 
-        const nextValue = mergeComponentProps(value)(
+        const changer = (value) => mergeComponentProps(value)(
           componentId,
           partProps,
         );
 
-        setValue && setValue(nextValue);
+        setValue && setValue(changer);
         listener && listener(...args);
       };
 
