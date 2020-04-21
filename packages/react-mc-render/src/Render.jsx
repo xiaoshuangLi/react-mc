@@ -105,17 +105,31 @@ const Render = (props = {}) => {
     rootComponentIds = [],
   } = value;
 
-  const callbackRef = useRef({});
+  const listenersRef = useRef({});
   const denpendenciesRef = useRef({});
   const options = useOptions(props);
 
   const { getComponentRenderDependencies } = options;
 
   const subscribe = useEventCallback((componentId, listener) => {
-    const { current = {} } = callbackRef;
-    current[componentId] = listener;
+    const { current = {} } = listenersRef;
+    const { [componentId]: listeners = [] } = current;
 
-    return () => delete current[componentId];
+    current[componentId] = listeners.concat(listener);
+
+    return () => {
+      const { [componentId]: prevListeners = [] } = current;
+
+      const nextListeners = prevListeners.filter(
+        (prevListener) => prevListener !== listener,
+      );
+
+      if (nextListeners.length) {
+        current[componentId] = nextListeners;
+      } else {
+        delete current[componentId];
+      }
+    };
   });
 
   const usingContext = useEventCallback(() => props);
@@ -128,7 +142,7 @@ const Render = (props = {}) => {
     return [relation, component, ...rest];
   });
 
-  const { current: callbackMap = {} } = callbackRef;
+  const { current: listenersMap = {} } = listenersRef;
   const { current: denpendenciesMap = {} } = denpendenciesRef;
 
   traverse(value, (componentId) => {
@@ -143,10 +157,13 @@ const Render = (props = {}) => {
       return;
     }
 
-    const callback = callbackMap[componentId];
+    const listeners = listenersMap[componentId] || [];
+    const shouldRender = prevDenpendencies !== undefined && listeners.length;
 
     denpendenciesMap[componentId] = nextDenpendencies;
-    prevDenpendencies !== undefined && callback && callback();
+    shouldRender && listeners.forEach(
+      (listener) => listener && listener(),
+    );
   });
 
   useEffect(() => {
