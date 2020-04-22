@@ -31,28 +31,33 @@ export const getHTML = (rootDocument = document) => (selector = '') => {
 };
 
 export const getLinkStyleHTML = (rootDocument = document) => {
+  const linkElements = getUsefulElements(rootDocument)('link[rel="stylesheet"]');
   const styleSheets = Array.from(rootDocument.styleSheets);
 
-  return styleSheets.reduce((res = '', styleSheet = {}) => {
+  return linkElements.reduce((res = '', linkElement = {}) => {
+    const { href, outerHTML } = linkElement;
+
+    const styleSheet = styleSheets.find(
+      (item = {}) => item.href === href,
+    );
+
+    if (!styleSheet) {
+      return `${res}${outerHTML}`;
+    }
+
     try {
       const { cssRules: baseCssRules = [] } = styleSheet;
       const cssRules = Array.from(baseCssRules);
 
-      const css = cssRules.reduce((curr = '', cssRule = {}) => {
+      const styleHTML = cssRules.reduce((curr = '', cssRule = {}) => {
         const { cssText = '' } = cssRule;
 
         return `${curr} ${cssText}`;
       }, '');
 
-      return `${res}<style>${css}</style>`;
+      return `${res}<style>${styleHTML}</style>`;
     } catch (e) {
-      const { href } = styleSheet;
-      const linkHTML = `
-        <link rel="stylesheet" type="text/css" href="${href}">
-      `;
-
-      console.error(e);
-      return `${res}${linkHTML}`;
+      return `${res}${outerHTML}`;
     }
   }, '');
 };
