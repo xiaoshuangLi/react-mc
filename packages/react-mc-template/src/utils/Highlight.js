@@ -228,7 +228,9 @@ function Highlight(root = document.documentElement) {
       const borderRadius = computedStyle.getPropertyValue('border-radius');
       const num = Number(borderRadius.replace(/[a-zA-Z]/g, ''));
 
-      if (num > 2) {
+      if (borderRadius && Number.isNaN(num)) {
+        style['border-radius'] = borderRadius;
+      } else if (num > 2) {
         style['border-radius'] = borderRadius;
       }
 
