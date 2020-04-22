@@ -40,8 +40,12 @@ const useRender = (props = {}) => {
   } = options;
 
   const {
-    setValue,
+    setValue: propsSetValue,
   } = props;
+
+  const setValue = useEventCallback((...args) => {
+    propsSetValue && propsSetValue(...args);
+  });
 
   return useEventCallback((ComponentClass, component = {}) => (renderProps = {}, ref) => {
     const propsSchema = getComponentPropsSchema(component) || {};
