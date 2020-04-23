@@ -208,10 +208,12 @@ const renderStyle = (root = document.documentElement) => (dom, style = {}) => {
 };
 
 function Highlight(root = document.documentElement) {
+  const { ownerDocument } = root;
+
   let stop;
   let shinyDom;
   let maskStyle = {};
-  let mask = document.createElement('div');
+  let mask = ownerDocument.createElement('div');
 
   mask.classList.add('highlight-mask-render');
 
@@ -253,8 +255,6 @@ function Highlight(root = document.documentElement) {
     this.stop();
 
     parentElements.forEach((parentElement = {}) => {
-      const { ownerDocument } = parentElement;
-
       const element = isDocumentElement(parentElement)
         ? ownerDocument
         : parentElement;
@@ -264,8 +264,6 @@ function Highlight(root = document.documentElement) {
 
     stop = () => {
       parentElements.forEach((parentElement = {}) => {
-        const { ownerDocument } = parentElement;
-
         const element = isDocumentElement(parentElement)
           ? ownerDocument
           : parentElement;
