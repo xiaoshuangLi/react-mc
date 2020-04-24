@@ -1,5 +1,7 @@
 import throttle from 'lodash/throttle';
 
+import HighlightRadius from './HighlightRadius';
+
 const loop = (fn, time = 100) => {
   if (!fn) {
     return () => {};
@@ -181,12 +183,6 @@ const calcRect = (root = document.documentElement) => (dom) => {
   return fn(dom);
 };
 
-const calcStyle = (root = document.documentElement) => (dom) => {
-  const rect = calcRect(root)(dom) || {};
-
-  return rectToStyle(rect);
-};
-
 const renderStyle = (root = document.documentElement) => (dom, style = {}) => {
   if (!root.contains(dom)) {
     const parent = isDocumentElement(root)
@@ -225,15 +221,33 @@ function Highlight(root = document.documentElement) {
     }
 
     const fn = () => {
-      const style = calcStyle(root)(dom) || {};
+      const rect = calcRect(root)(dom) || {};
+      const style = rectToStyle(rect) || {};
+
+      const boundingRect = dom.getBoundingClientRect();
       const computedStyle = window.getComputedStyle(dom);
       const borderRadius = computedStyle.getPropertyValue('border-radius');
+      const transform = computedStyle.getPropertyValue('transform');
       const num = Number(borderRadius.replace(/[a-zA-Z]/g, ''));
 
-      if (borderRadius && Number.isNaN(num)) {
-        style['border-radius'] = borderRadius;
-      } else if (num > 2) {
-        style['border-radius'] = borderRadius;
+      const { width, height } = rect;
+      const { width: boundingWidth, height: boundingHeight } = boundingRect;
+
+      if (transform && transform !== 'none') {
+        style['border-radius'] = '2px';
+      } else if (boundingWidth === width && boundingHeight === height) {
+        if (Number.isNaN(num) || num > 2) {
+          style['border-radius'] = borderRadius;
+        } else {
+          style['border-radius'] = '2px';
+        }
+      } else {
+        delete style['border-radius'];
+
+        const radius = new HighlightRadius(dom, rect);
+        const borderRadiusStyle = radius.getStyle() || {};
+
+        Object.assign(style, borderRadiusStyle);
       }
 
       Object.assign(style, maskStyle);
