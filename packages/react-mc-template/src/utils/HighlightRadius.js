@@ -60,6 +60,39 @@ const convertCssRadius = (boundingRect = {}) => (cssRadius = '') => {
     });
 };
 
+const toCssRadius = (a = 0, b = 0) => {
+  return a === b
+    ? `${a}px`
+    : `${a}px ${b}px`;
+};
+
+const createViewRect = (...points) => {
+  points = points.filter(
+    (point) => !point.outside,
+  );
+
+  const xs = points.map(
+    (point = {}) => point.x,
+  );
+
+  const ys = points.map(
+    (point = {}) => point.y,
+  );
+
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+
+  return {
+    top: -maxY,
+    left: minX,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+};
+
 class HighlightRadius {
   constructor(dom, rect) {
     const computedStyle = window.getComputedStyle(dom);
@@ -650,33 +683,6 @@ class HighlightRadius {
     };
   };
 
-  createRect = (...points) => {
-    points = points.filter(
-      (point) => !point.outside,
-    );
-
-    const xs = points.map(
-      (point = {}) => point.x,
-    );
-
-    const ys = points.map(
-      (point = {}) => point.y,
-    );
-
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
-
-    return {
-      top: -maxY,
-      left: minX,
-      width: maxX - minX,
-      height: maxY - minY,
-    };
-  };
-
   getStyle() {
     let topPoints = this.findTopPoints() || [];
     let rightPoints = this.findRightPoints() || [];
@@ -688,7 +694,7 @@ class HighlightRadius {
     bottomPoints = bottomPoints.map(this.convertPoint);
     leftPoints = leftPoints.map(this.convertPoint);
 
-    const viewRect = this.createRect(
+    const viewRect = createViewRect(
       ...topPoints,
       ...rightPoints,
       ...bottomPoints,
@@ -718,10 +724,10 @@ class HighlightRadius {
       width: `${viewWidth}px`,
       height: `${viewHeight}px`,
       transform: `translate(${viewLeft}px, ${viewTop}px)`,
-      'border-top-left-radius': `${borderTopLeftRadiusA}px ${borderTopLeftRadiusB}px`,
-      'border-top-right-radius': `${borderTopRightRadiusA}px ${borderTopRightRadiusB}px`,
-      'border-bottom-right-radius': `${borderBottomRightRadiusA}px ${borderBottomRightRadiusB}px`,
-      'border-bottom-left-radius': `${borderBottomLeftRadiusA}px ${borderBottomLeftRadiusB}px`,
+      'border-top-left-radius': toCssRadius(borderTopLeftRadiusA, borderTopLeftRadiusB),
+      'border-top-right-radius': toCssRadius(borderTopRightRadiusA, borderTopRightRadiusB),
+      'border-bottom-right-radius': toCssRadius(borderBottomRightRadiusA, borderBottomRightRadiusB),
+      'border-bottom-left-radius': toCssRadius(borderBottomLeftRadiusA, borderBottomLeftRadiusB),
     };
   }
 }

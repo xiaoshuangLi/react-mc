@@ -228,7 +228,9 @@ function Highlight(root = document.documentElement) {
       const computedStyle = window.getComputedStyle(dom);
       const borderRadius = computedStyle.getPropertyValue('border-radius');
       const transform = computedStyle.getPropertyValue('transform');
+
       const num = Number(borderRadius.replace(/[a-zA-Z]/g, ''));
+      const useless = Number.isNaN(num);
 
       const { width, height } = rect;
       const { width: boundingWidth, height: boundingHeight } = boundingRect;
@@ -236,18 +238,20 @@ function Highlight(root = document.documentElement) {
       if (transform && transform !== 'none') {
         style['border-radius'] = '2px';
       } else if (boundingWidth === width && boundingHeight === height) {
-        if (Number.isNaN(num) || num > 2) {
+        if (useless || num > 2) {
           style['border-radius'] = borderRadius;
         } else {
           style['border-radius'] = '2px';
         }
-      } else {
+      } else if (useless || num > 2) {
         delete style['border-radius'];
 
         const radius = new HighlightRadius(dom, rect);
         const borderRadiusStyle = radius.getStyle() || {};
 
         Object.assign(style, borderRadiusStyle);
+      } else {
+        style['border-radius'] = '2px';
       }
 
       Object.assign(style, maskStyle);
