@@ -10,8 +10,7 @@ $halfSize: $size / 2;
   cursor: pointer;
   pointer-events: all;
 
-  *,
-  ~ * {
+  * {
     &:not([data-dnd-dummy='true']) {
       pointer-events: none;
     }
