@@ -28,6 +28,7 @@ const Template = React.forwardRef((props = {}, ref) => {
     window: propsWindow = window,
     onChange,
     onSelectComponent,
+    onKeyDownCapture,
     ...others
   } = props;
 

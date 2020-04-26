@@ -77,7 +77,7 @@ const usePollingUpdate = (runEffect, getDependencies, time = 0) => {
   }, [getDependencies, setDenpencies, time]);
 };
 
-export const ConfigContext = createContext(defaultContext);
+export const ConfigContext = createContext({});
 
 const useConfig = () => {
   const context = useContext(ConfigContext);
@@ -90,8 +90,8 @@ const useConfig = () => {
 };
 
 const useListener = () => {
-  const context = useConfig();
-  const { dummy } = context;
+  const config = useConfig();
+  const { dummy } = config;
 
   return useEventCallback((dom, ...rest) => {
     if (!dom) {
@@ -100,7 +100,7 @@ const useListener = () => {
 
     dom[KEY] = true;
 
-    const entries = Object.entries(context);
+    const entries = Object.entries(config);
     const isUseful = isUsefulEntry(defaultContext);
 
     const list = entries

@@ -1,11 +1,13 @@
 import React, {
   useMemo,
   useEffect,
+  useContext,
   forwardRef,
 } from 'react';
 import { findDOMNode } from 'react-dom';
 
 import {
+  ConfigContext,
   useContainer,
   useDragAndHover,
   useDragAndDrop,
@@ -272,6 +274,9 @@ export const useDndValue = (props = {}) => {
   } = props;
 
   const core = useCore(props);
+  const config = useContext(ConfigContext);
+  const denpencies = Object.values(config);
+
   const highlight = useMemo(() => {
     return propsHighlight === undefined
       ? new Highlight(propsDocument.documentElement)
@@ -362,7 +367,8 @@ export const useDndValue = (props = {}) => {
     onDragHover,
     onRender,
     onClick,
-  }), [isInChildren, onDragEnd, onDragHover, onClick, onRender]);
+    ...config,
+  }), [isInChildren, onDragEnd, onDragHover, onClick, onRender, ...denpencies]);
 };
 
 export const useTriggers = (props = {}, ref) => {
