@@ -11,7 +11,14 @@ import {
   useDrop as useOriginDrop,
 } from 'react-dnd';
 
+import { isSame } from 'shared/array';
 import { useEventCallback } from 'shared/hooks';
+
+import {
+  isBetween,
+  isUsefulEntry,
+  getPathFromEvent,
+} from './utils';
 
 const defaultContext = {
   dummy: false,
@@ -24,18 +31,9 @@ const defaultContext = {
 
 const ITEM = 'item';
 const CONTAINER = 'container';
+const KEY = '__ReactMCDNDListenerDOM';
 
 const accept = [ITEM, CONTAINER];
-const isBetween = (num) => (min, max) => max >= num && min <= num;
-const isSameArray = (a = [], b = []) => {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  return a.every(
-    (item, index) => b[index] === item,
-  );
-};
 
 const useDOM = (ref = {}) => {
   const [dom, setDom] = useState(null);
@@ -65,7 +63,7 @@ const usePollingUpdate = (runEffect, getDependencies, time = 0) => {
 
     const loop = () => {
       const nextDenpencies = getDependencies();
-      const same = isSameArray(prevDenpendices, nextDenpencies);
+      const same = isSame(prevDenpendices, nextDenpencies);
 
       !same && setDenpencies(nextDenpencies);
 
@@ -91,25 +89,6 @@ const useConfig = () => {
   }, [context]);
 };
 
-const isUsefulEntry = (entry = []) => {
-  const [key, value] = entry;
-  const good = /^on[A-Z]/.test(key);
-
-  if (defaultContext[key] !== undefined) {
-    return false;
-  }
-
-  if (!good) {
-    return false;
-  }
-
-  if (typeof value !== 'function') {
-    return false;
-  }
-
-  return true;
-};
-
 const useListener = () => {
   const context = useConfig();
   const { dummy } = context;
@@ -119,9 +98,13 @@ const useListener = () => {
       return;
     }
 
+    dom[KEY] = true;
+
     const entries = Object.entries(context);
+    const isUseful = isUsefulEntry(defaultContext);
+
     const list = entries
-      .filter(isUsefulEntry)
+      .filter(isUseful)
       .map((entry = []) => {
         const [key, value] = entry;
 
@@ -130,10 +113,13 @@ const useListener = () => {
           .toLowerCase();
 
         const listener = (e) => {
-          dummy && e.preventDefault();
-          e.stopPropagation();
+          const path = getPathFromEvent(e) || [];
+          const triggerTarget = path.find(
+            (element) => element && element[KEY],
+          );
 
-          value(dom, ...rest);
+          dummy && e.preventDefault();
+          triggerTarget === dom && value(dom, ...rest);
         };
 
         return [trigger, listener];
