@@ -67,10 +67,6 @@ const toCssRadius = (a = 0, b = 0) => {
 };
 
 const createViewRect = (...points) => {
-  points = points.filter(
-    (point) => !point.outside,
-  );
-
   const xs = points.map(
     (point = {}) => point.x,
   );
@@ -172,19 +168,32 @@ class HighlightRadius {
     const {
       top: boundingTop,
       left: boundingLeft,
+      height: boundingHeight,
     } = this.boundingRect;
 
     const [radiusTopLeftA, radiusTopLeftB] = this.borderTopLeftRadius;
+    const [radiusBottomLeftA, radiusBottomLeftB] = this.borderBottomLeftRadius;
 
     const borderTopLineY = -top < -boundingTop
       ? -top
       : -boundingTop;
 
+    if (borderTopLineY >= -boundingTop - boundingHeight && borderTopLineY < -boundingTop - boundingHeight + radiusBottomLeftB) {
+      const origin = {
+        x: boundingLeft + radiusBottomLeftA,
+        y: -boundingTop - boundingHeight + radiusBottomLeftB,
+      };
+
+      return {
+        x: this.findPointX(origin, this.borderBottomLeftRadius)(borderTopLineY)[0],
+        y: borderTopLineY,
+      };
+    }
+
     if (borderTopLineY <= -boundingTop - radiusTopLeftB) {
       return {
         x: boundingLeft,
         y: borderTopLineY,
-        outside: true,
       };
     }
 
@@ -208,19 +217,32 @@ class HighlightRadius {
       top: boundingTop,
       left: boundingLeft,
       width: boundingWidth,
+      height: boundingHeight,
     } = this.boundingRect;
 
     const [radiusTopRightA, radiusTopRightB] = this.borderTopRightRadius;
+    const [radiusBottomRightA, radiusBottomRightB] = this.borderBottomRightRadius;
 
     const borderTopLineY = -top < -boundingTop
       ? -top
       : -boundingTop;
 
+    if (borderTopLineY >= -boundingTop - boundingHeight && borderTopLineY < -boundingTop - boundingHeight + radiusBottomRightB) {
+      const origin = {
+        x: boundingLeft + boundingWidth - radiusBottomRightA,
+        y: -boundingTop - boundingHeight + radiusBottomRightB,
+      };
+
+      return {
+        x: this.findPointX(origin, this.borderBottomRightRadius)(borderTopLineY)[1],
+        y: borderTopLineY,
+      };
+    }
+
     if (borderTopLineY <= -boundingTop - radiusTopRightB) {
       return {
         x: boundingLeft + boundingWidth,
         y: borderTopLineY,
-        outside: true,
       };
     }
 
@@ -247,17 +269,29 @@ class HighlightRadius {
       width: boundingWidth,
     } = this.boundingRect;
 
+    const [radiusTopLeftA, radiusTopLeftB] = this.borderTopLeftRadius;
     const [radiusTopRightA, radiusTopRightB] = this.borderTopRightRadius;
 
     const borderRightLineX = left + width < boundingLeft + boundingWidth
       ? left + width
       : boundingLeft + boundingWidth;
 
+    if (borderRightLineX >= boundingLeft && borderRightLineX <= boundingLeft + radiusTopLeftA) {
+      const origin = {
+        x: boundingLeft + radiusTopLeftA,
+        y: -boundingTop - radiusTopLeftB,
+      };
+
+      return {
+        x: borderRightLineX,
+        y: this.findPointY(origin, this.borderTopLeftRadius)(borderRightLineX)[1],
+      };
+    }
+
     if (borderRightLineX <= boundingLeft + boundingWidth - radiusTopRightB) {
       return {
         x: borderRightLineX,
         y: -boundingTop,
-        outside: true,
       };
     }
 
@@ -285,17 +319,29 @@ class HighlightRadius {
       height: boundingHeight,
     } = this.boundingRect;
 
+    const [radiusBottomLeftA, radiusBottomLeftB] = this.borderBottomLeftRadius;
     const [radiusBottomRightA, radiusBottomRightB] = this.borderBottomRightRadius;
 
     const borderRightLineX = left + width < boundingLeft + boundingWidth
       ? left + width
       : boundingLeft + boundingWidth;
 
+    if (borderRightLineX >= boundingLeft && borderRightLineX <= boundingLeft + radiusBottomLeftA) {
+      const origin = {
+        x: boundingLeft + radiusBottomLeftA,
+        y: -boundingTop - boundingHeight + radiusBottomLeftB,
+      };
+
+      return {
+        x: borderRightLineX,
+        y: this.findPointY(origin, this.borderBottomLeftRadius)(borderRightLineX)[0],
+      };
+    }
+
     if (borderRightLineX <= boundingLeft + boundingWidth - radiusBottomRightB) {
       return {
         x: borderRightLineX,
         y: -boundingTop - boundingHeight,
-        outside: true,
       };
     }
 
@@ -322,17 +368,29 @@ class HighlightRadius {
       height: boundingHeight,
     } = this.boundingRect;
 
+    const [radiusTopLeftA, radiusTopLeftB] = this.borderTopLeftRadius;
     const [radiusBottomLeftA, radiusBottomLeftB] = this.borderBottomLeftRadius;
 
     const borderBottomLineY = -top - height > -boundingTop - boundingHeight
       ? -top - height
       : -boundingTop - boundingHeight;
 
+    if (borderBottomLineY <= -boundingTop && borderBottomLineY >= -boundingTop - radiusTopLeftB) {
+      const origin = {
+        x: boundingLeft + radiusTopLeftA,
+        y: -boundingTop - radiusTopLeftB,
+      };
+
+      return {
+        x: this.findPointX(origin, this.borderTopLeftRadius)(borderBottomLineY)[0],
+        y: borderBottomLineY,
+      };
+    }
+
     if (borderBottomLineY >= -boundingTop - boundingHeight + radiusBottomLeftB) {
       return {
         x: boundingLeft,
         y: borderBottomLineY,
-        outside: true,
       };
     }
 
@@ -360,17 +418,29 @@ class HighlightRadius {
       height: boundingHeight,
     } = this.boundingRect;
 
+    const [radiusTopRightA, radiusTopRightB] = this.borderTopRightRadius;
     const [radiusBottomRightA, radiusBottomRightB] = this.borderBottomRightRadius;
 
     const borderBottomLineY = -top - height > -boundingTop - boundingHeight
       ? -top - height
       : -boundingTop - boundingHeight;
 
+    if (borderBottomLineY <= -boundingTop && borderBottomLineY >= -boundingTop - radiusTopRightB) {
+      const origin = {
+        x: boundingLeft + boundingWidth - radiusTopRightA,
+        y: -boundingTop - radiusTopRightB,
+      };
+
+      return {
+        x: this.findPointX(origin, this.borderTopRightRadius)(borderBottomLineY)[1],
+        y: borderBottomLineY,
+      };
+    }
+
     if (borderBottomLineY >= -boundingTop - boundingHeight + radiusBottomRightB) {
       return {
         x: boundingLeft + boundingWidth,
         y: borderBottomLineY,
-        outside: true,
       };
     }
 
@@ -393,19 +463,32 @@ class HighlightRadius {
     const {
       top: boundingTop,
       left: boundingLeft,
+      width: boundingWidth,
     } = this.boundingRect;
 
     const [radiusTopLeftA, radiusTopLeftB] = this.borderTopLeftRadius;
+    const [radiusTopRightA, radiusTopRightB] = this.borderTopRightRadius;
 
     const borderLeftLineX = left < boundingLeft
       ? boundingLeft
       : left;
 
+    if (borderLeftLineX >= boundingLeft + boundingWidth - radiusTopRightA && borderLeftLineX <= boundingLeft + boundingWidth) {
+      const origin = {
+        x: boundingLeft + boundingWidth - radiusTopRightA,
+        y: -boundingTop - radiusTopRightB,
+      };
+
+      return {
+        x: borderLeftLineX,
+        y: this.findPointY(origin, this.borderTopRightRadius)(borderLeftLineX)[1],
+      };
+    }
+
     if (borderLeftLineX >= boundingLeft + radiusTopLeftA) {
       return {
         x: borderLeftLineX,
         y: -boundingTop,
-        outside: true,
       };
     }
 
@@ -428,20 +511,33 @@ class HighlightRadius {
     const {
       top: boundingTop,
       left: boundingLeft,
+      width: boundingWidth,
       height: boundingHeight,
     } = this.boundingRect;
 
     const [radiusBottomLeftA, radiusBottomLeftB] = this.borderBottomLeftRadius;
+    const [radiusBottomRightA, radiusBottomRightB] = this.borderBottomRightRadius;
 
     const borderLeftLineX = left < boundingLeft
       ? boundingLeft
       : left;
 
+    if (borderLeftLineX >= boundingLeft + boundingWidth - radiusBottomRightA && borderLeftLineX <= boundingLeft + boundingWidth) {
+      const origin = {
+        x: boundingLeft + boundingWidth - radiusBottomRightA,
+        y: -boundingTop - boundingHeight + radiusBottomRightB,
+      };
+
+      return {
+        x: borderLeftLineX,
+        y: this.findPointY(origin, this.borderBottomRightRadius)(borderLeftLineX)[0],
+      };
+    }
+
     if (borderLeftLineX >= boundingLeft + radiusBottomLeftA) {
       return {
         x: borderLeftLineX,
         y: -boundingTop - boundingHeight,
-        outside: true,
       };
     }
 
