@@ -177,7 +177,9 @@ Return the boolean means the ```component``` is root.If it's root, cannot been m
 Return the ```ComponentClass``` to render the ```component```.And automatically used ```react-mc-dnd``` HOC.If you don't need this, use origin ```ComponentClass``` in ```options.render```.
 
 We need ```ref``` for ```ComponentClass``` to get ```dom```.!!!
+
 We need ```ref``` for ```ComponentClass``` to get ```dom```.!!!
+
 We need ```ref``` for ```ComponentClass``` to get ```dom```.!!!
 
 ```jsx
