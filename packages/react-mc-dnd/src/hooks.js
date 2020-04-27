@@ -119,6 +119,7 @@ const useListener = () => {
           );
 
           dummy && e.preventDefault();
+          dummy && e.stopPropagation();
           triggerTarget === dom && value(dom, ...rest);
         };
 
