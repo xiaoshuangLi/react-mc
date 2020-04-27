@@ -322,6 +322,7 @@ export const useDndValue = (props = {}) => {
     if (!dom) {
       return;
     }
+
     const { ownerDocument } = dom;
     const relatedParentIds = core.findRelatedParentIds(propsValue)(propsSelectedComponent) || [];
     const contained = relatedParentIds[0] === componentId;
@@ -360,15 +361,19 @@ export const useDndValue = (props = {}) => {
     return () => clear && clear();
   }, [highlight]);
 
-  return useMemo(() => ({
-    dummy: true,
-    isInChildren,
-    onDragEnd,
-    onDragHover,
-    onRender,
-    onClick,
-    ...config,
-  }), [isInChildren, onDragEnd, onDragHover, onClick, onRender, ...denpencies]);
+  return useMemo(() => {
+    const { dummy = true, ...others } = config;
+
+    return {
+      ...others,
+      dummy,
+      isInChildren,
+      onDragEnd,
+      onDragHover,
+      onRender,
+      onClick,
+    };
+  }, [isInChildren, onDragEnd, onDragHover, onClick, onRender, ...denpencies]);
 };
 
 export const useTriggers = (props = {}, ref) => {
