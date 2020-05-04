@@ -16,6 +16,7 @@ const startOrEndWithList = [
   'react-mc-dnd-frame',
   'react-mc-render',
   'react-mc-template',
+  'react-mc-runner',
 ];
 
 module.exports = (...args) => {
