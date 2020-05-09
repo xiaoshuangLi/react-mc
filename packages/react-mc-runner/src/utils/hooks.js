@@ -10,6 +10,18 @@ const mergeComponentProps = (prevTemplate = {}) => (componentId, partProps = {})
   const { [componentId]: prevComponent = {} } = prevComponentMap;
   const { props: prevProps = {} } = prevComponent;
 
+  const entries = Object.entries(partProps);
+  const inclued = entries.every((entry = []) => {
+    const [key, nextValue] = entry;
+    const prevValue = prevProps[key];
+
+    return prevValue === nextValue;
+  });
+
+  if (inclued) {
+    return prevTemplate;
+  }
+
   const nextProps = { ...prevProps, ...partProps };
   const nextComponent = { ...prevComponent, props: nextProps };
   const nextComponentMap = { ...prevComponentMap, [componentId]: nextComponent };
