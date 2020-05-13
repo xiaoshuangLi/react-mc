@@ -325,7 +325,7 @@ export const useDndValue = (props = {}, ref) => {
       return;
     }
 
-    dom[key] = ref;
+    dom[KEY] = ref;
 
     const { ownerDocument } = dom;
     const relatedParentIds = core.findRelatedParentIds(propsValue)(propsSelectedComponent) || [];
@@ -472,7 +472,7 @@ export const useTriggers = (props = {}, ref) => {
     const node = findDOMNode(current);
     const hoveredElements = Array.from(propsDocument.querySelectorAll('*:hover'));
     const hovered = hoveredElements.some((element = {}) => {
-      return element === node || element[KEY] = ref;
+      return element === node || element[KEY] === ref;
     });
 
     if (!hovered) {
