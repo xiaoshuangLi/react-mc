@@ -44,7 +44,7 @@ const Template = React.forwardRef((props = {}, ref) => {
   useTriggers(props, ref);
 
   const options = useOptions(props);
-  const dndValue = useDndValue(props);
+  const dndValue = useDndValue(props, ref);
 
   return (
     <ConfigProvider value={dndValue}>

@@ -25,6 +25,8 @@ import Core from './Core';
 import Highlight from './Highlight';
 import defaultOptions from './options';
 
+const KEY = '__ReactMCTemplateRef';
+
 const getKey = memoize((...args) => args);
 
 const isSimilar = (prevTemplate = {}, nextTemplate = {}) => {
@@ -263,7 +265,7 @@ export const useOptions = (props = {}) => {
   );
 };
 
-export const useDndValue = (props = {}) => {
+export const useDndValue = (props = {}, ref) => {
   const {
     value: propsValue = {},
     selectedComponent: propsSelectedComponent = {},
@@ -322,6 +324,8 @@ export const useDndValue = (props = {}) => {
     if (!dom) {
       return;
     }
+
+    dom[key] = ref;
 
     const { ownerDocument } = dom;
     const relatedParentIds = core.findRelatedParentIds(propsValue)(propsSelectedComponent) || [];
@@ -467,7 +471,9 @@ export const useTriggers = (props = {}, ref) => {
 
     const node = findDOMNode(current);
     const hoveredElements = Array.from(propsDocument.querySelectorAll('*:hover'));
-    const hovered = hoveredElements.includes(node);
+    const hovered = hoveredElements.some((element = {}) => {
+      return element === node || element[KEY] = ref;
+    });
 
     if (!hovered) {
       return;
