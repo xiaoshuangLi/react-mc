@@ -36,12 +36,16 @@ const KEY = '__ReactMCDNDListenerDOM';
 const accept = [ITEM, CONTAINER];
 
 const useDOM = (ref = {}) => {
-  const [dom, setDom] = useState(null);
+  const [, setDom] = useState(null);
   const { current } = ref;
 
-  useEffect(() => {
-    setDom(findDOMNode(ref.current));
+  const dom = useMemo(() => {
+    return findDOMNode(ref.current);
   }, [ref, current]);
+
+  useEffect(() => {
+    setDom(dom);
+  }, [dom]);
 
   return dom;
 };
@@ -323,7 +327,7 @@ const createDndHooks = (type = ITEM) => {
       () => {
         dom && drag(drop(dom));
       },
-      () => [findDOMNode(ref.current), data, isDragging],
+      () => [findDOMNode(ref.current), data],
       100,
     );
 
