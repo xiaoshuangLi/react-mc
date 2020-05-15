@@ -25,7 +25,7 @@ import Core from './Core';
 import Highlight from './Highlight';
 import defaultOptions from './options';
 
-const KEY = '__ReactMCTemplateRef';
+const KEY = Symbol('ref');
 
 const getKey = memoize((...args) => args);
 

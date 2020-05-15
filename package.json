@@ -40,7 +40,7 @@
     "react-dnd-html5-backend": "^10.0.2",
     "react-docgen-props-schema": "0.0.2-alpha.3",
     "react-dom": "^16.13.1",
-    "react-frame-component": "^4.1.1",
+    "react-frame-component": "^4.1.2",
     "react-hot-loader": "^4.12.20",
     "react-scripts": "3.4.0",
     "sass": "^1.26.3",

@@ -31,7 +31,7 @@ const defaultContext = {
 
 const ITEM = 'item';
 const CONTAINER = 'container';
-const KEY = '__ReactMCDNDListenerDOM';
+const KEY = Symbol('listener');
 
 const accept = [ITEM, CONTAINER];
 
