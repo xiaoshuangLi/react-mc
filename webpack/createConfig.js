@@ -66,7 +66,7 @@ module.exports = (opts = {}) => {
                 '@babel/preset-react',
               ],
               plugins: [
-                'react-hot-loader/babel',
+                '@babel/plugin-transform-runtime',
                 '@babel/plugin-proposal-class-properties',
               ],
             },
