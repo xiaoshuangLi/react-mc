@@ -36,16 +36,17 @@ const KEY = Symbol('listener');
 const accept = [ITEM, CONTAINER];
 
 const useDOM = (ref = {}) => {
-  const [, setDom] = useState(null);
+  const [, setState] = useState(null);
   const { current } = ref;
 
   const dom = useMemo(() => {
     return findDOMNode(ref.current);
   }, [ref, current]);
 
+  // trigger refresh when ref changes
   useEffect(() => {
-    setDom(dom);
-  }, [dom]);
+    setState({});
+  }, [ref, current]);
 
   return dom;
 };
