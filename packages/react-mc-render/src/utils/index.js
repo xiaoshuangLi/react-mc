@@ -6,7 +6,7 @@ export const traverse = (value = {}, fn) => {
     rootComponentIds = [],
   } = value;
 
-  const loop = (componentIds = {}) => {
+  const loop = (componentIds = []) => {
     componentIds.forEach((componentId) => {
       const relation = relationMap[componentId] || {};
       const componentIdsGroup = findRelationComponentIdsGroup(relation) || [];
