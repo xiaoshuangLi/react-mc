@@ -30,7 +30,7 @@ const mergeComponentProps = (prevTemplate = {}) => (componentId, partProps = {})
   return { ...prevTemplate, componentMap: nextComponentMap };
 };
 
-// It's not a hook
+// It's not a react hook
 const usingCallback = (() => {
   let result;
   const returnResult = () => result;
