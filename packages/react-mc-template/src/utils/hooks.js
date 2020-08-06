@@ -115,14 +115,14 @@ const withDragAndDrop = memoize((ComponentClass) => forwardRef((props = {}, ref)
 const useMergedOptions = (props = {}) => {
   const { options = {} } = props;
 
-  const denpendencies = Object.values(options);
+  const dependencies = Object.values(options);
 
   return useMemo(
     () => ({
       ...defaultOptions,
       ...options,
     }),
-    denpendencies,
+    dependencies,
   );
 };
 

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import memoize from 'shared/memoize';
 import { getFromEvent } from 'shared/utils';
 import { useEventCallback } from 'shared/hooks';
 
@@ -29,17 +30,28 @@ const mergeComponentProps = (prevTemplate = {}) => (componentId, partProps = {})
   return { ...prevTemplate, componentMap: nextComponentMap };
 };
 
+// It's not a hook
+const usingCallback = (() => {
+  let result;
+  const returnResult = () => result;
+
+  return (fn, dependencies = []) => {
+    result = fn;
+    return memoize(returnResult)(...dependencies);
+  };
+})();
+
 const useMergedOptions = (props = {}) => {
   const { options = {} } = props;
 
-  const denpendencies = Object.values(options);
+  const dependencies = Object.values(options);
 
   return useMemo(
     () => ({
       ...defaultOptions,
       ...options,
     }),
-    denpendencies,
+    dependencies,
   );
 };
 
@@ -77,7 +89,8 @@ const useRender = (props = {}) => {
       }
 
       const listener = renderProps[key];
-      const runner = (...args) => {
+
+      const runner = usingCallback((...args) => {
         const partProps = params.reduce((curr = {}, param, index) => {
           curr[param] = getFromEvent(args[index]);
           return curr;
@@ -90,7 +103,7 @@ const useRender = (props = {}) => {
 
         setValue && setValue(changer);
         listener && listener(...args);
-      };
+      }, [componentId, params, listener, setValue]);
 
       return { ...res, [key]: runner };
     }, renderProps);

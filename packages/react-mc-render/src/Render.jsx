@@ -106,7 +106,7 @@ const Render = (props = {}) => {
   } = value;
 
   const listenersRef = useRef({});
-  const denpendenciesRef = useRef({});
+  const dependenciesRef = useRef({});
   const options = useOptions(props);
 
   const { getComponentRenderDependencies } = options;
@@ -134,7 +134,7 @@ const Render = (props = {}) => {
 
   const usingContext = useEventCallback(() => props);
 
-  const getDenpendencies = useEventCallback((componentId) => {
+  const getDependencies = useEventCallback((componentId) => {
     const relation = relationMap[componentId];
     const component = componentMap[componentId];
     const rest = getComponentRenderDependencies(component) || [];
@@ -143,24 +143,24 @@ const Render = (props = {}) => {
   });
 
   const { current: listenersMap = {} } = listenersRef;
-  const { current: denpendenciesMap = {} } = denpendenciesRef;
+  const { current: dependenciesMap = {} } = dependenciesRef;
 
   traverse(value, (componentId) => {
-    const prevDenpendencies = denpendenciesMap[componentId];
-    const nextDenpendencies = getDenpendencies(componentId) || [];
+    const prevDependencies = dependenciesMap[componentId];
+    const nextDependencies = getDependencies(componentId) || [];
 
-    const same = prevDenpendencies === undefined
+    const same = prevDependencies === undefined
       ? false
-      : isSame(prevDenpendencies, nextDenpendencies);
+      : isSame(prevDependencies, nextDependencies);
 
     if (same) {
       return;
     }
 
     const listeners = listenersMap[componentId] || [];
-    const shouldRender = prevDenpendencies !== undefined && listeners.length;
+    const shouldRender = prevDependencies !== undefined && listeners.length;
 
-    denpendenciesMap[componentId] = nextDenpendencies;
+    dependenciesMap[componentId] = nextDependencies;
     shouldRender && listeners.forEach(
       (listener) => listener && listener(),
     );
