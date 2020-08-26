@@ -7,7 +7,7 @@ import React, {
 import classnames from 'classnames';
 import { v4 as uuidv4 } from 'uuid';
 import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { FrameContext } from 'react-frame-component';
 
