@@ -41,7 +41,7 @@ const useDOM = (ref = {}) => {
 
   const dom = useMemo(() => {
     return findDOMNode(ref.current);
-  }, [ref, current]);
+  });
 
   // trigger refresh when ref changes
   useEffect(() => {
