@@ -1,8 +1,8 @@
 import {
+  useMemo,
   useState,
   useEffect,
   useContext,
-  useMemo,
   createContext,
 } from 'react';
 import { findDOMNode } from 'react-dom';
@@ -39,16 +39,12 @@ const useDOM = (ref = {}) => {
   const [, setState] = useState(null);
   const { current } = ref;
 
-  const dom = useMemo(() => {
-    return findDOMNode(ref.current);
-  });
-
   // trigger refresh when ref changes
   useEffect(() => {
     setState({});
   }, [ref, current]);
 
-  return dom;
+  return findDOMNode(ref.current);
 };
 
 const usePollingUpdate = (runEffect, getDependencies, time = 0) => {
