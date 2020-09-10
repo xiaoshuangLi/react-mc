@@ -1,6 +1,7 @@
 import React, {
-  useRef,
+  memo,
   useMemo,
+  useState,
   useEffect,
   useContext,
   forwardRef,
@@ -9,12 +10,12 @@ import { DndContext } from 'react-dnd';
 import FrameComponent, { FrameContext } from 'react-frame-component';
 
 import { isSame } from 'shared/array';
+import { MemoMap } from 'shared/memoize';
 import { useDebounceCallback } from 'shared/hooks';
 
 import {
   getStyledElments,
-  getStyleHTML,
-  getSvgHTML,
+  elementToHTML,
 } from './utils';
 
 const invisibleStyle = {
@@ -23,12 +24,25 @@ const invisibleStyle = {
   pointerEvents: 'none',
 };
 
-const getStyleAndSVG = () => {
-  const styleHTML = getStyleHTML(document);
-  const svgHTML = getSvgHTML(document);
+const Style = memo((props = {}) => {
+  const {
+    element,
+    document: propsDocument = document,
+  } = props;
 
-  return `${styleHTML}${svgHTML}`;
-};
+  const html = useMemo(
+    () => elementToHTML(propsDocument)(element) || '',
+    [element, propsDocument],
+  );
+
+  if (!element) {
+    return null;
+  }
+
+  return (
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  );
+});
 
 const FrameContent = (props = {}) => {
   const { children } = props;
@@ -40,45 +54,45 @@ const FrameContent = (props = {}) => {
     document: contextDocument = document,
   } = useContext(FrameContext);
 
-  const ref = useRef();
-  const elementsRef = useRef([]);
+  const [elements = [], setElements] = useState(() => {
+    return getStyledElments() || [];
+  });
+
+  const memoMap = useMemo(
+    () => new MemoMap(),
+    [],
+  );
 
   const styleNode = useMemo(() => {
-    const html = getStyleAndSVG() || '';
-    const elements = getStyledElments() || [];
-    const dangerouslySetInnerHTML = { __html: html };
+    const items = elements.map((element) => {
+      const key = memoMap.get(element);
 
-    elementsRef.current = elements;
+      return (
+        <Style
+          key={key}
+          element={element}
+          window={contextWindow}
+          document={contextDocument}
+        />
+      );
+    });
 
     return (
-      <div
-        ref={ref}
-        style={invisibleStyle}
-        dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-      />
+      <div style={invisibleStyle}>{ items }</div>
     );
-  }, []);
+  }, [elements, memoMap, contextWindow, contextDocument]);
 
   const callback = useDebounceCallback(() => {
-    const { current } = ref;
-    const { current: prevElements = [] } = elementsRef;
-
-    if (!current) {
-      return;
-    }
-
     const nextElements = getStyledElments() || [];
-    const same = isSame(prevElements, nextElements);
+    const same = isSame(elements, nextElements);
 
-    if (same) {
-      return;
-    }
-
-    const content = getStyleAndSVG() || '';
-
-    current.innerHTML = content;
-    elementsRef.current = nextElements;
+    !same && setElements(nextElements);
   }, 300, { maxWait: 0, leading: true, trailing: true });
+
+  useEffect(
+    () => memoMap.clear,
+    [memoMap],
+  );
 
   useEffect(() => {
     if (contextDocument === document) {

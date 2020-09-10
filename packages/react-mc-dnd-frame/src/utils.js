@@ -22,43 +22,67 @@ export const getStyledElments = (rootDocument = document) => {
   return getUsefulElements(rootDocument)('style,link,svg');
 };
 
+export const elementToHTML = (rootDocument = document) => (element) => {
+  if (!element) {
+    return;
+  }
+
+  const {
+    href,
+    outerHTML,
+    tagName = '',
+  } = element;
+
+  const tag = tagName && tagName.toUpperCase();
+
+  switch (tag) {
+    case 'LINK': {
+      const styleSheets = Array.from(rootDocument.styleSheets);
+      const styleSheet = styleSheets.find(
+        (item = {}) => item.href === href,
+      );
+
+      if (!styleSheet) {
+        return outerHTML;
+      }
+
+      try {
+        const { cssRules: baseCssRules = [] } = styleSheet;
+        const cssRules = Array.from(baseCssRules);
+
+        const styleHTML = cssRules.reduce((curr = '', cssRule = {}) => {
+          const { cssText = '' } = cssRule;
+
+          return `${curr} ${cssText}`;
+        }, '');
+
+        return `<style>${styleHTML}</style>`;
+      } catch (e) {
+        return outerHTML;
+      }
+    }
+    default:
+      return outerHTML;
+  }
+};
+
 export const getHTML = (rootDocument = document) => (selector = '') => {
   const elements = getUsefulElements(rootDocument)(selector);
 
   return elements.reduce((res, element) => {
-    return `${res}${element.outerHTML}`;
+    const html = elementToHTML(rootDocument)(element) || '';
+
+    return `${res}${html}`;
   }, '');
 };
 
 export const getLinkStyleHTML = (rootDocument = document) => {
   const linkElements = getUsefulElements(rootDocument)('link[rel="stylesheet"]');
-  const styleSheets = Array.from(rootDocument.styleSheets);
 
   return linkElements.reduce((res = '', linkElement = {}) => {
-    const { href, outerHTML } = linkElement;
+    const html = elementToHTML(rootDocument)(linkElement) || '';
 
-    const styleSheet = styleSheets.find(
-      (item = {}) => item.href === href,
-    );
-
-    if (!styleSheet) {
-      return `${res}${outerHTML}`;
-    }
-
-    try {
-      const { cssRules: baseCssRules = [] } = styleSheet;
-      const cssRules = Array.from(baseCssRules);
-
-      const styleHTML = cssRules.reduce((curr = '', cssRule = {}) => {
-        const { cssText = '' } = cssRule;
-
-        return `${curr} ${cssText}`;
-      }, '');
-
-      return `${res}<style>${styleHTML}</style>`;
-    } catch (e) {
-      return `${res}${outerHTML}`;
-    }
+    return `${res}${html}`;
   }, '');
 };
 

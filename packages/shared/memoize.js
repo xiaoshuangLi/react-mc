@@ -18,6 +18,10 @@ class MemoMap {
 
     return value;
   };
+
+  clear = () => {
+    this.map.clear();
+  };
 }
 
 const dependencies = new MemoMap();
@@ -28,6 +32,8 @@ const getKey = (...args) => {
     .map(dependencies.get)
     .join('-');
 };
+
+export { MemoMap };
 
 export default (fn) => (...args) => {
   const key = getKey(fn, ...args);
