@@ -15,7 +15,6 @@ const Runner = React.forwardRef((props = {}, ref) => {
     ...others
   } = props;
 
-
   const options = useOptions(props);
 
   return (
