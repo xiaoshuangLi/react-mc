@@ -97,7 +97,7 @@ const targetInfo = {
   parentData: {}, // object
   parentRelationKeys: [], // array
   data: {}, // object
-  offset: [], // nnumber, relative offset for data index
+  offset: [], // number, relative offset for data index
 };
 
 withDrop('div', targetInfo);

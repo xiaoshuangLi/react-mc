@@ -122,7 +122,7 @@ const targetInfo = {
   parentData: {}, // object, parent compoent, default: rootComponent
   parentRelationKeys: [], // array, parent compoent relationKeys, only work when parentData set up
   data: {}, // object, component
-  offset: [], // nnumber, relative offset for component index, only work when data set up
+  offset: [], // number, relative offset for component index, only work when data set up
 };
 
 const {
