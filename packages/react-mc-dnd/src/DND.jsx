@@ -4,6 +4,8 @@ import React, {
   forwardRef,
 } from 'react';
 
+import { check } from './utils';
+
 import {
   useContainer,
   useDragAndHover,
@@ -19,6 +21,7 @@ const useStableRef = (ref) => useMemo(() => {
 export const withContainer = (ComponentClass, data = {}) => forwardRef((props = {}, ref) => {
   ref = useStableRef(ref);
 
+  check(data);
   useContainer(ref, data);
 
   return (
@@ -29,6 +32,7 @@ export const withContainer = (ComponentClass, data = {}) => forwardRef((props = 
 export const withDrag = (ComponentClass, data = {}) => forwardRef((props = {}, ref) => {
   ref = useStableRef(ref);
 
+  check(data);
   useDrag(ref, data);
 
   return (
@@ -49,6 +53,7 @@ export const withDrop = (ComponentClass, targetInfo = {}) => forwardRef((props =
 export const withDragAndHover = (ComponentClass, data = {}) => forwardRef((props = {}, ref) => {
   ref = useStableRef(ref);
 
+  check(data);
   useDragAndHover(ref, data);
 
   return (
@@ -59,6 +64,7 @@ export const withDragAndHover = (ComponentClass, data = {}) => forwardRef((props
 export const withDragAndDrop = (ComponentClass, data = {}) => forwardRef((props = {}, ref) => {
   ref = useStableRef(ref);
 
+  check(data);
   useDragAndDrop(ref, data);
 
   return (

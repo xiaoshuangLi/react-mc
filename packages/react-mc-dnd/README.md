@@ -41,11 +41,11 @@ const { Provider: ConfigProvider } = ConfigContext;
 
 const value = {
   dummy: false,
-  isInChildren: (parentData, dragData) => false,
-  onDrop: (dom, parentData) => {},
-  onDragEnd: (dom, dargData) => {},
-  onDragHover: (targetInfo, dargData) => {},
-  onRender: (dom, data) => {},
+  isInChildren: (parentData, dragData, monitor) => false,
+  onDrop: (dom, parentData, monitor) => {},
+  onDragEnd: (dom, dargData, monitor) => {},
+  onDragHover: (targetInfo, dargData, monitor) => {},
+  onRender: (dom, data, monitor) => {},
 };
 
 /**

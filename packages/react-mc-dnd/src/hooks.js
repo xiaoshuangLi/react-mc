@@ -17,6 +17,7 @@ import { useEventCallback } from 'shared/hooks';
 import {
   isBetween,
   isUsefulEntry,
+  check,
   getPathFromEvent,
 } from './utils';
 
@@ -142,6 +143,8 @@ const useListener = () => {
 };
 
 export const useContainer = (ref, data) => {
+  check(data);
+
   const dom = useDOM(ref);
   const addListener = useListener();
 
@@ -158,6 +161,8 @@ export const useContainer = (ref, data) => {
 };
 
 export const useDrag = (ref, data) => {
+  check(data);
+
   const dom = useDOM(ref);
   const config = useConfig();
   const { onDragEnd } = config;
@@ -175,7 +180,7 @@ export const useDrag = (ref, data) => {
   drag(ref);
 };
 
-export const useDrop = (ref, targetInfo) => {
+export const useDrop = (ref, targetInfo = {}) => {
   const dom = useDOM(ref);
   const config = useConfig();
 
@@ -202,7 +207,7 @@ export const useDrop = (ref, targetInfo) => {
         return;
       }
 
-      onDragHover(targetInfo, dragData);
+      onDragHover(targetInfo, dragData, monitor);
     }),
   });
 
@@ -211,6 +216,8 @@ export const useDrop = (ref, targetInfo) => {
 
 const createDndHooks = (type = ITEM) => {
   const useHooks = (ref, data) => {
+    check(data);
+
     const isContainer = type === CONTAINER;
 
     const dom = useDOM(ref);
@@ -314,7 +321,7 @@ const createDndHooks = (type = ITEM) => {
           data: targetData,
           offset: targetOffset,
           parentData: targetParentData,
-        }, dragData);
+        }, dragData, monitor);
       }),
     });
 

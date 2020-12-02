@@ -19,6 +19,19 @@ export const isUsefulEntry = (context = {}) => (entry = []) => {
   return true;
 };
 
+const message = `react-mc-dnd: data should be object with property "id", as { id: '' }. We got:\n`;
+
+export const check = (data) => {
+  if (!data) {
+    console.error(message, data);
+  } else if (typeof data !== 'object') {
+    console.error(message, data);
+  } else  {
+    const had = 'id' in data;
+    !had && console.error(message, data);
+  }
+};
+
 const getPathFromDOM = (dom) => {
   const { parentElement, tagName, ownerDocument = document } = dom;
   const { defaultView = window } = ownerDocument;
