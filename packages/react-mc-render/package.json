@@ -7,7 +7,7 @@
   ],
   "author": "xiaoshuang.li <qq1157502759@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/xiaoshuangLi/react-mc-documentation#readme",
+  "homepage": "https://github.com/xiaoshuangLi/react-mc#readme",
   "main": "lib/index.js",
   "files": [
     "lib"
