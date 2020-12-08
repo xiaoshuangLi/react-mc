@@ -26,7 +26,7 @@ export const check = (data) => {
     console.error(message, data);
   } else if (typeof data !== 'object') {
     console.error(message, data);
-  } else  {
+  } else {
     const had = 'id' in data;
     !had && console.error(message, data);
   }

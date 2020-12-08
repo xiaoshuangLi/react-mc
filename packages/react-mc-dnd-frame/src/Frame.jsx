@@ -114,10 +114,16 @@ const FrameContent = (props = {}) => {
   }, [callback, contextDocument]);
 
   useEffect(() => {
-    if (contextWindow !== window) {
-      dragDropManager.getBackend().addEventListeners(contextWindow);
-      return () => dragDropManager.getBackend().removeEventListeners(contextWindow);
+    if (!dragDropManager) {
+      return;
     }
+
+    if (contextWindow === window) {
+      return;
+    }
+
+    dragDropManager.getBackend().addEventListeners(contextWindow);
+    return () => dragDropManager.getBackend().removeEventListeners(contextWindow);
   }, [contextWindow, dragDropManager]);
 
   return (
@@ -128,7 +134,7 @@ const FrameContent = (props = {}) => {
   );
 };
 
-export const Frame = forwardRef((props = {}, ref) => {
+const Frame = forwardRef((props = {}, ref) => {
   const {
     className,
     children,

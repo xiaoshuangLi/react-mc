@@ -73,4 +73,4 @@ Template.defaultProps = {
   onSelectComponent: undefined,
 };
 
-export default memo(Template);
+export default Template;

@@ -39,4 +39,4 @@ Runner.defaultProps = {
   setValue: undefined,
 };
 
-export default memo(Runner);
+export default Runner;

@@ -74,7 +74,6 @@ const usePollingUpdate = (runEffect, getDependencies, time = 0) => {
     };
 
     loop();
-
     return () => timer && clearTimeout(timer);
   }, [getDependencies, setDenpencies, time]);
 };
