@@ -1,9 +1,7 @@
-export const getFromEvent = (event) => {
+const getValue = (event) => {
   if (!event) {
     return event;
   }
-
-  event = event.nativeEvent === undefined ? event : event.nativeEvent;
 
   const target = event.target === undefined ? event : event.target;
   const value = target.value === undefined ? target : target.value;
@@ -15,6 +13,14 @@ export const getFromEvent = (event) => {
   return target;
 };
 
+export const getFromEvent = (event) => {
+  const value = getValue(event);
+
+  return value === undefined
+    ? getValue(event.nativeEvent)
+    : value;
+};
+
 export const getValueByKeys = (obj = {}, keys = []) => {
   if (!keys.length) {
     return;
@@ -24,6 +30,10 @@ export const getValueByKeys = (obj = {}, keys = []) => {
 
   for (let v = 0; v < keys.length; v += 1) {
     const key = keys[v];
+
+    if (res === null) {
+      return null;
+    }
 
     if (res[key] === undefined) {
       return;
