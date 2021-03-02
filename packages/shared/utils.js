@@ -1,3 +1,21 @@
+const isEventLike = (event) => {
+  if (!event) {
+    return false;
+  }
+
+  const { currentTarget, target } = event;
+
+  if (!currentTarget) {
+    return false;
+  }
+
+  if (!target) {
+    return false;
+  }
+
+  return target.value !== undefined;
+};
+
 const getValue = (event) => {
   if (!event) {
     return event;
@@ -10,10 +28,18 @@ const getValue = (event) => {
     return target.type === 'checkbox' ? target.checked : value;
   }
 
+  if (isEventLike(event)) {
+    return value;
+  }
+
   return target;
 };
 
 export const getFromEvent = (event) => {
+  if (!event) {
+    return event;
+  }
+
   const value = getValue(event);
 
   return value === undefined
