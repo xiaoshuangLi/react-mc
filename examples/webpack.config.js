@@ -1,5 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const basePath = path.resolve(__dirname, './');
@@ -13,6 +15,7 @@ module.exports = {
   devServer: {
     contentBase: path.resolve(basePath, 'dist'),
     host: '0.0.0.0',
+    historyApiFallback: true,
     hot: true,
   },
   output: {
@@ -21,9 +24,6 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
-    alias: {
-      'react-dom': path.resolve(basePath, '../node_modules/@hot-loader/react-dom'),
-    },
     modules: [
       path.resolve(basePath, 'src'),
       path.resolve(basePath, '../packages'),
@@ -68,7 +68,7 @@ module.exports = {
               '@babel/preset-react',
             ],
             plugins: [
-              'react-hot-loader/babel',
+              require.resolve('react-refresh/babel'),
               '@babel/plugin-proposal-class-properties',
               [
                 'react-docgen',
@@ -86,6 +86,8 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(basePath, 'views/index.html'),

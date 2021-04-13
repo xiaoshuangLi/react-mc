@@ -18,7 +18,7 @@ import { useDrag } from 'react-mc-dnd';
 import ReactMCRunner from 'react-mc-runner';
 import ReactMCTemplate, { Core } from 'react-mc-template';
 
-import * as buildInComponents from '../buildInComponents';
+import * as buildInComponents from '../../buildInComponents';
 
 import options from './options';
 import { getRandomItem, getImgProps } from './tools';
@@ -128,7 +128,7 @@ const createData = (count = 10) => {
   };
 };
 
-const App = React.forwardRef((props = {}, ref) => {
+const Template = React.forwardRef((props = {}, ref) => {
   const { className } = props;
 
   // const [value = {}, setValue] = useState({});
@@ -136,13 +136,13 @@ const App = React.forwardRef((props = {}, ref) => {
   const [selectedComponent = {}, setSelectedComponent] = useState({});
 
   const cls = classnames({
-    'components-app-render': true,
+    'components-template-render': true,
     [className]: !!className,
   });
 
   const onSelect = useEventCallback((component = {}) => {
     const targetInfo = { data: selectedComponent, offset: 1 };
-    const newValue = core.appendComponent(value)(targetInfo, component);
+    const newValue = core.templateendComponent(value)(targetInfo, component);
 
     setValue(newValue);
     setSelectedComponent(component);
@@ -150,7 +150,7 @@ const App = React.forwardRef((props = {}, ref) => {
 
   const renderMessage = () => {
     return (
-      <div className="app-message">
+      <div className="template-message">
         <div className="message-left">👈 Drag Here</div>
         <div className="message-right">Preview Here 👉</div>
       </div>
@@ -159,9 +159,9 @@ const App = React.forwardRef((props = {}, ref) => {
 
   const renderFrame = () => {
     return (
-      <Frame className="app-frame">
+      <Frame className="template-frame">
         <FrameTemplate
-          className="app-template-content"
+          className="template-template-content"
           ref={ref}
           value={value}
           selectedComponent={selectedComponent}
@@ -190,7 +190,7 @@ const App = React.forwardRef((props = {}, ref) => {
     });
 
     return (
-      <div className="app-components">
+      <div className="template-components">
         { items }
       </div>
     );
@@ -198,7 +198,7 @@ const App = React.forwardRef((props = {}, ref) => {
 
   const renderRunner = () => {
     return (
-      <div className="app-runner">
+      <div className="template-runner">
         <ReactMCRunner
           value={value}
           options={options}
@@ -220,4 +220,4 @@ const App = React.forwardRef((props = {}, ref) => {
   );
 });
 
-export default App;
+export default Template;

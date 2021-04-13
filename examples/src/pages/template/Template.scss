@@ -15,12 +15,12 @@ body {
   outline: none;
 }
 
-.app-template-content {
+.template-template-content {
   height: 100vh;
 }
 
-@mixin appMessage {
-  .app-message {
+@mixin templateMessage {
+  .template-message {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -50,8 +50,8 @@ body {
   }
 }
 
-@mixin appFrame {
-  .app-frame {
+@mixin templateFrame {
+  .template-frame {
     width: 55vh;
     border: 5px solid white !important;
     box-shadow: 0 0 5px rgba(black, .2);
@@ -71,8 +71,8 @@ body {
   }
 }
 
-@mixin appRunner {
-  .app-runner {
+@mixin templateRunner {
+  .template-runner {
     width: 55vh;
     border: 5px solid black !important;
     box-shadow: 0 0 5px rgba(black, .2);
@@ -81,8 +81,8 @@ body {
   }
 }
 
-@mixin appComponents {
-  .app-components {
+@mixin templateComponents {
+  .template-components {
     flex: 1;
 
     .components-item {
@@ -94,7 +94,7 @@ body {
   }
 }
 
-.components-app-render {
+.components-template-render {
   display: flex;
   padding: 10px;
   width: 100vw;
@@ -108,8 +108,8 @@ body {
     }
   }
 
-  @include appMessage;
-  @include appFrame;
-  @include appRunner;
-  @include appComponents;
+  @include templateMessage;
+  @include templateFrame;
+  @include templateRunner;
+  @include templateComponents;
 }

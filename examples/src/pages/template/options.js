@@ -1,4 +1,4 @@
-import * as buildInComponents from '../buildInComponents';
+import * as buildInComponents from '../../buildInComponents';
 
 export const getComponentClass = (component = {}) => {
   const { name } = component;
