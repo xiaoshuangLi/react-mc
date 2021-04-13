@@ -167,6 +167,7 @@ export const useDrag = (ref, data) => {
   const { onDragEnd } = config;
 
   const [, drag] = useOriginDrag({
+    type: ITEM,
     item: useMemo(
       () => ({ data, type: ITEM }),
       [data],
@@ -235,6 +236,7 @@ const createDndHooks = (type = ITEM) => {
     const { id = data } = data;
 
     const [info = {}, drag] = useOriginDrag({
+      type,
       item: useMemo(
         () => ({ data, type }),
         [data],
