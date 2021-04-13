@@ -1,0 +1,177 @@
+$black: #333;
+$black2: #666;
+$black3: #999;
+
+$green: #00bc70;
+
+$blue: #1890ff;
+
+$red: rgb(255, 97, 97);
+
+$lineIndex: 1;
+$hoverLineIndex: 2;
+$activeLineIndex: 3;
+$lineContentIndex: 3;
+$movableIndex: 5;
+$dotIndex: $movableIndex;
+
+$num: 7;
+
+@keyframes diagram-line {
+  0% {
+    stroke-dashoffset: $num * 2;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+%full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@mixin line {
+  .line-render {
+    color: $black3;
+    cursor: pointer;
+    pointer-events: none;
+
+    .line-svg {
+      z-index: $lineIndex;
+
+      @extend %full;
+
+      > path {
+        pointer-events: stroke;
+      }
+
+      .line-path {
+        stroke: currentColor;
+        stroke-width: 2px;
+      }
+
+      .line-area {
+        opacity: 0;
+        stroke-width: 10px;
+      }
+
+      .line-arrow {
+        fill: white;
+        stroke: currentColor;
+        stroke-width: 2px;
+      }
+    }
+
+    &[type] {
+      .line-svg {
+        .line-path {
+          stroke-dasharray: $num $num;
+          animation: diagram-line .5s linear infinite;
+        }
+      }
+    }
+
+    &:hover {
+      color: $blue;
+
+      .line-svg {
+        z-index: $hoverLineIndex;
+
+        .line-path {
+          stroke-dasharray: $num $num;
+          animation: diagram-line .5s linear infinite;
+        }
+      }
+    }
+
+    &.line-active {
+      color: $green;
+
+      .line-svg {
+        z-index: $activeLineIndex;
+
+        .line-path {
+          stroke-dasharray: $num $num;
+          animation: diagram-line .5s linear infinite;
+        }
+      }
+    }
+
+    .line-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: $lineContentIndex;
+
+      .content {
+        padding: 2px 5px;
+        min-width: 120px;
+        font-size: 12px;
+        text-align: center;
+        white-space: nowrap;
+        border-radius: 5px;
+        border: 1px solid currentColor;
+        background-color: white;
+        pointer-events: all;
+        transform: translate(-50%,-50%);
+      }
+    }
+  }
+}
+
+@mixin dot {
+  .dot-render {
+    display: inline-block;
+    position: relative;
+    padding: 5px;
+    background: $black3;
+    border-radius: 50%;
+    cursor: initial;
+    z-index: $dotIndex;
+
+    &.draggable-dot {
+      .dot-area {
+        @extend %full;
+      }
+    }
+
+    &.dirty-dot {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+@mixin movable {
+  .movable-render {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: move;
+    z-index: $movableIndex;
+  }
+}
+
+.diagrams-inivisible-path {
+  @extend %full;
+
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.components-diagrams-render {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  @include line;
+  @include dot;
+  @include movable;
+}

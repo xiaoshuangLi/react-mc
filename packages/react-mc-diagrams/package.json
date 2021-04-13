@@ -1,0 +1,29 @@
+{
+  "name": "react-mc-diagrams",
+  "version": "1.0.0-alpha.1",
+  "description": "react-mc-diagrams",
+  "author": "xiaoshuang.li <qq1157502759@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/xiaoshuangLi/react-mc#readme",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaoshuangLi/react-mc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaoshuangLi/react-mc/issues"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.6",
+    "react-dnd": ">=10.0.2",
+    "react-dom": ">=16.8.6"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "react-mc-dnd": "file:../react-mc-dnd"
+  }
+}
