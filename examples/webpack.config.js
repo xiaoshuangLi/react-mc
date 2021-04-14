@@ -1,4 +1,5 @@
 const path = require('path');
+const sass = require('sass');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -52,7 +53,7 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              implementation: require('sass'),
+              implementation: sass,
             },
           },
         ],

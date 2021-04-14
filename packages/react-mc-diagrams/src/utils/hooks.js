@@ -268,6 +268,12 @@ export const useConfigValue = (props = {}, context = {}) => {
     }
 
     if (dragDataType === MOVABLE) {
+      const { top, left } = position;
+
+      if (top === undefined || left === undefined) {
+        return;
+      }
+
       return propsOnMove && propsOnMove({
         id: dragDataId,
         position,

@@ -1,4 +1,5 @@
 const path = require('path');
+const sass = require('sass');
 
 const webpack = {
   mode: 'production',
@@ -22,7 +23,7 @@ const webpack = {
           {
             loader: 'sass-loader',
             options: {
-              implementation: require('sass'),
+              implementation: sass,
             },
           },
         ],
@@ -38,7 +39,6 @@ const webpack = {
               '@babel/preset-react',
             ],
             plugins: [
-              'react-hot-loader/babel',
               '@babel/plugin-proposal-class-properties',
             ],
           },

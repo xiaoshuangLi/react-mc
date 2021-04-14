@@ -1,41 +1,84 @@
-# `react-mc-dnd-frame`
+# `react-mc-diagrams`
 
-Make [react-dnd](https://github.com/react-dnd/react-dnd) work for ```iframe```.
+What we do:
+1. 
+
+Draw line between two dots;
 
 ## Installation
 
 Using [npm](https://www.npmjs.com/):
 
-    $ npm install --save react-mc-dnd-frame
+    $ npm install --save react-mc-diagrams
 
 ## Usage
 
 ```jsx
-import React, { useContext } from 'react';
-import { FrameContext } from 'react-frame-component';
+import React, { useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import Frame from 'react-mc-dnd-frame';
+import ReactMCDiagrams, { Dot, Movable } from 'react-mc-diagrams';
 
-const Content = (props = {}) => {
-  const context = useContext(FrameContext);
-
-  const {
-    document: contextDocument = document,
-    window: contextWindow = window,
-  } = context;
-
-  return (
-    <div className="content" {...props} />
-  );
+const style = {
+  padding: '5px 10px',
+  backgroundColor: 'rgba(0, 0, 0, .2)',
 };
 
-const App = (props = {}) => {
-  const [value = {}, setValue] = useState({});
+const initialStars = [
+  { id: '1', style, position: { left: 130, top: 350 } },
+  { id: '2', style, position: { left: 315, top: 255 } },
+  { id: '3', style, position: { left: 440, top: 275 } },
+  { id: '4', style, position: { left: 610, top: 316 } },
+  { id: '5', style, position: { left: 690, top: 440 } },
+  { id: '6', style, position: { left: 920, top: 370 } },
+  { id: '7', style, position: { left: 900, top: 200 } },
+];
+
+const initialValue = [
+  { source: '1-dot', target: '2-dot' },
+  { source: '2-dot', target: '3-dot' },
+  { source: '3-dot', target: '4-dot' },
+  { source: '4-dot', target: '5-dot' },
+  { source: '5-dot', target: '6-dot' },
+  { source: '6-dot', target: '7-dot' },
+];
+
+const App = () => {
+  const [stars = [], setStars] = useState(initialStars);
+  const [value = [], setValue] = useState(initialValue);
+
+  const onMove = (nextStar = {}) => {
+    setStars((prevStars = []) => {
+      return prevStars.map((prevStar = {}) => {
+        const { id: prevStarId } = prevStar;
+        const { id: nextStarId } = nextStar;
+
+        return prevStarId === nextStarId
+          ? { ...prevStar, ...nextStar }
+          : prevStar;
+      });
+    });
+  };
+
+  const items = stars.map((item = {}, index) => {
+    const { id } = item;
+
+    const dotId = `${id}-dot`;
+
+    return (
+      <Movable key={index} {...item}>
+        <Dot id={dotId} />
+      </Movable>
+    );
+  });
 
   return (
-    <Frame className="app-frame">
-      <Content>content</Content>
-    </Frame>
+    <DndProvider backend={HTML5Backend} context={window}>
+      <ReactMCDiagrams value={value} onMove={onMove} onChange={setValue}>
+        { items }
+      </ReactMCDiagrams>
+    </DndProvider>
   );
 };
 

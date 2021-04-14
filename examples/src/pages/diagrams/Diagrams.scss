@@ -1,9 +1,28 @@
+@use 'sass:math';
+
+$num: 50;
+$r: 200px;
+$angle: 360deg / $num;
+
 .components-diagrams-render {
   height: 100vh !important;
 
   .rect {
+    position: relative;
     display: inline-block;
     padding: 5px 10px;
     background-color: rgba(black, .2);
+
+    @for $i from 1 through $num {
+      &:nth-child(#{$i}) {
+        $deg: $angle * $i;
+        $x: $r * math.cos($deg);
+        $y: $r * math.sin($deg);
+        $left: calc(50vw + #{$x});
+        $top: calc(50vh + #{$y});
+
+        transform: translate(#{$left}, #{$top});
+      }
+    }
   }
 }

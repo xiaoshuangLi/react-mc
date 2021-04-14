@@ -226,6 +226,7 @@ describe('react-mc-render: ', () => {
               expect(!!childDom).to.equal(true);
             });
           }, 1000);
+
           done();
         });
       }, [propsValue]);

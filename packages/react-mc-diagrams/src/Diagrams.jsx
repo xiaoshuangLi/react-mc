@@ -69,30 +69,46 @@ const Diagrams = React.forwardRef((props = {}, ref) => {
   });
 
   const renderDirtyDots = () => {
-    return dirtyDots.map((dirtyDot = {}, index) => {
+    const items = dirtyDots.map((dirtyDot = {}, index) => {
       return (
         <Dot key={index} type={DIRTY} {...dirtyDot} />
       );
     });
+
+    return (
+      <div className="diagrams-dirty-dots">
+        { items }
+      </div>
+    );
   };
 
   const renderMessyLines = () => {
-    return messyLines.map((messyLine = {}, index) => {
+    const items = messyLines.map((messyLine = {}, index) => {
       return (
         <Line key={index} type={MESSY} {...messyLine} />
       );
     });
+
+    return (
+      <div className="diagrams-messy-lines">
+        { items }
+      </div>
+    );
   };
 
   const renderLines = () => {
-    return lines.map((line = {}, i) => {
+    const items = lines.map((line = {}, i) => {
       const onClick = () => setLines((prevLines = []) => {
         return prevLines.map((prevLine = {}) => {
-          const { active } = prevLine;
+          const { active, ...rest } = prevLine;
 
-          return prevLine === line
-            ? { ...line, active: !active }
-            : prevLine;
+          if (prevLine === line) {
+            return active
+              ? rest
+              : { active: !active, ...rest };
+          }
+
+          return prevLine;
         });
       });
 
@@ -106,6 +122,20 @@ const Diagrams = React.forwardRef((props = {}, ref) => {
         <Line key={i} onClick={onClick} onDoubleClick={onDoubleClick} {...line} />
       );
     });
+
+    return (
+      <div className="diagrams-lines">
+        { items }
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    return (
+      <div className="diagrams-content">
+        { children }
+      </div>
+    );
   };
 
   return (
@@ -124,7 +154,7 @@ const Diagrams = React.forwardRef((props = {}, ref) => {
               { renderDirtyDots() }
               { renderMessyLines() }
               { renderLines() }
-              { children }
+              { renderContent() }
             </Canvas>
           </CanvasProvider>
         </DotsProvider>

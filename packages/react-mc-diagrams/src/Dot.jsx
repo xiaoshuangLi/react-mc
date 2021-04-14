@@ -103,12 +103,7 @@ const useDotsEffect = (ref, id) => {
 };
 
 const DirtyDot = React.forwardRef((props = {}, ref) => {
-  const {
-    id,
-    className,
-    children,
-    ...others
-  } = props;
+  const { className, children, ...others } = props;
 
   const cls = classnames({
     'dirty-dot': true,
@@ -123,12 +118,8 @@ const DirtyDot = React.forwardRef((props = {}, ref) => {
 const DraggableDot = React.forwardRef((props = {}, ref) => {
   ref = useStableRef(ref);
 
-  const {
-    id,
-    className,
-    children,
-    ...others
-  } = props;
+  const { className, children, ...others } = props;
+  const { id } = others;
 
   const cls = classnames({
     'draggable-dot': true,

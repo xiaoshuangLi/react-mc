@@ -13,11 +13,11 @@ const Movable = React.forwardRef((props = {}, ref) => {
 
   const {
     className,
-    id,
     position,
     style: propsStyle,
     ...others
   } = props;
+  const { id } = others;
 
   const cls = classnames({
     'movable-render': true,

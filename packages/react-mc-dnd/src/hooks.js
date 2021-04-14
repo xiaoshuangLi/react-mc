@@ -177,7 +177,9 @@ export const useDrag = (ref, data) => {
     }),
   });
 
-  drag(ref);
+  useEffect(() => {
+    drag(ref);
+  }, [ref, drag]);
 };
 
 export const useDrop = (ref, targetInfo = {}) => {
@@ -211,7 +213,9 @@ export const useDrop = (ref, targetInfo = {}) => {
     }),
   });
 
-  drop(ref);
+  useEffect(() => {
+    drop(ref);
+  }, [ref, drop]);
 };
 
 const createDndHooks = (type = ITEM) => {
