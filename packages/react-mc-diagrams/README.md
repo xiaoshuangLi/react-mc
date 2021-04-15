@@ -88,4 +88,100 @@ export default App;
 
 ### Diagrams
 
-### Diagrams.value
+#### Diagrams.value: array
+
+Define the lines between dots.
+
+```js
+const [current = {}] = value;
+
+const {
+  /**
+   * True mean we selected this line.
+   */
+  active = false,
+  /**
+   * Offset bigger, line more curved.
+   *
+   * Been useful when two lines have same target and source.
+   */
+  offset = 0,
+  source = 'source-dot-id',
+  target = 'target-dot-id',
+} = current;
+````
+
+#### Diagrams.onChange: func
+
+Trigger it when ```value``` been changed.
+
+#### Diagrams.onMove: func
+
+Trigger it when ```<Movable id="movable-id" />``` was dragged.
+
+```jsx
+import React, { useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+import Diagrams, { Movable } from 'react-mc-diagrams';
+
+const initialState = {
+  id: 'movable-id',
+  position: { top: 100, left: 100 },
+  children: 'movable-content',
+};
+
+const App = () => {
+  const [state = {}, setState] = useState(initialState);
+
+  const onMove = (current = {}) => {
+    const { id = 'movable-id', position = {} } = current;
+    const { top = 0, left = 0 } = position;
+
+    setState({ ...state, ...current });
+  };
+
+  return (
+    <DndProvider backend={HTML5Backend} context={window}>
+      <Diagrams onMove={onMove}>
+        <Movable {...state} />
+      </Diagrams>
+    </DndProvider>
+  );
+};
+
+export default App;
+```
+
+#### Diagrams.onDrop: func
+
+Trigger it when drop something.
+
+### Dot
+
+Define dot under ```<Diagrams />```.
+
+#### Dot.id: string
+
+**Required**  **Unique**
+
+The ```source``` and ```target``` in ```Diagrams.value``` are ```id``` from ```Dot```.
+
+### Movable
+
+Make content movable undeer ```<Diagrams />```.
+
+#### Movable.id: string
+
+**Required**  **Unique**
+
+#### Movable.position: object
+
+```jsx
+const { top = 0, left = 0 } = position;
+```
+
+#### Movable.children: node
+
+Render whatever you want.
