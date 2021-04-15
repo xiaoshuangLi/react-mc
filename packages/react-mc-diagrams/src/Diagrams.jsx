@@ -166,8 +166,8 @@ const Diagrams = React.forwardRef((props = {}, ref) => {
 Diagrams.propTypes = {
   value: PropTypes.arrayOf(
     PropTypes.shape({
-      source: PropTypes.string,
-      target: PropTypes.string,
+      source: PropTypes.string.isRequired,
+      target: PropTypes.string.isRequired,
       active: PropTypes.bool,
     }),
   ),

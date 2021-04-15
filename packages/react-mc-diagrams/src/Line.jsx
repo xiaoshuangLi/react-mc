@@ -351,8 +351,8 @@ const Line = React.forwardRef((props = {}, ref) => {
 Line.propTypes = {
   active: PropTypes.bool,
   offset: PropTypes.number,
-  source: PropTypes.string,
-  target: PropTypes.string,
+  source: PropTypes.string.isRequired,
+  target: PropTypes.string.isRequired,
   arrows: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
@@ -364,8 +364,6 @@ Line.propTypes = {
 Line.defaultProps = {
   active: false,
   offset: 0,
-  source: '',
-  target: '',
   arrows: [],
 };
 

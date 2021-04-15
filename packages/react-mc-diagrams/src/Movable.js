@@ -1,4 +1,8 @@
-import React, { useMemo } from 'react';
+import React, {
+  memo,
+  useMemo,
+  Children,
+} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -51,7 +55,7 @@ const Movable = React.forwardRef((props = {}, ref) => {
 });
 
 Movable.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
   position: PropTypes.shape({
     top: PropTypes.number,
     left: PropTypes.number,
@@ -59,8 +63,91 @@ Movable.propTypes = {
 };
 
 Movable.defaultProps = {
-  id: '',
   position: undefined,
 };
 
-export default Movable;
+const isSameProps = (prevProps = {}, nextProps = {}) => {
+  const { children: prevChildren, ...prevOthers } = prevProps;
+  const { children: nextChildren, ...nextOthers } = nextProps;
+
+  const prevEntries = Object.entries(prevOthers);
+  const nextEntries = Object.entries(nextOthers);
+
+  if (prevEntries.length !== nextEntries.length) {
+    return false;
+  }
+
+  const different = prevEntries.some((prevEntry) => {
+    const [key, prevValue] = prevEntry;
+    const { [key]: nextValue } = nextOthers;
+
+    return prevValue !== nextValue;
+  });
+
+  if (different) {
+    return false;
+  }
+
+  // eslint-disable-next-line
+  return isSameChildren(prevChildren, nextChildren);
+};
+
+const isSameChildren = (prevChildren, nextChildren) => {
+  const prevArray = Children.toArray(prevChildren);
+  const nextArray = Children.toArray(nextChildren);
+
+  if (prevArray.length !== nextArray.length) {
+    return false;
+  }
+
+  return prevArray.every((prevChild, index) => {
+    const nextChild = nextArray[index];
+
+    if (prevChild === nextChild) {
+      return true;
+    }
+
+    const prevType = typeof prevChild;
+    const nextType = typeof nextChild;
+
+    // return for not object
+    if (prevType !== nextType) {
+      return false;
+    }
+
+    // return for null
+    if (!prevChild || !nextChild) {
+      return false;
+    }
+
+    const {
+      key: prevChildKey,
+      ref: prevChildRef,
+      type: prevChildType,
+      props: prevChildProps,
+    } = prevChild;
+
+    const {
+      key: nextChildKey,
+      ref: nextChildRef,
+      type: nextChildType,
+      props: nextChildProps,
+    } = nextChild;
+
+    if (prevChildKey !== nextChildKey) {
+      return false;
+    }
+
+    if (prevChildRef !== nextChildRef) {
+      return false;
+    }
+
+    if (prevChildType !== nextChildType) {
+      return false;
+    }
+
+    return isSameProps(prevChildProps, nextChildProps);
+  });
+};
+
+export default memo(Movable, isSameProps);

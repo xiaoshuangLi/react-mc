@@ -1,9 +1,8 @@
 # `react-mc-diagrams`
 
-What we do:
-1. 
-
-Draw line between two dots;
+This is a React library for drawing diagrams easily. What we can do:
+* **Draw line:** Just render dots with id, we will draw line between them.
+* **Move element:** Just render ```Component``` under ```Movable```, we will trigger ```onMove``` when you drag them.
 
 ## Installation
 
@@ -18,7 +17,7 @@ import React, { useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import ReactMCDiagrams, { Dot, Movable } from 'react-mc-diagrams';
+import Diagrams, { Dot, Movable } from 'react-mc-diagrams';
 
 const style = {
   padding: '5px 10px',
@@ -75,12 +74,18 @@ const App = () => {
 
   return (
     <DndProvider backend={HTML5Backend} context={window}>
-      <ReactMCDiagrams value={value} onMove={onMove} onChange={setValue}>
+      <Diagrams value={value} onMove={onMove} onChange={setValue}>
         { items }
-      </ReactMCDiagrams>
+      </Diagrams>
     </DndProvider>
   );
 };
 
 export default App;
 ```
+
+## Documentation
+
+### Diagrams
+
+### Diagrams.value

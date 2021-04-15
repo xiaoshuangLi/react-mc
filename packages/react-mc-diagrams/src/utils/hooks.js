@@ -1,4 +1,5 @@
 import {
+  useRef,
   useMemo,
   useState,
   useEffect,
@@ -58,9 +59,13 @@ export const useLinesValue = (props) => {
 };
 
 export const useDotsValue = (props) => {
+  const ref = useRef([]);
   const using = useState([]);
 
-  return useMemo(() => using, using);
+  return useMemo(
+    () => Object.assign(ref.current, using),
+    using,
+  );
 };
 
 export const useCanvasValue = (props) => {
@@ -130,8 +135,8 @@ export const useDragEnd = (props = {}) => {
   const { onDragEnd: propsOnDragEnd } = props;
 
   return useEventCallback((...args) => {
+    position = {};
     positionOffset = {};
-
     propsOnDragEnd && propsOnDragEnd(...args);
   });
 };

@@ -171,12 +171,11 @@ const Dot = React.forwardRef((props = {}, ref) => {
 });
 
 Dot.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
   type: PropTypes.oneOf([DIRTY, DRAGGABLE]),
 };
 
 Dot.defaultProps = {
-  id: '',
   type: DRAGGABLE,
 };
 
