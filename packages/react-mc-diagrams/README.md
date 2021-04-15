@@ -164,17 +164,17 @@ Define dot under ```<Diagrams />```.
 
 #### Dot.id: string
 
-**Required**  **Unique**
+*Required*  *Unique*
 
 The ```source``` and ```target``` in ```Diagrams.value``` are ```id``` from ```Dot```.
 
 ### Movable
 
-Make content movable undeer ```<Diagrams />```.
+Make element movable undeer ```<Diagrams />```.
 
 #### Movable.id: string
 
-**Required**  **Unique**
+*Required*  *Unique*
 
 #### Movable.position: object
 
