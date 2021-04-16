@@ -60,11 +60,15 @@ const useD = (props = {}) => {
 
     if (Math.abs(k) > 1) {
       const ratio = sourceCenterLeft < targetCenterLeft ? 1 : -1;
+      const standardCenterLeft = 0.5 * (sourceCenterLeft + targetCenterLeft);
       const centerTop = -0.5 * (sourceCenterTop + targetCenterTop);
       const y = centerTop + offset * LENGTH * ratio;
 
       offsetCenterTop = -y;
       offsetCenterLeft = (y - h) / k;
+      offsetCenterLeft = Number.isNaN(offsetCenterLeft)
+        ? standardCenterLeft
+        : offsetCenterLeft;
     } else {
       const ratio = sourceCenterTop < targetCenterTop ? 1 : -1;
       const centerLeft = 0.5 * (sourceCenterLeft + targetCenterLeft);
