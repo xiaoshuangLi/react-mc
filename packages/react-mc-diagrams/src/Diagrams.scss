@@ -158,6 +158,18 @@ $num: 7;
   }
 }
 
+@mixin canvas {
+  @at-root {
+    .canvas-render {
+      .canvas-container {
+        position: relative;
+        width: 1000vw;
+        height: 1000vh;
+      }
+    }
+  } 
+}
+
 .diagrams-inivisible-path {
   @extend %full;
 
@@ -167,11 +179,12 @@ $num: 7;
 }
 
 .components-diagrams-render {
-  position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 
   @include line;
   @include dot;
+  @include canvas;
   @include movable;
 }

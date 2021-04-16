@@ -16,10 +16,11 @@ import {
 
 import {
   DotsContext,
+  CanvasContext,
   useStableRef,
 } from './utils/hooks';
 
-const getElementRect = (element) => {
+const getRect = (element) => {
   if (!element) {
     return;
   }
@@ -45,6 +46,42 @@ const getElementRect = (element) => {
   };
 };
 
+const getElementRect = (element, parentElement) => {
+  if (element === parentElement) {
+    return getRect(element);
+  }
+
+  if (!parentElement) {
+    return getRect(element);
+  }
+
+  const parentRect = getRect(parentElement);
+  const childRect = getRect(element);
+
+  const {
+    top: parentTop = 0,
+    left: parentLeft = 0,
+  } = parentRect;
+
+  const {
+    top: childTop,
+    left: childLeft,
+    bottom: childBottom,
+    right: childRight,
+    centerTop: childCenterTop,
+    centerLeft: childCenterLeft,
+  } = childRect;
+
+  return {
+    top: childTop - parentTop,
+    left: childLeft - parentLeft,
+    bottom: childBottom - parentTop,
+    right: childRight - parentLeft,
+    centerTop: childCenterTop - parentTop,
+    centerLeft: childCenterLeft - parentLeft,
+  };
+};
+
 const rectToKey = (rect = {}) => {
   if (!rect) {
     return;
@@ -56,6 +93,7 @@ const rectToKey = (rect = {}) => {
 };
 
 const useDotsEffect = (ref, id) => {
+  const [canvas] = useContext(CanvasContext);
   const [dots, setDots] = useContext(DotsContext);
 
   useEffect(() => {
@@ -63,7 +101,7 @@ const useDotsEffect = (ref, id) => {
       (item = {}) => item.id === id,
     );
 
-    const rect = getElementRect(ref.current);
+    const rect = getElementRect(ref.current, canvas);
     const key = rectToKey(rect);
 
     const current = {

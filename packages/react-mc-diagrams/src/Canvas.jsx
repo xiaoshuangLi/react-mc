@@ -1,12 +1,13 @@
 import React, {
+  useRef,
   useEffect,
   useContext,
 } from 'react';
 import classnames from 'classnames';
 
-import { withDrop } from 'react-mc-dnd';
+import { useDrop } from 'react-mc-dnd';
 
-import { CanvasContext, useStableRef } from './utils/hooks';
+import { CanvasContext } from './utils/hooks';
 
 let empty;
 
@@ -20,24 +21,32 @@ const getEmpty = () => {
 };
 
 const Canvas = React.forwardRef((props = {}, ref) => {
-  ref = useStableRef(ref);
-
-  const { className, ...others } = props;
+  const {
+    className,
+    onDragStart,
+    onDragOver,
+    onDragEnd,
+    children,
+    ...others
+  } = props;
 
   const cls = classnames({
     'canvas-render': true,
     [className]: !!className,
   });
 
+  const canvasRef = useRef(null);
   const [, setCanvas] = useContext(CanvasContext);
 
+  useDrop(canvasRef);
+
   useEffect(
-    () => setCanvas(ref.current),
-    [ref, setCanvas],
+    () => setCanvas(canvasRef.current),
+    [canvasRef, setCanvas],
   );
 
   useEffect(() => {
-    const { current } = ref;
+    const { current } = canvasRef;
 
     const listener = (e = {}) => {
       if (!current) {
@@ -72,11 +81,21 @@ const Canvas = React.forwardRef((props = {}, ref) => {
         item.removeEventListener('dragstart', listener);
       });
     };
-  }, [ref]);
+  }, [canvasRef]);
 
   return (
-    <div ref={ref} className={cls} {...others} />
+    <div ref={ref} className={cls} {...others}>
+      <div
+        className="canvas-container"
+        ref={canvasRef}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDragEnd={onDragEnd}
+      >
+        { children }
+      </div>
+    </div>
   );
 });
 
-export default withDrop(Canvas);
+export default Canvas;

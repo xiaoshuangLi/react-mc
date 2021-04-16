@@ -10,18 +10,9 @@ import classnames from 'classnames';
 
 import { useEventCallback } from 'shared/hooks';
 
-import {
-  DotsContext,
-  CanvasContext,
-} from './utils/hooks';
+import { DotsContext } from './utils/hooks';
 
 const LENGTH = 80;
-
-const useCanvas = () => {
-  const [canvas] = useContext(CanvasContext);
-
-  return canvas;
-};
 
 const useElementRect = (id) => {
   const [dots = []] = useContext(DotsContext);
@@ -50,18 +41,11 @@ const useD = (props = {}) => {
     targetElementRect,
   } = props;
 
-  const canvas = useCanvas();
-
   return useMemo(() => {
-    if (!canvas) {
-      return '';
-    }
-
     if (!sourceElementRect || !targetElementRect) {
       return '';
     }
 
-    const { left: originLeft, top: originTop } = canvas.getBoundingClientRect();
     const { centerLeft: sourceCenterLeft, centerTop: sourceCenterTop } = sourceElementRect;
     const { centerLeft: targetCenterLeft, centerTop: targetCenterTop } = targetElementRect;
 
@@ -89,16 +73,16 @@ const useD = (props = {}) => {
       offsetCenterTop = -1 * (k * offsetCenterLeft + h);
     }
 
-    const start = `${Math.round(sourceCenterLeft - originLeft)} ${Math.round(sourceCenterTop - originTop)}`;
-    const center = `${Math.round(offsetCenterLeft - originLeft)} ${Math.round(offsetCenterTop - originTop)}`;
-    const end = `${Math.round(targetCenterLeft - originLeft)} ${Math.round(targetCenterTop - originTop)}`;
+    const start = `${Math.round(sourceCenterLeft)} ${Math.round(sourceCenterTop)}`;
+    const center = `${Math.round(offsetCenterLeft)} ${Math.round(offsetCenterTop)}`;
+    const end = `${Math.round(targetCenterLeft)} ${Math.round(targetCenterTop)}`;
 
     if (center.includes('NaN')) {
       return `M ${start} Q ${end}, ${end}`;
     }
 
     return `M ${start} Q ${center}, ${end}`;
-  }, [offset, canvas, sourceElementRect, targetElementRect]);
+  }, [offset, sourceElementRect, targetElementRect]);
 };
 
 let svg;
