@@ -183,6 +183,17 @@ $num: 7;
   height: 100vh;
   overflow: hidden;
 
+  .diagrams-content,
+  .diagrams-dirty-dots {
+    pointer-events: none;
+
+    @extend %full;
+
+    > * {
+      pointer-events: all;
+    }
+  }
+
   @include line;
   @include dot;
   @include canvas;
