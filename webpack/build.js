@@ -10,6 +10,7 @@ const packages = [
   'react-mc-render',
   'react-mc-runner',
   'react-mc-template',
+  'react-mc-diagrams',
 ];
 
 const convert = (str = '') => {
@@ -34,5 +35,6 @@ const list = packages.map((packageName = '') => {
 });
 
 webpack(list, (err, stats) => {
-  process.stdout.write(stats.toString() + '\n');
+  const str = stats.toString();
+  process.stdout.write(`${str} \n`);
 });
