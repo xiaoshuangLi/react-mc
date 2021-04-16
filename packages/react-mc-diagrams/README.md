@@ -4,6 +4,12 @@ This is a React library for drawing diagrams easily. What we can do:
 * **Draw line:** Just render dots with id, we will draw line between them.
 * **Move element:** Just render ```Component``` under ```Movable```, we will trigger ```onMove``` when you drag them.
 
+[Basic Demo](https://codesandbox.io/s/react-mc-diagrams-basic-zwx6f)
+
+[Dots and Lines Demo](https://codesandbox.io/s/react-mc-diagrams-basic-zwx6f)
+
+[Editable Demo](https://codesandbox.io/s/react-mc-diagrams-thing-zm39v)
+
 ## Installation
 
 Using [npm](https://www.npmjs.com/):

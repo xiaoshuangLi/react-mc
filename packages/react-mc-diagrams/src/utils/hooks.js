@@ -179,7 +179,12 @@ export const useConfigValue = (props = {}, context = {}) => {
     const { length } = matchLines;
 
     const num = Math.ceil(length / 2);
-    const ratio = length % 2 ? 1 : -1;
+    const found = matchLines.find(
+      (item = {}) => item.offset === num,
+    ) || {};
+
+    const { source: foundSource } = found;
+    const ratio = source === foundSource ? -1 : 1;
     const offset = num * ratio;
 
     return { ...line, offset };
