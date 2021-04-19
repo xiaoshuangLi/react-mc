@@ -58,6 +58,10 @@ const getElementRect = (element, parentElement) => {
   const parentRect = getRect(parentElement);
   const childRect = getRect(element);
 
+  if (!parentRect || !childRect) {
+    return;
+  }
+
   const {
     top: parentTop = 0,
     left: parentLeft = 0,
