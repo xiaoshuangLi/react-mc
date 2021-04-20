@@ -15,7 +15,11 @@ import {
   useThrottleCallback,
 } from 'shared/hooks';
 
-import { MOVABLE } from './constants';
+import {
+  EMPTY_ARRAY,
+  PERFORMANCE_TIME,
+  MOVABLE,
+} from './constants';
 
 export const LinesContext = createContext([]);
 export const DotsContext = createContext([]);
@@ -28,32 +32,36 @@ export const useStableRef = (ref) => {
   );
 };
 
-const EMPTY_ARRAY = [];
-
 export const useLinesValue = (props) => {
   const { value = EMPTY_ARRAY, onChange } = props;
 
+  const store = useRef(value);
   const using = useState(value);
   const [lines, setLines] = using;
-
-  const onChangeValue = useEventCallback(() => {
-    if (value === lines) {
-      return;
-    }
-
-    setLines && setLines(value);
-  });
 
   const onChangeLines = useEventCallback(() => {
     if (lines === value) {
       return;
     }
 
+    if (lines === store.current) {
+      return;
+    }
+
     onChange && onChange(lines);
   });
 
-  useEffect(onChangeValue, [value]);
+  const onChangeValue = useEventCallback(() => {
+    if (value === lines) {
+      return;
+    }
+
+    store.current = value;
+    setLines && setLines(value);
+  });
+
   useEffect(onChangeLines, [lines]);
+  useEffect(onChangeValue, [value]);
 
   return useMemo(() => using, using);
 };
@@ -300,7 +308,7 @@ export const useConfigValue = (props = {}, context = {}) => {
 
     changeDirtyDotsWhenDragHover(targetInfo, dragData);
     changeMessyLinesWhenDragHover(targetInfo, dragData);
-  }, 16);
+  }, PERFORMANCE_TIME);
 
   const onDrop = useEventCallback((...args) => {
     const [, parentData = {}] = args;
