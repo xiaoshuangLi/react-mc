@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const { pascalCase } = require('change-case');
 
 const createPrdConfig = require('./createPrdConfig.js');
 const createUmdConfig = require('./createUmdConfig.js');
@@ -24,10 +25,11 @@ const convert = (str = '') => {
 };
 
 const list = packages.map((packageName = '') => {
+  const name = pascalCase(packageName);
   const folder = path.resolve(__dirname, `../packages/${packageName}`);
   const library = {
-    root: 'ReactBabyForm',
-    amd: 'ReactBabyForm',
+    amd: name,
+    root: name,
     commonjs: packageName,
   };
 
