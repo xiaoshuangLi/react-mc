@@ -17,6 +17,7 @@ const startOrEndWithList = [
   'react-mc-render',
   'react-mc-template',
   'react-mc-runner',
+  'react-baby-form',
 ];
 
 module.exports = (...args) => {

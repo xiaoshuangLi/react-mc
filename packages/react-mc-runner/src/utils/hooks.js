@@ -12,14 +12,14 @@ const mergeComponentProps = (prevTemplate = {}) => (componentId, partProps = {})
   const { props: prevProps = {} } = prevComponent;
 
   const entries = Object.entries(partProps);
-  const inclued = entries.every((entry = []) => {
+  const included = entries.every((entry = []) => {
     const [key, nextValue] = entry;
     const prevValue = prevProps[key];
 
     return prevValue === nextValue;
   });
 
-  if (inclued) {
+  if (included) {
     return prevTemplate;
   }
 

@@ -43,7 +43,7 @@ const Diagrams = React.forwardRef((props = {}, ref) => {
   } = props;
 
   const cls = classnames({
-    'components-diagrams-render': true,
+    'react-mc-diagrams-render': true,
     [className]: !!className,
   });
 

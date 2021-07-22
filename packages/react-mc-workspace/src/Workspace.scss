@@ -1,0 +1,657 @@
+$black: #333;
+$black2: #666;
+$black3: #999;
+$black4: #aaa;
+$black5: #ddd;
+$black6: #eee;
+
+$grey: #f4f4f4;
+
+$blue: #1890ff;
+$blue2: rgba($blue, .3);
+$blue3: rgba($blue, .1);
+
+$green: #00bc70;
+
+$red: rgb(255, 97, 97);
+
+%active-opacity {
+  transition: .2s;
+
+  &:active,
+  &:hover {
+    opacity: .7;
+  }
+}
+
+%percenter {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+%ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+$maskZIndex: 10;
+$visibleZIndex: 11;
+$toppstZIndex: 12;
+
+@mixin workspaceMask {
+  .workspace-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(black, .3);
+    z-index: $maskZIndex;
+  }
+}
+
+@mixin workspaceCreator {
+  .workspace-creator {
+    --workspace-creator-width: 15px;
+    --workspace-creator-height: 2px;
+
+    display: flex;
+    padding: 15px 20px;
+    color: white;
+    font-size: 16px;
+    background-color: $blue;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(black, .02);
+    cursor: pointer;
+
+    @extend %active-opacity;
+
+    > * {
+      & + * {
+        margin-left: 15px;
+      }
+    }
+
+    .icon {
+      position: relative;
+      width: var(--workspace-creator-width);
+
+      &:before,
+      &:after {
+        content: '';
+        display: inline-block;
+        background-color: currentColor;
+
+        @extend %percenter;
+      }
+
+      &:before {
+        width: var(--workspace-creator-width);
+        height: var(--workspace-creator-height);
+      }
+
+      &:after {
+        width: var(--workspace-creator-height);
+        height: var(--workspace-creator-width);
+      }
+    }
+
+    .placeholder {
+      font-weight: bold;
+
+      &:empty {
+        &:before {
+          content: '. . .';
+          opacity: 0;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+}
+
+@mixin workspaceSponsor {
+  .react-mc-workspace-sponsor-container {
+    width: 850px;
+    height: 450px;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: $visibleZIndex;
+
+    @extend %percenter;
+
+    position: fixed;
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+@mixin workspaceSelectorCollectionContent($count: 3, $gap: 10px){
+  > * {
+    & + * {
+      margin-top: $gap;
+    }
+  }
+
+  .collection-content {
+    > * {
+      $raito: 1 / $count;
+      $percent: percentage($raito);
+      $offset: $gap * ($count - 1) / $count;
+
+      display: inline-block;
+      width: calc(#{$percent} - #{$offset});
+
+      &:nth-child(#{$count}n + 1) {
+        margin-bottom: $gap;
+      }
+
+      @for $i from 1 to $count {
+        &:nth-child(#{$count}n + #{$i}) {
+          margin-right: $gap;
+        }
+      }
+
+      @for $i from 1 through $count {
+        &:nth-last-child(#{$i}) {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+@mixin workspaceSelector {
+  .workspace-selector {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: $grey;
+
+    > * {
+      padding: 15px 20px;
+    }
+
+    .selector-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background-color: white;
+      box-shadow: 0 0 5px rgba(black, .05);
+      z-index: 1;
+
+      > * {
+        & + * {
+          margin-left: 10px;
+        }
+      }
+
+      .input {
+        padding: 7px 10px;
+        width: 240px;
+        font-size: 14px;
+        border-radius: 5px;
+        background-color: $grey;
+        border: none;
+        outline: none;
+
+        &::-webkit-input-placeholder {
+          color: $black4;
+        }
+      }
+
+      .keyword {
+        padding: 7px 10px;
+        max-width: 200px;
+        color: $blue;
+        font-size: 14px;
+        font-weight: bold;
+        background-color: $blue3;
+        border-radius: 5px;
+        line-height: 1.2;
+        cursor: pointer;
+        user-select: none;
+
+        @extend %active-opacity;
+        @extend %ellipsis;
+      }
+    }
+
+    .selector-body {
+      flex: 1;
+      overflow: auto;
+
+      .body-analysis {
+        display: none;
+      }
+    }
+
+    .selector-collection {
+      & + .selector-collection {
+        margin-top: 15px;
+      }
+
+      .collection-title {
+        padding-left: 7px;
+        color: $black;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      @include workspaceSelectorCollectionContent;
+    }
+
+    &.selector-compact {
+      > * {
+        padding: 10px 10px;
+      }
+
+      .selector-header {
+        .keyword {
+          display: none;
+        }
+      }
+
+      .selector-collection {
+        & + .selector-collection {
+          margin-top: 10px;
+        }
+
+        .collection-title {
+          font-size: 15px;
+        }
+
+        @include workspaceSelectorCollectionContent(1);
+      }
+    }
+  }
+}
+
+@mixin workspaceCreations {
+  .workspace-creations {
+    > * {
+      & + * {
+        margin-top: 15px;
+      }
+    }
+
+    .creations-tools {
+      position: relative;
+      float: right;
+      z-index: 1;
+
+      .tools-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+
+        > * {
+          cursor: pointer;
+
+          @extend %active-opacity;
+        }
+
+        .delete {
+          --workspace-creations-width: 8px;
+          --workspace-creations-height: 2px;
+
+          position: relative;
+          padding: 4px;
+          background-color: $black5;
+          border-radius: 50%;
+          transform: rotate(45deg);
+          width: var(--workspace-creations-width);
+          height: var(--workspace-creations-width);
+          box-sizing: content-box;
+
+          &:before,
+          &:after {
+            content: '';
+            display: inline-block;
+            background-color: white;
+            border-radius: 50px;
+
+            @extend %percenter;
+          }
+
+          &:before {
+            width: var(--workspace-creations-width);
+            height: var(--workspace-creations-height);
+          }
+
+          &:after {
+            width: var(--workspace-creations-height);
+            height: var(--workspace-creations-width);
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin workspaceDecoration {
+  .workspace-decoration {
+    position: relative;
+    display: flex;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: var(--workspace-decoration-font-size, 14px);
+    background-color: var(--workspace-decoration-background-color, white);
+    box-shadow: 0 0 5px var(--workspace-decoration-box-shadow-color, #{rgba(black, .02)});
+
+    > * {
+      & + * {
+        margin-left: var(--workspace-decoration-gap, 15px);
+      }
+    }
+
+    .decoration-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15em;
+      line-height: 1;
+      border-radius: 4px;
+      width: var(--workspace-decoration-size, 25px);
+      height: var(--workspace-decoration-size, 25px);
+      color: var(--workspace-decoration-color, #{$blue});
+      background-color: var(--workspace-decoration-background-color, #{$grey});
+    }
+
+    .decoration-body {
+      flex: 1;
+
+      > * {
+        & + * {
+          margin-top: 5px;
+        }
+      }
+      
+      .body-title {
+        font-size: 1.15em;
+        font-weight: bold;
+        color: var(--workspace-decoration-color, #{$black});
+      }
+
+      .body-content {
+        font-size: 0.8em;
+        line-height: 2;
+        color: var(--workspace-decoration-color, #{$black3});
+      }
+    }
+  }
+
+  .workspace-decoration-for-minimal {
+    --workspace-decoration-gap: 10px;
+    --workspace-decoration-size: auto;
+    --workspace-decoration-font-size: 12px;
+
+    .workspace-decoration {
+      padding: 7px 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      cursor: pointer;
+
+      @extend %active-opacity;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 2em;
+        background-image: linear-gradient(to left, white .25em, rgba(white, 0));
+        z-index: 1;
+      }
+
+      & ~ * {
+        display: none;
+      }
+
+      > * {
+        pointer-events: none;
+      }
+
+      .decoration-header {
+        background-color: transparent;
+      }
+
+      .decoration-body {
+        .body-content {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .workspace-decoration-for-compact {
+    .workspace-decoration {
+      padding: 10px 15px;
+      border-radius: 7px;
+    }
+  }
+}
+
+@mixin workspaceArgumentCreations {
+  .workspace-argument-creations {
+    margin-top: 7px;
+    margin-left: 15px;
+
+    & + * {
+      &:not(.creations-tools, .creations-creator) {
+        margin-top: 7px;
+      }
+    }
+
+    > * {
+      & + * {
+        margin-top: 7px;
+      }
+    }
+
+    .workspace-creator {
+      padding: 10px 15px;
+      border-radius: 7px;
+    }
+  }
+}
+
+@mixin workspaceArgumentInput {
+  .workspace-argument-input-for-article,
+  .workspace-argument-input-for-text {
+    cursor: pointer;
+    color: var(--workspace-argument-color, $blue);
+    background-color: var(--workspace-argument-background-color, transparent);
+    border-radius: var(--workspace-argument-border-radius, 0);
+  }
+
+  .workspace-argument-input {
+    --workspace-argument-border-radius: 5px;
+
+    margin: 0 5px;
+    padding: 0 5px;
+    cursor: pointer;
+    color: var(--workspace-argument-color, #{$blue});
+    background-color: var(--workspace-argument-background-color, #{$blue3});
+    border-radius: var(--workspace-argument-border-radius, 5px);
+  }
+}
+
+@mixin workspaceArgumentSwitch {
+  .workspace-argument-switch {
+    --workspace-argument-switch-width: 2.5em;
+    --workspace-argument-switch-height: 1.2em;
+    --workspace-argument-switch-length: .5em;
+    --workspace-argument-switch-duration: .3s;
+
+    display: inline-block;
+    position: relative;
+    padding: 2px;
+    margin: 0 5px;
+    vertical-align: text-top;
+    border-radius: 50px;
+    transform: translate3d(0, 0, 0);
+    box-sizing: content-box;
+    overflow: hidden;
+    cursor: pointer;
+    width: var(--workspace-argument-switch-width);
+    height: var(--workspace-argument-switch-height);
+    transition: var(--workspace-argument-switch-duration);
+
+    &.switch-active {
+      background-color: $green;
+
+      .content {
+        .dot {
+          left: 100%;
+          transform: translate(-100%, 0);
+        }
+      }
+    }
+
+    &:not(.switch-active) {
+      background-color: $black6;
+    }
+
+    .content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+      &:before,
+      &:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+      }
+
+      &:before {
+        width: 1px;
+        background-color: white;
+        transform: translate(-50%, -50%);
+        left: calc(var(--workspace-argument-switch-height) / 2);
+        height: var(--workspace-argument-switch-length);
+      }
+
+      &:after {
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 1px $black4;
+        transform: translate(50%, -50%);
+        right: calc(var(--workspace-argument-switch-height) / 2.5);
+        width: var(--workspace-argument-switch-length);
+        height: var(--workspace-argument-switch-length);
+      }
+
+      .dot {
+        position: relative;
+        left: 0;
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: 0 0 2px rgba(black, .2);
+        z-index: 1;
+        width: var(--workspace-argument-switch-height);
+        height: var(--workspace-argument-switch-height);
+        transition: var(--workspace-argument-switch-duration);
+      }
+    }
+  }
+}
+
+@mixin workspaceArgumentSelect {
+  %select-options {
+    .select-options {
+      position: absolute;
+      margin-top: 5px;
+      min-width: 100px;
+      max-height: 35vh;
+      top: 100%;
+      left: -5px;
+      color: $blue;
+      white-space: nowrap;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(black, .15);
+      background-color: white;
+      transform: translate3d(0, 0, 0);
+      overflow: auto;
+      z-index: $visibleZIndex;
+
+      .options-item {
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: initial;
+        cursor: pointer;
+        transition: .2s;
+
+        &.item-active {
+          background-color: $blue3;
+        }
+
+        &:hover {
+          color: white;
+          background-color: $blue;
+        }
+      }
+
+    }
+  }
+
+  .workspace-argument-select-for-article,
+  .workspace-argument-select-for-text {
+    position: relative;
+    cursor: pointer;
+    color: var(--workspace-argument-color, $blue);
+
+    @extend %select-options;
+  }
+
+  .workspace-argument-select {
+    position: relative;
+    margin: 0 5px;
+    padding: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--workspace-argument-color, #{$blue});
+    background-color: var(--workspace-argument-background-color, #{$blue3});
+
+    @extend %select-options;
+  }
+}
+
+@mixin workspaceArgument {
+  .workspace-argument-placeholder {
+    user-select: none;
+    color: var(--workspace-argument-placeholder-color, #{$blue2});
+  }
+
+  .workspace-argument-selected {
+    --workspace-argument-color: white;
+    --workspace-argument-background-color: #{$blue};
+    --workspace-argument-placeholder-color: #{rgba(white, .7)};
+  }
+}
+
+.react-mc-workspace-render {
+  background-color: $grey;
+
+  @at-root {
+    @include workspaceMask;
+
+    @include workspaceCreator;
+    @include workspaceSponsor;
+    @include workspaceSelector;
+    @include workspaceCreations;
+    @include workspaceDecoration;
+    @include workspaceArgumentInput;
+    @include workspaceArgumentCreations;
+    @include workspaceArgumentSwitch;
+    @include workspaceArgumentSelect;
+    @include workspaceArgument;
+  }
+}

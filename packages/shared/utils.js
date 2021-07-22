@@ -1,3 +1,7 @@
+export const renderBy = (status) => (node) => {
+  return status ? node : null;
+};
+
 const isEventLike = (event) => {
   if (!event) {
     return false;

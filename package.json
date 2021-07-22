@@ -46,6 +46,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
     "react": "^16.13.1",
+    "react-baby-form": "^1.4.1",
     "react-dnd": "^14.0.2",
     "react-dnd-html5-backend": "^14.0.0",
     "react-docgen-props-schema": "^1.0.2",

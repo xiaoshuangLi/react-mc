@@ -222,7 +222,7 @@ const visibleComponentIds = [];
 const getComponentRenderDependencies = (component = {}) => {
   const { id: componentId } = component;
 
-  const visible = visibleComponentIds.inclued(componentId);
+  const visible = visibleComponentIds.included(componentId);
 
   return [visible];
 };

@@ -514,8 +514,8 @@ export const useTriggers = (props = {}, ref) => {
 
   useEffect(() => {
     if (document !== propsDocument) {
-      document.addEventListener('keydown', onKeyDownCapture, true);
-      return () => document.removeEventListener('keydown', onKeyDownCapture, true);
+      document.body.addEventListener('keydown', onKeyDownCapture, true);
+      return () => document.body.removeEventListener('keydown', onKeyDownCapture, true);
     }
   }, [propsDocument, onKeyDownCapture, ref]);
 };

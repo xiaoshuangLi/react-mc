@@ -1,0 +1,240 @@
+$black: #333;
+$black2: #666;
+$black3: #999;
+$black4: #aaa;
+$black5: #ddd;
+$black6: #eee;
+
+$blue: #1890ff;
+$blue2: rgba($blue, .3);
+$blue3: rgba($blue, .1);
+
+$green: #00bc70;
+
+$red: rgb(255, 97, 97);
+
+%ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+%active-opacity {
+  transition: .2s;
+
+  &:active,
+  &:hover {
+    opacity: .7;
+  }
+}
+
+@mixin workspaceSelectorCollectionContent($count: 3, $gap: 10px){
+  > * {
+    $raito: 1 / $count;
+    $percent: percentage($raito);
+    $offset: $gap * ($count - 1) / $count;
+
+    display: inline-block;
+    width: calc(#{$percent} - #{$offset});
+
+    &:nth-child(#{$count}n + 1) {
+      margin-bottom: $gap;
+    }
+
+    @for $i from 1 to $count {
+      &:nth-child(#{$count}n + #{$i}) {
+        margin-right: $gap;
+      }
+    }
+
+    @for $i from 1 through $count {
+      &:nth-last-child(#{$i}) {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.pages-workspace-render {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+
+  .workspace-redner-creations {
+    flex: 1;
+    overflow: auto;
+    padding: 10px;
+
+    @include workspaceSelectorCollectionContent;
+
+    .creations-item {
+      position: relative;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: .2s;
+
+      &:hover {
+        box-shadow: 0 0 10px rgba($blue, .5);
+
+        .item-delete {
+          opacity: 1;
+          pointer-events: all;
+        }
+      }
+
+      > * {
+        & + * {
+          margin-top: 5px;
+        }
+      }
+
+      .item-minimal {
+        display: flex;
+        align-items: center;
+        color: $black2;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1;
+
+        & + * {
+          margin-top: 10px;
+        }
+
+        .minimal-trigger {
+          font-size: 1.4em;
+        }
+
+        .minimal-missions {
+          flex: 1;
+          overflow: hidden;
+          border-radius: 5px;
+          // transform: translate3d(0, 0, 0);
+
+          &:before {
+            content: "→";
+            color: $black5;
+            padding: 0 10px;
+            vertical-align: middle;
+          }
+
+          &:empty {
+            &:after {
+              content: '';
+              display: inline-block;
+              width: 25px;
+              height: 25px;
+              vertical-align: middle;
+            }
+          }
+
+          > * {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
+            width: 25px;
+            height: 25px;
+            background: $black6;
+            border-radius: 5px;
+          }
+        }
+      }
+
+      .item-title {
+        color: $black;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .item-description {
+        font-size: 12px;
+
+        @extend %ellipsis;
+
+        &,
+        * {
+          color: $black4;
+        }
+
+        &:empty {
+          &:before {
+            content: '无任务';
+          }
+        }
+      }
+
+      .item-delete {
+        position: absolute;
+        margin: 0;
+        top: 50%;
+        right: 0;
+        opacity: 0;
+        transform: translate(0, -50%);
+        transition: .2s;
+
+        &:before {
+          content: 'X';
+          padding: 3px 3px 3px 8px;
+          color: white;
+          font-size: 12px;
+          line-height: 1;
+          background: $red;
+          border-radius: 50px 0 0 50px;
+        }
+      }
+    }
+  }
+
+  .workspace-redner-selected {
+    flex: 1;
+    overflow: auto;
+    padding: 10px;
+
+    > * {
+      & + * {
+        margin-top: 20px;
+      }
+    }
+
+    .selected-header {
+      display: flex;
+      align-items: center;
+
+      > * {
+        & + * {
+          margin-left: 10px;
+        }
+      }
+
+      .back {
+        padding: 5px 15px;
+        color: $black3;
+        font-size: 12px;
+        background: rgba(black, .05);
+        border-radius: 50px;
+        cursor: pointer;
+
+        @extend %active-opacity;
+      }
+
+      .title {
+        padding: 5px 15px;
+        font-size: 16px;
+        font-weight: bold;
+        background: white;
+        border-radius: 50px;
+      }
+    }
+  }
+
+  .workspace-redner-selector {
+    width: 250px;
+    box-shadow: 0 0 5px rgba(black, .1);
+  }
+}

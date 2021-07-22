@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Template from './pages/template';
 import Diagrams from './pages/diagrams';
+import Workspace from './pages/workspace';
 
 const element = (
   <BrowserRouter>
@@ -13,6 +14,9 @@ const element = (
       </Route>
       <Route path="/diagrams">
         <Diagrams />
+      </Route>
+      <Route path="/workspace">
+        <Workspace />
       </Route>
     </Switch>
   </BrowserRouter>
