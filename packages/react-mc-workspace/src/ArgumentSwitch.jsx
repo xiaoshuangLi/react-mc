@@ -24,6 +24,9 @@ const ArgumentSwitch = React.forwardRef((props = {}, ref) => {
   });
 
   const onClick = useEventCallback((...args) => {
+    const [e] = args;
+
+    propsOnChange && e.stopPropagation();
     propsOnClick && propsOnClick(...args);
     propsOnChange && propsOnChange(!propsValue);
   });

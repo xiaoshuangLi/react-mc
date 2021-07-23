@@ -692,7 +692,7 @@ class Workspace extends Component {
 
     const [event, ...missions] = selected;
 
-    const conditions = [{ trigger: undefined }];
+    const conditions = [{ type: 'alert' }];
 
     return (
       <div className="workspace-redner-selected">

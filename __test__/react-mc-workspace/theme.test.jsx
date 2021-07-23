@@ -31,6 +31,8 @@ describe('react-mc-workspace: ', () => {
     const targetColorLight = 'rgba(255, 0, 0, 0.3)';
     const targetColorLighter = 'rgba(255, 0, 0, 0.1)';
 
+    const onChange = () => {};
+
     const Test = (props = {}) => {
       const { value: propsValue } = props;
 
@@ -106,8 +108,8 @@ describe('react-mc-workspace: ', () => {
 
       return (
         <Decoration>
-          <ArgumentInput ref={valueRef} value="test" onChange={console.log} />
-          <ArgumentInput ref={placeholdeRef} placeholder="test" onChange={console.log} />
+          <ArgumentInput ref={valueRef} value="test" onChange={onChange} />
+          <ArgumentInput ref={placeholdeRef} placeholder="test" onChange={onChange} />
         </Decoration>
       );
     };
@@ -115,7 +117,7 @@ describe('react-mc-workspace: ', () => {
     const element = (
       <Workspace style={style}>
         <Definition output type="test" ComponentClass={Test} />
-        <Creation value={value} type="test" onChange={console.log} />
+        <Creation value={value} type="test" onChange={onChange} />
       </Workspace>
     );
 
@@ -138,6 +140,8 @@ describe('react-mc-workspace: ', () => {
       '--workspace-theme-color-lighter': targetColorLighter,
     };
 
+    const onChange = () => {};
+
     const Test = (props = {}) => {
       const { value: propsValue } = props;
 
@@ -213,8 +217,8 @@ describe('react-mc-workspace: ', () => {
 
       return (
         <Decoration>
-          <ArgumentInput ref={valueRef} value="test" onChange={console.log} />
-          <ArgumentInput ref={placeholdeRef} placeholder="test" onChange={console.log} />
+          <ArgumentInput ref={valueRef} value="test" onChange={onChange} />
+          <ArgumentInput ref={placeholdeRef} placeholder="test" onChange={onChange} />
         </Decoration>
       );
     };
@@ -222,7 +226,7 @@ describe('react-mc-workspace: ', () => {
     const element = (
       <Workspace style={style}>
         <Definition output type="test" ComponentClass={Test} />
-        <Creation value={value} type="test" onChange={console.log} />
+        <Creation value={value} type="test" onChange={onChange} />
       </Workspace>
     );
 

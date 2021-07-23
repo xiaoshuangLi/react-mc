@@ -8,10 +8,10 @@ import { expect } from 'chai';
 
 import { useEventCallback } from 'shared/hooks';
 
-import Workspace, { Collection, Definition, Creations } from 'react-mc-workspace';
+import Workspace, { Collection, Definition, ArgumentCreations } from 'react-mc-workspace';
 
 describe('react-mc-workspace: ', () => {
-  it('Creations render right type ComponentClass', (done) => {
+  it('ArgumentCreations render right type ComponentClass', (done) => {
     const div = document.createElement('div');
     document.body.appendChild(div);
 
@@ -49,14 +49,14 @@ describe('react-mc-workspace: ', () => {
         <Collection type="test_1" title="测试_一">
           <Definition type="test_2" ComponentClass={ComponentClass} />
         </Collection>
-        <Creations ref={ref} value={value} />
+        <ArgumentCreations ref={ref} value={value} />
       </Workspace>
     );
 
     ReactDOM.render(element, div);
   });
 
-  it('Creations trigger change value', (done) => {
+  it('ArgumentCreations trigger change value', (done) => {
     const div = document.createElement('div');
     document.body.appendChild(div);
 
@@ -106,14 +106,14 @@ describe('react-mc-workspace: ', () => {
         <Collection type="test_1" title="测试_一">
           <Definition type="test_2" ComponentClass={ComponentClass} />
         </Collection>
-        <Creations value={value} onChange={onChange} />
+        <ArgumentCreations value={value} onChange={onChange} />
       </Workspace>
     );
 
     ReactDOM.render(element, div);
   });
 
-  it('Creations trigger change value by create', (done) => {
+  it('ArgumentCreations trigger change value by create', (done) => {
     const div = document.createElement('div');
     document.body.appendChild(div);
 
@@ -186,7 +186,7 @@ describe('react-mc-workspace: ', () => {
         <Collection type="test_1" title="测试_一">
           <Definition type="test_2" ComponentClass={ComponentClass} />
         </Collection>
-        <Creations ref={ref} value={value} onChange={onChange} />
+        <ArgumentCreations ref={ref} value={value} onChange={onChange} />
       </Workspace>
     );
 

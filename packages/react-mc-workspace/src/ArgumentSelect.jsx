@@ -60,7 +60,7 @@ const ArgumentSelect = React.forwardRef((props = {}, ref) => {
 
     setVisible(true);
 
-    e.stopPropagation();
+    propsOnChange && e.stopPropagation();
     propsOnClick && propsOnClick(...args);
   });
 

@@ -1,6 +1,8 @@
 import React, {
+  useRef,
   useMemo,
   useState,
+  useEffect,
   useContext,
 } from 'react';
 import classnames from 'classnames';
@@ -21,6 +23,14 @@ const properties = [
   '--workspace-theme-color-lighter',
 ];
 
+const definitionToCreation = (definition = {}) => {
+  const { type, value } = definition;
+
+  return value === undefined
+    ? { type }
+    : { type, value };
+};
+
 const Sponsor = React.forwardRef((props = {}, ref) => {
   const {
     className,
@@ -29,11 +39,14 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
     children,
     ...others
   } = props;
+  const { output } = others;
 
   const cls = classnames({
     'workspace-sponsor': true,
     [className]: !!className,
   });
+
+  const selectorRef = useRef(null);
 
   const [visible, setVisible] = useState(false);
   const [state = {}] = useContext(StateContext);
@@ -87,6 +100,45 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
     setVisible(false);
   });
 
+  const onRenderSelector = useEventCallback(() => {
+    if (!visible) {
+      return;
+    }
+
+    if (output) {
+      return;
+    }
+
+    const { current } = selectorRef;
+
+    if (!current) {
+      return;
+    }
+
+    const { getCollections } = current;
+
+    if (!getCollections) {
+      return;
+    }
+
+    const collections = getCollections() || [];
+
+    const definitions = collections.reduce((res = [], collection = {}) => {
+      const { definitions: collectionDefinitions = [] } = collection;
+
+      return res.concat(collectionDefinitions);
+    }, []);
+
+    if (definitions.length !== 1) {
+      return;
+    }
+
+    const [definition] = definitions;
+    const creation = definitionToCreation(definition);
+
+    onChange(creation);
+  });
+
   const renderContent = () => {
     return (
       <span ref={ref} className={cls} onClick={onClick}>
@@ -103,11 +155,16 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
     return (
       <Mask onClick={onClickMask}>
         <div className="react-mc-workspace-sponsor-container" style={style}>
-          <Selector onChange={onChange} {...others} />
+          <Selector ref={selectorRef} onChange={onChange} {...others} />
         </div>
       </Mask>
     );
   };
+
+  useEffect(
+    () => onRenderSelector(),
+    [visible, onRenderSelector],
+  );
 
   return (
     <>

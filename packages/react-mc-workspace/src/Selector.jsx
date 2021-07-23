@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useContext,
   useCallback,
+  useImperativeHandle,
   isValidElement,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -68,7 +69,7 @@ const useConditions = (props = {}) => {
 
 const useCollections = (props) => {
   const conditions = useConditions(props);
-  const [collections] = useContext(CollectionsContext);
+  const [collections = []] = useContext(CollectionsContext);
 
   const judge = useCallback((definition = {}) => {
     return conditions.every((condition = {}) => {
@@ -108,9 +109,16 @@ const useCollections = (props) => {
       return { ...collection, definitions: nextDefinitions };
     };
 
+    const filter = (collection = {}) => {
+      const { definitions = [] } = collection;
+
+      return !!definitions.length;
+    };
+
     return collections
       .sort(sort)
-      .map(map);
+      .map(map)
+      .filter(filter);
   }, [collections, judge]);
 };
 
@@ -416,6 +424,10 @@ const Selector = React.forwardRef((props = {}, ref) => {
     return resultCollections;
   }, [collections, keyword, store]);
 
+  const getCollections = useEventCallback(() => {
+    return collections;
+  });
+
   const onChange = useEventCallback((...args) => {
     propsOnChange && propsOnChange(...args);
   });
@@ -540,26 +552,15 @@ const Selector = React.forwardRef((props = {}, ref) => {
     );
   };
 
-  useEffect(() => {
-    if (output) {
-      return;
+  useImperativeHandle(ref, () => {
+    const { current } = ref;
+
+    if (current) {
+      current.getCollections = getCollections;
     }
 
-    const definitions = collections.reduce((res = [], collection = {}) => {
-      const { definitions: collectionDefinitions = [] } = collection;
-
-      return res.concat(collectionDefinitions);
-    }, []);
-
-    if (definitions.length !== 1) {
-      return;
-    }
-
-    const [definition] = definitions;
-    const creation = definitionToCreation(definition);
-
-    onChange(creation);
-  }, []);
+    return current;
+  }, [ref, getCollections]);
 
   return (
     <div ref={ref} className={cls} {...others}>

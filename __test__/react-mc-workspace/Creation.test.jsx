@@ -25,7 +25,7 @@ describe('react-mc-workspace: ', () => {
     setTimeout(() => {
       expect(source).to.equal(target);
       done();
-    });
+    }, 1000);
 
     const element = (
       <Workspace>
