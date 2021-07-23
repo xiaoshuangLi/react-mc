@@ -335,7 +335,6 @@ const SetComponentPropCreation = (props = {}) => {
 
 const FetchCreation = (props = {}) => {
   const [inteface, setInterface] = useArgumentValue(props, 0);
-  const [loading, setLoading] = useArgumentValue(props, 1);
 
   const title = (
     <>
@@ -345,11 +344,6 @@ const FetchCreation = (props = {}) => {
         options={interfaceOptions}
         value={inteface}
         onChange={setInterface}
-      />
-      加载中
-      <ArgumentSwitch
-        value={loading}
-        onChange={setLoading}
       />
     </>
   );
@@ -509,8 +503,6 @@ const GetComponentPropCreation = (props = {}) => {
 const KEY = 'react-mc-state';
 const initialState = JSON.parse(window.localStorage.getItem(KEY) || 'null');
 
-const stop = (e) => e.stopPropagation();
-
 class Workspace extends Component {
   constructor(props) {
     super(props);
@@ -669,7 +661,7 @@ class Workspace extends Component {
               <Creations mode="icon" value={rest} />
             </div>
           </div>
-          <div className="item-title" onClick={stop}>
+          <div className="item-title">
             <Creation mode="text" {...first} onChange={onChange} />
           </div>
           <div className="item-description">

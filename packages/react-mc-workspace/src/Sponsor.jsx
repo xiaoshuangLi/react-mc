@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, {
+  useMemo,
+  useState,
+  useContext,
+} from 'react';
 import classnames from 'classnames';
 
 import { useEventCallback } from 'shared/hooks';
 
+import { StateContext } from './utils/hooks';
+
 import Mask from './Mask';
 import Selector from './Selector';
+
+const properties = [
+  '--workspace-theme-color-r',
+  '--workspace-theme-color-g',
+  '--workspace-theme-color-b',
+  '--workspace-theme-color',
+  '--workspace-theme-color-light',
+  '--workspace-theme-color-lighter',
+];
 
 const Sponsor = React.forwardRef((props = {}, ref) => {
   const {
@@ -21,6 +36,38 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
   });
 
   const [visible, setVisible] = useState(false);
+  const [state = {}] = useContext(StateContext);
+  const { root } = state;
+
+  const style = useMemo(() => {
+    if (!visible) {
+      return;
+    }
+
+    if (!root) {
+      return;
+    }
+
+    const { current } = root;
+
+    if (!current) {
+      return;
+    }
+
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const computedStyle = window.getComputedStyle(current);
+
+    return properties.reduce((res = {}, property) => {
+      const value = computedStyle.getPropertyValue(property);
+
+      return value
+        ? { ...res, [property]: value }
+        : res;
+    }, {});
+  }, [visible, root]);
 
   const onChange = useEventCallback((...args) => {
     setVisible(false);
@@ -28,8 +75,12 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
   });
 
   const onClick = useEventCallback((...args) => {
-    propsOnClick && propsOnClick(...args);
+    const [e] = args;
+
     setVisible(true);
+
+    e.stopPropagation();
+    propsOnClick && propsOnClick(...args);
   });
 
   const onClickMask = useEventCallback(() => {
@@ -51,7 +102,7 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
 
     return (
       <Mask onClick={onClickMask}>
-        <div className="react-mc-workspace-sponsor-container">
+        <div className="react-mc-workspace-sponsor-container" style={style}>
           <Selector onChange={onChange} {...others} />
         </div>
       </Mask>

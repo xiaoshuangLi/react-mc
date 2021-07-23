@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {
+  useMemo,
+  createRef,
+} from 'react';
 import classnames from 'classnames';
 
 import Collection from './Collection';
@@ -16,8 +19,12 @@ const Workspace = React.forwardRef((props = {}, ref) => {
     [className]: !!className,
   });
 
+  ref = useMemo(() => {
+    return ref || createRef();
+  }, [ref]);
+
   const collectionsValue = useUsing([]);
-  const stateValue = useUsing({});
+  const stateValue = useUsing({ root: ref });
 
   return (
     <CollectionsProvider value={collectionsValue}>

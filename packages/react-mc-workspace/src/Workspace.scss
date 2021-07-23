@@ -7,13 +7,7 @@ $black6: #eee;
 
 $grey: #f4f4f4;
 
-$blue: #1890ff;
-$blue2: rgba($blue, .3);
-$blue3: rgba($blue, .1);
-
 $green: #00bc70;
-
-$red: rgb(255, 97, 97);
 
 %active-opacity {
   transition: .2s;
@@ -35,6 +29,30 @@ $red: rgb(255, 97, 97);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+%theme {
+  --workspace-theme-color-r: 24;
+  --workspace-theme-color-g: 144;
+  --workspace-theme-color-b: 255;
+  --workspace-theme-color: rgba(
+    var(--workspace-theme-color-r),
+    var(--workspace-theme-color-g),
+    var(--workspace-theme-color-b),
+    1
+  );
+  --workspace-theme-color-light: rgba(
+    var(--workspace-theme-color-r),
+    var(--workspace-theme-color-g),
+    var(--workspace-theme-color-b),
+    .3
+  );
+  --workspace-theme-color-lighter: rgba(
+    var(--workspace-theme-color-r),
+    var(--workspace-theme-color-g),
+    var(--workspace-theme-color-b),
+    .1
+  );
 }
 
 $maskZIndex: 10;
@@ -62,10 +80,10 @@ $toppstZIndex: 12;
     padding: 15px 20px;
     color: white;
     font-size: 16px;
-    background-color: $blue;
     border-radius: 10px;
     box-shadow: 0 0 5px rgba(black, .02);
     cursor: pointer;
+    background-color: var(--workspace-theme-color);
 
     @extend %active-opacity;
 
@@ -105,7 +123,6 @@ $toppstZIndex: 12;
       &:empty {
         &:before {
           content: '. . .';
-          opacity: 0;
           pointer-events: none;
         }
       }
@@ -121,6 +138,7 @@ $toppstZIndex: 12;
     overflow: hidden;
     z-index: $visibleZIndex;
 
+    @extend %theme;
     @extend %percenter;
 
     position: fixed;
@@ -208,10 +226,10 @@ $toppstZIndex: 12;
       .keyword {
         padding: 7px 10px;
         max-width: 200px;
-        color: $blue;
+        color: var(--workspace-theme-color);
         font-size: 14px;
         font-weight: bold;
-        background-color: $blue3;
+        background-color: var(--workspace-theme-color-lighter);
         border-radius: 5px;
         line-height: 1.2;
         cursor: pointer;
@@ -304,10 +322,10 @@ $toppstZIndex: 12;
           padding: 4px;
           background-color: $black5;
           border-radius: 50%;
+          box-sizing: content-box;
           transform: rotate(45deg);
           width: var(--workspace-creations-width);
           height: var(--workspace-creations-width);
-          box-sizing: content-box;
 
           &:before,
           &:after {
@@ -359,7 +377,7 @@ $toppstZIndex: 12;
       border-radius: 4px;
       width: var(--workspace-decoration-size, 25px);
       height: var(--workspace-decoration-size, 25px);
-      color: var(--workspace-decoration-color, #{$blue});
+      color: var(--workspace-decoration-color, var(--workspace-theme-color));
       background-color: var(--workspace-decoration-background-color, #{$grey});
     }
 
@@ -466,7 +484,7 @@ $toppstZIndex: 12;
   .workspace-argument-input-for-article,
   .workspace-argument-input-for-text {
     cursor: pointer;
-    color: var(--workspace-argument-color, $blue);
+    color: var(--workspace-argument-color, var(--workspace-theme-color));
     background-color: var(--workspace-argument-background-color, transparent);
     border-radius: var(--workspace-argument-border-radius, 0);
   }
@@ -477,8 +495,8 @@ $toppstZIndex: 12;
     margin: 0 5px;
     padding: 0 5px;
     cursor: pointer;
-    color: var(--workspace-argument-color, #{$blue});
-    background-color: var(--workspace-argument-background-color, #{$blue3});
+    color: var(--workspace-argument-color, var(--workspace-theme-color));
+    background-color: var(--workspace-argument-background-color, var(--workspace-theme-color-lighter));
     border-radius: var(--workspace-argument-border-radius, 5px);
   }
 }
@@ -573,7 +591,7 @@ $toppstZIndex: 12;
       max-height: 35vh;
       top: 100%;
       left: -5px;
-      color: $blue;
+      color: var(--workspace-theme-color);
       white-space: nowrap;
       border-radius: 5px;
       box-shadow: 0 0 5px rgba(black, .15);
@@ -590,12 +608,12 @@ $toppstZIndex: 12;
         transition: .2s;
 
         &.item-active {
-          background-color: $blue3;
+          background-color: var(--workspace-theme-color-lighter);
         }
 
         &:hover {
           color: white;
-          background-color: $blue;
+          background-color: var(--workspace-theme-color);
         }
       }
 
@@ -606,7 +624,7 @@ $toppstZIndex: 12;
   .workspace-argument-select-for-text {
     position: relative;
     cursor: pointer;
-    color: var(--workspace-argument-color, $blue);
+    color: var(--workspace-argument-color, var(--workspace-theme-color));
 
     @extend %select-options;
   }
@@ -617,8 +635,8 @@ $toppstZIndex: 12;
     padding: 0 5px;
     border-radius: 5px;
     cursor: pointer;
-    color: var(--workspace-argument-color, #{$blue});
-    background-color: var(--workspace-argument-background-color, #{$blue3});
+    color: var(--workspace-argument-color, var(--workspace-theme-color));
+    background-color: var(--workspace-argument-background-color, var(--workspace-theme-color-lighter));
 
     @extend %select-options;
   }
@@ -627,18 +645,20 @@ $toppstZIndex: 12;
 @mixin workspaceArgument {
   .workspace-argument-placeholder {
     user-select: none;
-    color: var(--workspace-argument-placeholder-color, #{$blue2});
+    color: var(--workspace-argument-placeholder-color, var(--workspace-theme-color-light));
   }
 
   .workspace-argument-selected {
     --workspace-argument-color: white;
-    --workspace-argument-background-color: #{$blue};
+    --workspace-argument-background-color: var(--workspace-theme-color);
     --workspace-argument-placeholder-color: #{rgba(white, .7)};
   }
 }
 
 .react-mc-workspace-render {
   background-color: $grey;
+
+  @extend %theme;
 
   @at-root {
     @include workspaceMask;

@@ -1,5 +1,7 @@
 import React, {
   useMemo,
+  useState,
+  useEffect,
   Fragment,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -15,59 +17,111 @@ import Extractions from './Extractions';
 
 const { Provider: ExtractableProvider } = ExtractableContext;
 
+const useValue = (props = {}) => {
+  const {
+    value: propsValue,
+    onChange: propsOnChange,
+  } = props;
+
+  const [state, setState] = useState(propsValue);
+
+  const value = useMemo(() => {
+    return state || [];
+  }, [state]);
+
+  const setValue = useMemo(() => {
+    return propsOnChange
+      ? setState
+      : undefined;
+  }, [propsOnChange, setState]);
+
+  const onChangeState = useEventCallback(() => {
+    if (state === propsValue) {
+      return;
+    }
+
+    propsOnChange && propsOnChange(state);
+  });
+
+  const onChangePropsValue = useEventCallback(() => {
+    if (!propsValue) {
+      return;
+    }
+
+    setState(propsValue);
+  });
+
+  useEffect(
+    () => onChangeState(),
+    [state, onChangeState],
+  );
+
+  useEffect(
+    () => onChangePropsValue(),
+    [propsValue, onChangePropsValue],
+  );
+
+  return [value, setValue];
+};
+
 const Creations = React.forwardRef((props = {}, ref) => {
   const {
     className,
     placeholder = '',
-    value: propsValue,
-    onChange: propsOnChange,
+    value: a,
+    onChange: b,
     children,
     ...others
   } = props;
 
   const mode = useMode();
+  const [value, setValue] = useValue(props);
 
   const cls = classnames({
     'workspace-creations': true,
     [className]: !!className,
   });
 
-  const source = useMemo(() => {
-    return propsValue || [];
-  }, [propsValue]);
-
   const onCreate = useEventCallback((current) => {
-    const value = source.concat(current);
+    const setter = (prevValue = []) => {
+      return prevValue.concat(current);
+    };
 
-    propsOnChange && propsOnChange(value);
+    setValue && setValue(setter);
   });
 
   const renderCreations = () => {
-    return source.map((item = {}, index) => {
+    return value.map((item = {}, index) => {
       let onChange;
       let onClickDelete;
 
-      if (propsOnChange) {
+      if (setValue) {
         onChange = (current) => {
-          const value = source.map((propsItem = {}) => {
-            return propsItem === item
-              ? { ...item, value: current }
-              : propsItem;
-          });
+          const setter = (prevValue) => {
+            return prevValue.map((prevItem = {}) => {
+              return prevItem === item
+                ? { ...item, value: current }
+                : prevItem;
+            });
+          };
 
-          propsOnChange && propsOnChange(value);
+          setValue && setValue(setter);
         };
 
         onClickDelete = () => {
-          const value = source.slice();
+          const setter = (prevValue) => {
+            const result = prevValue.slice();
 
-          value.splice(index, 1);
-          propsOnChange && propsOnChange(value);
+            result.splice(index, 1);
+            return result;
+          };
+
+          setValue && setValue(setter);
         };
       }
 
       const renderTools = () => {
-        if (!propsOnChange) {
+        if (!setValue) {
           return null;
         }
 
@@ -100,7 +154,7 @@ const Creations = React.forwardRef((props = {}, ref) => {
   };
 
   const renderCreator = () => {
-    if (!propsOnChange) {
+    if (!setValue) {
       return null;
     }
 

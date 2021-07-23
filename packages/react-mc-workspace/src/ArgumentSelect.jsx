@@ -56,7 +56,11 @@ const ArgumentSelect = React.forwardRef((props = {}, ref) => {
   const [visible, setVisible] = useState(false);
 
   const onClick = useEventCallback((...args) => {
+    const [e] = args;
+
     setVisible(true);
+
+    e.stopPropagation();
     propsOnClick && propsOnClick(...args);
   });
 

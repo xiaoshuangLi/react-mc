@@ -12,6 +12,7 @@ const packages = [
   'react-mc-runner',
   'react-mc-template',
   'react-mc-diagrams',
+  'react-mc-workspace',
 ];
 
 const convert = (str = '') => {
