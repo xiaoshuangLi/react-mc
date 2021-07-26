@@ -118,7 +118,7 @@ const SetValueCreation = (props = {}) => {
 
   const title = (
     <>
-      Get
+      Set
       <ArgumentSelect
         placeholder="Please select key"
         options={options}
