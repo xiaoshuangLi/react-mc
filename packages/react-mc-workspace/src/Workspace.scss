@@ -296,6 +296,14 @@ $toppstZIndex: 12;
       & + * {
         margin-top: 15px;
       }
+
+      &.creations-tools {
+        &:first-child {
+          & + * {
+            margin-top: 0;
+          }
+        }
+      }
     }
 
     .creations-tools {
@@ -646,6 +654,12 @@ $toppstZIndex: 12;
   .workspace-argument-placeholder {
     user-select: none;
     color: var(--workspace-argument-placeholder-color, var(--workspace-theme-color-light));
+
+    &:empty {
+      &:before {
+        content: '. . .';
+      }
+    }
   }
 
   .workspace-argument-selected {

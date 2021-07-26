@@ -168,7 +168,7 @@ const options = {
 
 #### options.isRoot
 
-Return the boolean means the ```component``` is root.If it's root, cannot been moved, copied or deleted;
+Return the boolean means the ```component``` is root.If it's root, cannot been moved, copied or deleted.
 
 #### options.getComponentClass
 
