@@ -57,7 +57,7 @@
     "react-refresh": "^0.9.0",
     "react-router-dom": "^5.2.0",
     "sass": "^1.26.3",
-    "sass-loader": "^8.0.2",
+    "sass-loader": "^10.0.0",
     "style-loader": "^2.0.0",
     "uuid": "^7.0.3",
     "webpack": "^4.42.0",
@@ -70,7 +70,8 @@
     "test": "karma start --single-run",
     "start": "webpack-dev-server --config examples/webpack.config.js",
     "build": "node webpack/build.js",
-    "prepublishOnly": "npm run test && npm run build",
-    "postpublish": "rm -rf packages/*/lib"
+    "clean": "rm -rf packages/*/lib",
+    "prepublishOnly": "npm run clean && npm run test && npm run build",
+    "postpublish": "npm run clean"
   }
 }
