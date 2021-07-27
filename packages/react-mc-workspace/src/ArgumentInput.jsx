@@ -17,6 +17,7 @@ import {
   useMode,
 } from './utils/hooks';
 
+import Space from './Space';
 import Sponsor from './Sponsor';
 import Creation from './Creation';
 import Extractions from './Extractions';
@@ -178,13 +179,15 @@ const ArgumentInput = React.forwardRef((props = {}, ref) => {
   }, [selected, onKeyDown]);
 
   return (
-    <Extractions>
-      <DefaultModeProvider value="article">
-        { renderSponsor() }
-        { renderCreation() }
-        { renderChildren() }
-      </DefaultModeProvider>
-    </Extractions>
+    <Space>
+      <Extractions>
+        <DefaultModeProvider value="article">
+            { renderSponsor() }
+            { renderCreation() }
+            { renderChildren() }
+        </DefaultModeProvider>
+      </Extractions>
+    </Space>
   );
 });
 

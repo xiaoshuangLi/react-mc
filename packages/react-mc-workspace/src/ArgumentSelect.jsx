@@ -10,6 +10,7 @@ import { useEventCallback } from 'shared/hooks';
 import { useArgument, useMode } from './utils/hooks';
 
 import Mask from './Mask';
+import Space from './Space';
 
 const useCurrent = (props = {}) => {
   const { options, value } = props;
@@ -123,10 +124,12 @@ const ArgumentSelect = React.forwardRef((props = {}, ref) => {
   useArgument(props);
 
   return (
-    <span ref={ref} className={cls} onClick={onClick} {...others}>
-      { renderContent() }
-      { renderOptions() }
-    </span>
+    <Space>
+      <span ref={ref} className={cls} onClick={onClick} {...others}>
+        { renderContent() }
+        { renderOptions() }
+      </span>
+    </Space>
   );
 });
 

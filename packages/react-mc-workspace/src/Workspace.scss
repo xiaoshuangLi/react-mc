@@ -500,7 +500,6 @@ $toppstZIndex: 12;
   .workspace-argument-input {
     --workspace-argument-border-radius: 5px;
 
-    margin: 0 5px;
     padding: 0 5px;
     cursor: pointer;
     color: var(--workspace-argument-color, var(--workspace-theme-color));
@@ -519,7 +518,6 @@ $toppstZIndex: 12;
     display: inline-block;
     position: relative;
     padding: 2px;
-    margin: 0 5px;
     vertical-align: text-top;
     border-radius: 50px;
     transform: translate3d(0, 0, 0);
@@ -639,7 +637,6 @@ $toppstZIndex: 12;
 
   .workspace-argument-select {
     position: relative;
-    margin: 0 5px;
     padding: 0 5px;
     border-radius: 5px;
     cursor: pointer;

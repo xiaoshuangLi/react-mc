@@ -6,6 +6,8 @@ import { useEventCallback } from 'shared/hooks';
 
 import { useArgument, useMode } from './utils/hooks';
 
+import Space from './Space';
+
 const ArgumentSwitch = React.forwardRef((props = {}, ref) => {
   const {
     className,
@@ -38,11 +40,13 @@ const ArgumentSwitch = React.forwardRef((props = {}, ref) => {
   }
 
   return (
-    <div ref={ref} className={cls} onClick={onClick} {...others}>
-      <div className="content">
-        <div className="dot" />
+    <Space>
+      <div ref={ref} className={cls} onClick={onClick} {...others}>
+        <div className="content">
+          <div className="dot" />
+        </div>
       </div>
-    </div>
+    </Space>
   );
 });
 
