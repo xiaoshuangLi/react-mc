@@ -1,9 +1,10 @@
 {
   "name": "react-mc-workspace",
   "version": "1.1.0-alpha.5",
-  "description": "react-mc-workspace",
+  "description": "Easy to build your own visual programming tool, just like Scratch-Blocks or Apple Shortcut. ",
   "keywords": [
-    "react"
+    "react",
+    "visual programming"
   ],
   "author": "xiaoshuang.li <qq1157502759@gmail.com>",
   "license": "MIT",
