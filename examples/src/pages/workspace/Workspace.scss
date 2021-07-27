@@ -55,15 +55,7 @@ $red: rgb(255, 97, 97);
   }
 }
 
-* {
-  box-sizing: border-box;
-}
-
-.pages-workspace-render {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-
+@mixin workspaceRednerCreations {
   .workspace-redner-creations {
     flex: 1;
     overflow: auto;
@@ -190,7 +182,9 @@ $red: rgb(255, 97, 97);
       }
     }
   }
+}
 
+@mixin workspaceRednerSelected {
   .workspace-redner-selected {
     flex: 1;
     overflow: auto;
@@ -232,9 +226,28 @@ $red: rgb(255, 97, 97);
       }
     }
   }
+}
 
+@mixin workspaceRednerSelector {
   .workspace-redner-selector {
     width: 250px;
     box-shadow: 0 0 5px rgba(black, .1);
   }
+}
+
+@mixin workspaceRednerNested {
+  * {
+    box-sizing: border-box;
+  }
+}
+
+.pages-workspace-render {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+
+  @include workspaceRednerCreations;
+  @include workspaceRednerSelected;
+  @include workspaceRednerSelector;
+  @include workspaceRednerNested;
 }

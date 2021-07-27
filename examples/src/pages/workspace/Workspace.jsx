@@ -1,6 +1,7 @@
 import React, {
   useMemo,
   useEffect,
+  Fragment,
   Component,
 } from 'react';
 import classnames from 'classnames';
@@ -13,12 +14,14 @@ import ReactMCWorkspace, {
   Definition,
   Decoration,
   ArgumentInput,
-  ArgumentSwitch,
   ArgumentSelect,
   ArgumentCreations,
 } from 'react-mc-workspace';
 
-import { useArgumentValue } from './hooks';
+import { useArgument } from './hooks';
+
+const initialComponentValue = ['input-name'];
+const initialComponentPropValue = ['input-name', '["value"]'];
 
 const componentOptions = [
   { label: '姓名（输入框）', value: 'input-name' },
@@ -48,7 +51,7 @@ const OnPageWillMountCreation = (props = {}) => {
 };
 
 const OnClickCreation = (props = {}) => {
-  const [component, setComponent] = useArgumentValue(props, 0);
+  const [component, setComponent] = useArgument(props, 0);
 
   useEffect(() => {
     if (component) {
@@ -82,34 +85,8 @@ const OnClickCreation = (props = {}) => {
 };
 
 const OnChangeComponentPropCreation = (props = {}) => {
-  const [component, setComponent] = useArgumentValue(props, 0);
-  const [componentProp, setComponentProp] = useArgumentValue(props, 1);
-
-  useEffect(() => {
-    if (component) {
-      return;
-    }
-
-    const [option = {}] = componentOptions;
-    const { value } = option;
-
-    setTimeout(() => {
-      value && setComponent && setComponent(value);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (componentProp) {
-      return;
-    }
-
-    const [option = {}] = componentPropOptions;
-    const { value } = option;
-
-    setTimeout(() => {
-      value && setComponentProp && setComponentProp(value);
-    });
-  }, []);
+  const [component, setComponent] = useArgument(props, 0);
+  const [componentProp, setComponentProp] = useArgument(props, 1);
 
   const title = (
     <>
@@ -136,22 +113,18 @@ const OnChangeComponentPropCreation = (props = {}) => {
 };
 
 const IfElseCreation = (props = {}) => {
-  const [condition, setCondition] = useArgumentValue(props, 0);
-  const [ifMissions, setIfMissions] = useArgumentValue(props, 1);
-  const [elseMissions, setElseMissions] = useArgumentValue(props, 2);
-
-  const conditionNode = (
-    <ArgumentInput
-      placeholder="条件"
-      value={condition}
-      onChange={setCondition}
-    />
-  );
+  const [condition, setCondition] = useArgument(props, 0);
+  const [ifMissions, setIfMissions] = useArgument(props, 1);
+  const [elseMissions, setElseMissions] = useArgument(props, 2);
 
   const title = (
     <>
       如果
-      { conditionNode }
+      <ArgumentInput
+        placeholder="条件"
+        value={condition}
+        onChange={setCondition}
+      />
       通过之后执行
     </>
   );
@@ -175,21 +148,17 @@ const IfElseCreation = (props = {}) => {
 };
 
 const IfCreation = (props = {}) => {
-  const [condition, setCondition] = useArgumentValue(props, 0);
-  const [ifMissions, setIfMissions] = useArgumentValue(props, 1);
-
-  const conditionNode = (
-    <ArgumentInput
-      placeholder="条件"
-      value={condition}
-      onChange={setCondition}
-    />
-  );
+  const [condition, setCondition] = useArgument(props, 0);
+  const [ifMissions, setIfMissions] = useArgument(props, 1);
 
   const title = (
     <>
       如果
-      { conditionNode }
+      <ArgumentInput
+        placeholder="条件"
+        value={condition}
+        onChange={setCondition}
+      />
       通过之后执行
     </>
   );
@@ -219,21 +188,13 @@ const AlertCreation = (props = {}) => {
   } = props;
 
   const value = useMemo(() => {
-    if (!propsValue) {
-      return [''];
-    }
-
-    if (!propsValue.length) {
-      return [''];
-    }
-
     if (!propsOnChange) {
       return propsValue;
     }
 
     const last = propsValue[propsValue.length - 1];
 
-    if (typeof last === 'string') {
+    if (!last) {
       return propsValue;
     }
 
@@ -275,35 +236,9 @@ const AlertCreation = (props = {}) => {
 };
 
 const SetComponentPropCreation = (props = {}) => {
-  const [component, setComponent] = useArgumentValue(props, 0);
-  const [componentProp, setComponentProp] = useArgumentValue(props, 1);
-  const [componentPropValue, setComponentPropValue] = useArgumentValue(props, 2);
-
-  useEffect(() => {
-    if (component) {
-      return;
-    }
-
-    const [option = {}] = componentOptions;
-    const { value } = option;
-
-    setTimeout(() => {
-      value && setComponent && setComponent(value);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (componentProp) {
-      return;
-    }
-
-    const [option = {}] = componentPropOptions;
-    const { value } = option;
-
-    setTimeout(() => {
-      value && setComponentProp && setComponentProp(value);
-    });
-  }, []);
+  const [component, setComponent] = useArgument(props, 0);
+  const [componentProp, setComponentProp] = useArgument(props, 1);
+  const [componentPropValue, setComponentPropValue] = useArgument(props, 2);
 
   const title = (
     <>
@@ -334,7 +269,7 @@ const SetComponentPropCreation = (props = {}) => {
 };
 
 const FetchCreation = (props = {}) => {
-  const [inteface, setInterface] = useArgumentValue(props, 0);
+  const [inteface, setInterface] = useArgument(props, 0);
 
   const title = (
     <>
@@ -354,8 +289,8 @@ const FetchCreation = (props = {}) => {
 };
 
 const QTCreation = (props = {}) => {
-  const [source, setSource] = useArgumentValue(props, 0);
-  const [target, setTarget] = useArgumentValue(props, 1);
+  const [source, setSource] = useArgument(props, 0);
+  const [target, setTarget] = useArgument(props, 1);
 
   const title = (
     <>
@@ -379,8 +314,8 @@ const QTCreation = (props = {}) => {
 };
 
 const LTCreation = (props = {}) => {
-  const [source, setSource] = useArgumentValue(props, 0);
-  const [target, setTarget] = useArgumentValue(props, 1);
+  const [source, setSource] = useArgument(props, 0);
+  const [target, setTarget] = useArgument(props, 1);
 
   const title = (
     <>
@@ -404,8 +339,8 @@ const LTCreation = (props = {}) => {
 };
 
 const EqualCreation = (props = {}) => {
-  const [source, setSource] = useArgumentValue(props, 0);
-  const [target, setTarget] = useArgumentValue(props, 1);
+  const [source, setSource] = useArgument(props, 0);
+  const [target, setTarget] = useArgument(props, 1);
 
   const title = (
     <>
@@ -429,7 +364,7 @@ const EqualCreation = (props = {}) => {
 };
 
 const QueryParamterCreation = (props = {}) => {
-  const [attribute, setAttribute] = useArgumentValue(props, 0);
+  const [attribute, setAttribute] = useArgument(props, 0);
 
   const title = (
     <>
@@ -448,34 +383,8 @@ const QueryParamterCreation = (props = {}) => {
 };
 
 const GetComponentPropCreation = (props = {}) => {
-  const [component, setComponent] = useArgumentValue(props, 0);
-  const [componentProp, setComponentProp] = useArgumentValue(props, 1);
-
-  useEffect(() => {
-    if (component) {
-      return;
-    }
-
-    const [option = {}] = componentOptions;
-    const { value } = option;
-
-    setTimeout(() => {
-      value && setComponent && setComponent(value);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (componentProp) {
-      return;
-    }
-
-    const [option = {}] = componentPropOptions;
-    const { value } = option;
-
-    setTimeout(() => {
-      value && setComponentProp && setComponentProp(value);
-    });
-  }, []);
+  const [component, setComponent] = useArgument(props, 0);
+  const [componentProp, setComponentProp] = useArgument(props, 1);
 
   const title = (
     <>
@@ -525,7 +434,7 @@ class Workspace extends Component {
   onChangeSelectedEventValue = (value) => {
     const { selected: stateSelected = [] } = this.state;
 
-    const [stateEvenet, ...missions] = stateSelected;
+    const [, ...missions] = stateSelected;
     const event = { ...stateSelected, value };
     const selected = [event, ...missions];
 
@@ -587,12 +496,12 @@ class Workspace extends Component {
       <>
         <Collection type="event" title="事件">
           <Definition trigger type="on_page_will_mount" ComponentClass={OnPageWillMountCreation} />
-          <Definition trigger type="on_click" ComponentClass={OnClickCreation} />
-          <Definition trigger type="on_change_component_prop" ComponentClass={OnChangeComponentPropCreation} />
+          <Definition trigger type="on_click" value={initialComponentValue} ComponentClass={OnClickCreation} />
+          <Definition trigger type="on_change_component_prop" value={initialComponentPropValue} ComponentClass={OnChangeComponentPropCreation} />
         </Collection>
         <Collection type="data" title="数据">
           <Definition output type="query_parameter" ComponentClass={QueryParamterCreation} />
-          <Definition output type="get_component_prop" ComponentClass={GetComponentPropCreation} />
+          <Definition output type="get_component_prop" value={initialComponentPropValue} ComponentClass={GetComponentPropCreation} />
           <Definition output type="fetch" ComponentClass={FetchCreation} />
         </Collection>
         <Collection type="control" title="控制">
@@ -600,7 +509,7 @@ class Workspace extends Component {
           <Definition type="if" ComponentClass={IfCreation} />
         </Collection>
         <Collection type="command" title="命令">
-          <Definition type="set_component_prop" ComponentClass={SetComponentPropCreation} />
+          <Definition type="set_component_prop" value={initialComponentPropValue} ComponentClass={SetComponentPropCreation} />
           <Definition type="alert" ComponentClass={AlertCreation} />
           <Definition type="stop" ComponentClass={StopCreation} />
         </Collection>

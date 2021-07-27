@@ -12,7 +12,7 @@ export const useEventCallback = (fn) => {
   }, [ref]);
 };
 
-export const useArgumentValue = (props = {}, index = 0) => {
+export const useArgument = (props = {}, index = 0) => {
   const {
     value: propsValue = [],
     onChange: propsOnChange,
