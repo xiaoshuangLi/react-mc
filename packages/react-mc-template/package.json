@@ -1,6 +1,6 @@
 {
   "name": "react-mc-template",
-  "version": "1.1.0-alpha.8",
+  "version": "1.1.0-alpha.9",
   "description": "react-mc-template",
   "keywords": [
     "react"
@@ -30,8 +30,8 @@
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
-    "react-mc-dnd": "^1.1.0-alpha.8",
-    "react-mc-render": "^1.1.0-alpha.8",
+    "react-mc-dnd": "^1.1.0-alpha.9",
+    "react-mc-render": "^1.1.0-alpha.9",
     "uuid": "^7.0.2"
   },
   "gitHead": "85625b681bf044f3e5ec6cafd8cf48bc21d4afc7"
