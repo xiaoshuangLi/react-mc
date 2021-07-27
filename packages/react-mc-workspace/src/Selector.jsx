@@ -578,7 +578,10 @@ const Selector = React.forwardRef((props = {}, ref) => {
 
 Selector.propTypes = {
   conditions: PropTypes.arrayOf(
-    PropTypes.object,
+    PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+    ]),
   ),
   output: PropTypes.bool,
   compact: PropTypes.bool,

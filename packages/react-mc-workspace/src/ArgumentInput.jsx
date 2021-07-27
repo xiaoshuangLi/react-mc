@@ -135,8 +135,12 @@ const ArgumentInput = React.forwardRef((props = {}, ref) => {
       ? Sponsor
       : 'span';
 
+    const componentProps = propsOnChange
+      ? { ...others, output: true }
+      : others;
+
     return (
-      <ComponentClass output ref={ref} className={cls} {...others}>
+      <ComponentClass ref={ref} className={cls} {...componentProps}>
         { content }
       </ComponentClass>
     );

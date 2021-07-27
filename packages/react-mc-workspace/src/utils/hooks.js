@@ -50,7 +50,7 @@ export const useUsing = (initialState) => {
 export const useArgument = (props = {}) => {
   const { appendArgument } = useContext(CallbacksContext);
 
-  useMemo(() => {
+  useEffect(() => {
     appendArgument && appendArgument(props);
   }, []);
 };
@@ -58,7 +58,7 @@ export const useArgument = (props = {}) => {
 export const useDecoration = (props = {}) => {
   const { appendDecoration } = useContext(CallbacksContext);
 
-  useMemo(() => {
+  useEffect(() => {
     appendDecoration && appendDecoration(props);
   }, []);
 };
