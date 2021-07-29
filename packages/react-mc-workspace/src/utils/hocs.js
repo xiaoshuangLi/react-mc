@@ -5,6 +5,7 @@ import React, {
   createRef,
   PureComponent,
 } from 'react';
+import { DndContext } from 'react-dnd';
 
 import {
   ModeContext,
@@ -100,18 +101,21 @@ export const withExtraction = (ComponentClass) => React.forwardRef((props = {}, 
   );
 });
 
-export const createDndContainer = (useHook) => React.forwardRef((props = {}, ref) => {
+export const createDndContainer = (useDndHook) => React.forwardRef((props = {}, ref) => {
   const { creation } = props;
 
   ref = useMemo(() => {
     return ref || createRef(null);
   }, [ref]);
 
+  const { dragDropManager } = useContext(DndContext);
+
   const data = useMemo(() => {
     return { id: creation, creation };
   }, [creation]);
 
-  useHook(ref, data);
+  // eslint-disable-next-line
+  dragDropManager && useDndHook(ref, data);
 
   return (
     <Refer ref={ref} {...props} />

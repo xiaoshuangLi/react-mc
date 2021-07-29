@@ -25,6 +25,7 @@
   },
   "peerDependencies": {
     "react": ">=16.8.6",
+    "react-dnd": ">=10.0.2",
     "react-dom": ">=16.8.6"
   },
   "dependencies": {
