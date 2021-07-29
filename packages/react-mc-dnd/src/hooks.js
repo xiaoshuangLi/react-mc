@@ -178,8 +178,8 @@ export const useDrag = (ref, data) => {
   });
 
   useEffect(() => {
-    drag(ref);
-  }, [ref, drag]);
+    dom && drag(dom);
+  }, [dom, drag]);
 };
 
 export const useDrop = (ref, targetInfo = {}) => {
@@ -214,8 +214,8 @@ export const useDrop = (ref, targetInfo = {}) => {
   });
 
   useEffect(() => {
-    drop(ref);
-  }, [ref, drop]);
+    dom && drop(dom);
+  }, [dom, drop]);
 };
 
 const createDndHooks = (type = ITEM) => {
@@ -253,12 +253,11 @@ const createDndHooks = (type = ITEM) => {
         const { data: dragData = {} } = dragItem;
         const { id: dragId = dragData } = dragData;
 
-        const same = id && dragId === id;
-        const isDragging = same || monitor.isDragging();
+        const isDragging = id
+          ? dragId === id
+          : monitor.isDragging();
 
-        return {
-          isDragging,
-        };
+        return { isDragging };
       }),
     });
 

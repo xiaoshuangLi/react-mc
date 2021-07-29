@@ -2,18 +2,24 @@ import React, {
   useMemo,
   useState,
   useEffect,
+  useContext,
   Fragment,
 } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { useDragAndHover, ConfigContext } from 'react-mc-dnd';
+
 import { useEventCallback } from 'shared/hooks';
 
-import { ExtractableContext, useMode, withMode } from './utils/hooks';
+import { ExtractableContext, useMode, useDndValue } from './utils/hooks';
+import { withMode, createDndContainer } from './utils/hocs';
 
 import Creator from './Creator';
 import Creation from './Creation';
 import Extractions from './Extractions';
+
+const { Provider: ConfigProvider } = ConfigContext;
 
 const { Provider: ExtractableProvider } = ExtractableContext;
 
@@ -64,6 +70,10 @@ const useValue = (props = {}) => {
   return [value, setValue];
 };
 
+const DragAndHoverContainer = createDndContainer(
+  useDragAndHover,
+);
+
 const Creations = React.forwardRef((props = {}, ref) => {
   const {
     className,
@@ -75,7 +85,10 @@ const Creations = React.forwardRef((props = {}, ref) => {
   } = props;
 
   const mode = useMode();
+  const dndValue = useDndValue(props);
   const [value, setValue] = useValue(props);
+
+  const { custom } = useContext(ConfigContext);
 
   const cls = classnames({
     'workspace-creations': true,
@@ -140,7 +153,9 @@ const Creations = React.forwardRef((props = {}, ref) => {
 
       const renderCreation = () => {
         return (
-          <Creation className="creations-item" onChange={onChange} {...item} />
+          <DragAndHoverContainer creation={item}>
+            <Creation className="creations-item" onChange={onChange} {...item} />
+          </DragAndHoverContainer>
         );
       };
 
@@ -179,24 +194,32 @@ const Creations = React.forwardRef((props = {}, ref) => {
     );
   };
 
+  let content = (
+    <Extractions>
+      { renderCreations() }
+      { renderCreator() }
+      { renderChildren() }
+    </Extractions>
+  );
+
   if (mode) {
-    return (
-      <Extractions>
-        { renderCreations() }
-        { renderCreator() }
-        { renderChildren() }
-      </Extractions>
-    );
+    return content;
+  }
+
+  content = (
+    <div ref={ref} className={cls} {...others}>
+      { content }
+    </div>
+  );
+
+  if (custom) {
+    return content;
   }
 
   return (
-    <Extractions>
-      <div ref={ref} className={cls} {...others}>
-        { renderCreations() }
-        { renderCreator() }
-        { renderChildren() }
-      </div>
-    </Extractions>
+    <ConfigProvider value={dndValue}>
+      { content }
+    </ConfigProvider>
   );
 });
 

@@ -1,10 +1,15 @@
-import React, {
+import {
   useMemo,
   useState,
   useEffect,
   useContext,
   createContext,
 } from 'react';
+
+import {
+  useEventCallback,
+  useThrottleCallback,
+} from 'shared/hooks';
 
 /**
  * const Definition = {
@@ -41,6 +46,8 @@ export const ExtractionsContext = createContext([]);
 
 export const ExtractableContext = createContext(false);
 
+export const CreationsContext = createContext([]);
+
 export const useUsing = (initialState) => {
   const using = useState(initialState);
 
@@ -74,84 +81,206 @@ export const useMode = () => {
   }, [mode, defaultMode]);
 };
 
-const { Provider: ModeProvider } = ModeContext;
-
-export const withMode = (ComponentClass) => React.forwardRef((props = {}, ref) => {
-  const { mode, ...others } = props;
-
-  if (mode !== undefined) {
-    return (
-      <ModeProvider value={mode}>
-        <ComponentClass ref={ref} {...others} />
-      </ModeProvider>
-    );
+const some = (source, target) => {
+  if (!source) {
+    return source === target;
   }
 
-  return (
-    <ComponentClass ref={ref} {...others} />
-  );
-});
+  if (typeof source !== 'object') {
+    return source === target;
+  }
 
-export const withExtraction = (ComponentClass) => React.forwardRef((props = {}, ref) => {
-  const { children, ...others } = props;
+  const values = Object.values(source);
 
-  const extractable = useContext(ExtractableContext);
-  const [extractions, setExtractions] = useContext(ExtractionsContext);
+  return values.some((value) => {
+    return value === target || some(value, target);
+  });
+};
 
-  const denpencies = Object.values(others);
-  const extraction = useMemo(() => {
-    return { ComponentClass, props: others };
-  }, denpencies);
+const filter = (source, target) => {
+  if (!source) {
+    return source;
+  }
 
-  const more = useMemo(() => {
-    if (extractable) {
-      return {};
+  if (typeof source !== 'object') {
+    return source;
+  }
+
+  const arraied = Array.isArray(source);
+
+  if (arraied) {
+    return source.reduce((res = [], item, index) => {
+      if (item === target) {
+        res = res.slice();
+        res.splice(index, 1);
+        return res;
+      }
+
+      const current = filter(item, target);
+
+      if (item !== current) {
+        res = res.slice();
+        res.splice(index, 1, current);
+      }
+
+      return res;
+    }, source);
+  }
+
+  const entries = Object.entries(source);
+
+  return entries.reduce((res = {}, entry = []) => {
+    const [key, value] = entry;
+    const { [key]: a, ...rest } = res;
+
+    if (value === target) {
+      return rest;
     }
 
-    if (!extractions) {
-      return {};
+    const current = filter(value, target);
+
+    if (value !== current) {
+      res = { ...res, [key]: current };
     }
 
-    const found = extractions.find(
-      (item = {}) => item.ComponentClass === ComponentClass,
-    ) || {};
+    return res;
+  }, source);
+};
 
-    return found.props || {};
-  }, [extractable, extractions]);
+const belong = (source, target) => {
+  if (!source) {
+    return;
+  }
 
-  useEffect(() => {
-    if (!extractable) {
+  if (typeof source !== 'object') {
+    return;
+  }
+
+  const arraied = Array.isArray(source);
+
+  if (arraied) {
+    for (let v = 0; v < source.length; v += 1) {
+      const current = source[v];
+
+      if (current === target) {
+        return source;
+      }
+
+      const owner = belong(current, target);
+
+      if (owner) {
+        return owner;
+      }
+    }
+  }
+
+  const values = Object.values(source);
+
+  for (let v = 0; v < values.length; v += 1) {
+    const value = values[v];
+    const owner = belong(value, target);
+
+    if (owner) {
+      return owner;
+    }
+  }
+};
+
+const replace = (source) => (target, final) => {
+  if (!source) {
+    return source;
+  }
+
+  if (typeof source !== 'object') {
+    return source;
+  }
+
+  if (source === target) {
+    return final;
+  }
+
+  const arraied = Array.isArray(source);
+
+  if (arraied) {
+    return source.reduce((res = [], item, index) => {
+      if (item === target) {
+        res = res.slice();
+        res.splice(index, 1, final);
+        return res;
+      }
+
+      const current = replace(item)(target, final);
+
+      if (item !== current) {
+        res = res.slice();
+        res.splice(index, 1, current);
+      }
+
+      return res;
+    }, source);
+  }
+
+  const entries = Object.entries(source);
+
+  return entries.reduce((res = {}, entry = []) => {
+    const [key, value] = entry;
+
+    if (value === target) {
+      return { ...res, [key]: final };
+    }
+
+    const current = replace(value)(target, final);
+
+    if (value !== current) {
+      res = { ...res, [key]: current };
+    }
+
+    return res;
+  }, source);
+};
+
+export const useDndValue = (props = {}) => {
+  const { value = [], onChange } = props;
+
+  const isInChildren = useEventCallback((parent = {}, child = {}) => {
+    const { creation: parentCreation } = parent;
+    const { creation: childCreation } = child;
+
+    return some(parentCreation, childCreation);
+  });
+
+  const onDragHover = useThrottleCallback((targetInfo = {}, dragData = {}) => {
+    const {
+      data: targetData,
+      offset: targetOffset,
+    } = targetInfo;
+
+    const { creation: targetCreation } = targetData;
+    const { creation: dragCreation } = dragData;
+
+    let nextValue = filter(value, dragCreation);
+    const owner = belong(nextValue, targetCreation);
+
+    if (!owner) {
       return;
     }
 
-    if (!setExtractions) {
+    const nextOwner = owner.slice();
+    const index = owner.indexOf(targetCreation);
+    const position = index + targetOffset;
+
+    nextOwner.splice(position, 0, dragCreation);
+    nextValue = replace(nextValue)(owner, nextOwner);
+
+    if (nextValue === value) {
       return;
     }
 
-    setExtractions((prevExtractions = []) => {
-      return prevExtractions.concat(extraction);
-    });
+    onChange && onChange(nextValue);
+  }, 180, { trailing: false });
 
-    return () => {
-      setExtractions((prevExtractions = []) => {
-        const included = prevExtractions.includes(extraction);
-
-        if (included) {
-          return prevExtractions.filter(
-            (item) => item !== extraction,
-          );
-        }
-
-        return prevExtractions;
-      });
-    };
-  }, [extractable, setExtractions, extraction]);
-
-  if (extractable) {
-    return null;
-  }
-
-  return (
-    <ComponentClass ref={ref} {...props} {...more} />
+  return useMemo(
+    () => ({ custom: true, isInChildren, onDragHover }),
+    [isInChildren, onDragHover],
   );
-});
+};

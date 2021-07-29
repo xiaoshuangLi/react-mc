@@ -10,14 +10,21 @@ import React, {
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { useDrag } from 'react-mc-dnd';
+
 import { getFromEvent } from 'shared/utils';
 import { useEventCallback } from 'shared/hooks';
 
-import { CollectionsContext, CallbacksContext, withExtraction } from './utils/hooks';
+import { withExtraction, createDndContainer } from './utils/hocs';
+import { CollectionsContext, CallbacksContext } from './utils/hooks';
 
 import Creation from './Creation';
 
 const { Provider: CallbacksProvider } = CallbacksContext;
+
+const DragContainer = createDndContainer(
+  useDrag,
+);
 
 const propToKeywords = (prop = {}) => {
   const valid = isValidElement(prop);
@@ -260,7 +267,9 @@ const SelectorCollection = React.forwardRef((props = {}, ref) => {
       return (
         <CallbacksProvider value={callbacksValue} key={index}>
           <div className="content-definition" onClick={onClick}>
-            <Creation mode="" {...creation} />
+            <DragContainer creation={creation}>
+              <Creation mode="" {...creation} />
+            </DragContainer>
           </div>
         </CallbacksProvider>
       );

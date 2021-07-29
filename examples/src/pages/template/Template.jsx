@@ -142,7 +142,7 @@ const Template = React.forwardRef((props = {}, ref) => {
 
   const onSelect = useEventCallback((component = {}) => {
     const targetInfo = { data: selectedComponent, offset: 1 };
-    const newValue = core.templateendComponent(value)(targetInfo, component);
+    const newValue = core.appendComponent(value)(targetInfo, component);
 
     setValue(newValue);
     setSelectedComponent(component);

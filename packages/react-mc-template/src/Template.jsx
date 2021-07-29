@@ -1,4 +1,4 @@
-import React, { memo, useMemo, createRef } from 'react';
+import React, { useMemo, createRef } from 'react';
 import classnames from 'classnames';
 
 import Render from 'react-mc-render';

@@ -1,10 +1,11 @@
 import React, {
   useMemo,
   useEffect,
-  Fragment,
   Component,
 } from 'react';
 import classnames from 'classnames';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import ReactMCWorkspace, {
   Selector,
@@ -188,6 +189,14 @@ const AlertCreation = (props = {}) => {
   } = props;
 
   const value = useMemo(() => {
+    if (propsValue) {
+      return [''];
+    }
+
+    if (!propsValue.length) {
+      return [''];
+    }
+
     if (!propsOnChange) {
       return propsValue;
     }
@@ -434,8 +443,8 @@ class Workspace extends Component {
   onChangeSelectedEventValue = (value) => {
     const { selected: stateSelected = [] } = this.state;
 
-    const [, ...missions] = stateSelected;
-    const event = { ...stateSelected, value };
+    const [stateEvent, ...missions] = stateSelected;
+    const event = { ...stateEvent, value };
     const selected = [event, ...missions];
 
     this._setSelected(selected);
@@ -601,8 +610,6 @@ class Workspace extends Component {
 
     const [event, ...missions] = selected;
 
-    const conditions = [{ type: 'alert' }];
-
     return (
       <div className="workspace-redner-selected">
         <div className="selected-header">
@@ -622,9 +629,7 @@ class Workspace extends Component {
             placeholder="添加任务"
             value={missions}
             onChange={this.onChangeSelectedMissions}
-          >
-            <Selector conditions={conditions} />
-          </Creations>
+          />
         </div>
       </div>
     );
@@ -657,12 +662,14 @@ class Workspace extends Component {
     });
 
     return (
-      <ReactMCWorkspace className={cls}>
-        { this.renderCollections() }
-        { this.renderCreations() }
-        { this.renderSelected() }
-        { this.renderSelector() }
-      </ReactMCWorkspace>
+      <DndProvider backend={HTML5Backend} context={window}>
+        <ReactMCWorkspace className={cls}>
+          { this.renderCollections() }
+          { this.renderCreations() }
+          { this.renderSelected() }
+          { this.renderSelector() }
+        </ReactMCWorkspace>
+      </DndProvider>
     );
   }
 }

@@ -106,7 +106,8 @@ $red: rgb(255, 97, 97);
           flex: 1;
           overflow: hidden;
           border-radius: 5px;
-          // transform: translate3d(0, 0, 0);
+          white-space: nowrap;
+          transform: translate3d(0, 0, 0);
 
           &:before {
             content: "→";

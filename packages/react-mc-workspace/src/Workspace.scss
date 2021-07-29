@@ -481,6 +481,12 @@ $toppstZIndex: 12;
       }
     }
 
+    .creations-tools {
+      & + .creations-tools {
+        display: none;
+      }
+    }
+
     .workspace-creator {
       padding: 10px 15px;
       border-radius: 7px;

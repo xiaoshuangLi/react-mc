@@ -4,7 +4,8 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { CollectionsContext, withMode } from './utils/hooks';
+import { withMode } from './utils/hocs';
+import { CollectionsContext } from './utils/hooks';
 
 const useDefinition = (props = {}) => {
   const { type: propsType } = props;
