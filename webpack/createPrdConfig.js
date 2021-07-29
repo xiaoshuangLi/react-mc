@@ -17,6 +17,8 @@ const startOrEndWithList = [
   'react-mc-render',
   'react-mc-template',
   'react-mc-runner',
+  'react-mc-diagrams',
+  'react-mc-workspace',
   'react-baby-form',
 ];
 
