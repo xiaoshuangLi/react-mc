@@ -109,7 +109,10 @@ const Render = (props = {}) => {
   const dependenciesRef = useRef({});
   const options = useOptions(props);
 
-  const { getComponentRenderDependencies } = options;
+  const {
+    getComponentClass,
+    getComponentRenderDependencies,
+  } = options;
 
   const subscribe = useEventCallback((componentId, listener) => {
     const { current = {} } = listenersRef;
@@ -137,9 +140,11 @@ const Render = (props = {}) => {
   const getDependencies = useEventCallback((componentId) => {
     const relation = relationMap[componentId];
     const component = componentMap[componentId];
+
+    const ComponentClass = getComponentClass(component);
     const rest = getComponentRenderDependencies(component) || [];
 
-    return [relation, component, ...rest];
+    return [relation, component, ComponentClass, ...rest];
   });
 
   const { current: listenersMap = {} } = listenersRef;
