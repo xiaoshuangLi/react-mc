@@ -15,7 +15,8 @@ import { useDrag } from 'react-mc-dnd';
 import { getFromEvent } from 'shared/utils';
 import { useEventCallback } from 'shared/hooks';
 
-import { withExtraction, createDndContainer } from './utils/hocs';
+import { withExtraction } from './utils/hocs';
+import { createDndContainer } from './utils/dnd';
 import { CollectionsContext, CallbacksContext } from './utils/hooks';
 
 import Creation from './Creation';
@@ -123,8 +124,8 @@ const useCollections = (props) => {
     };
 
     return collections
-      .sort(sort)
       .map(map)
+      .sort(sort)
       .filter(filter);
   }, [collections, judge]);
 };

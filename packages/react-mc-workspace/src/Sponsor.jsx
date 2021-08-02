@@ -122,7 +122,6 @@ const Sponsor = React.forwardRef((props = {}, ref) => {
     }
 
     const collections = getCollections() || [];
-
     const definitions = collections.reduce((res = [], collection = {}) => {
       const { definitions: collectionDefinitions = [] } = collection;
 

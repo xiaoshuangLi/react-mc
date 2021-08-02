@@ -70,6 +70,7 @@ module.exports = {
             ],
             plugins: [
               require.resolve('react-refresh/babel'),
+              '@babel/plugin-transform-runtime',
               '@babel/plugin-proposal-class-properties',
               [
                 'react-docgen',

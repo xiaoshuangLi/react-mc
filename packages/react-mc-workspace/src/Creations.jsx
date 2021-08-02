@@ -12,8 +12,9 @@ import { useDragAndHover, ConfigContext } from 'react-mc-dnd';
 
 import { useEventCallback } from 'shared/hooks';
 
-import { ExtractableContext, useMode, useDndValue } from './utils/hooks';
-import { withMode, createDndContainer } from './utils/hocs';
+import { withMode } from './utils/hocs';
+import { ExtractableContext, useMode } from './utils/hooks';
+import { createDndContainer, useDndValue } from './utils/dnd';
 
 import Creator from './Creator';
 import Creation from './Creation';
