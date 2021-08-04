@@ -36,18 +36,6 @@ const KEY = Symbol('listener');
 
 const accept = [ITEM, CONTAINER];
 
-const useDOM = (ref = {}) => {
-  const [, setState] = useState(null);
-  const { current } = ref;
-
-  // trigger refresh when ref changes
-  useEffect(() => {
-    setState({});
-  }, [ref, current]);
-
-  return findDOMNode(ref.current);
-};
-
 const usePollingUpdate = (runEffect, getDependencies, time = 0) => {
   const [denpencies, setDenpencies] = useState([]);
 
@@ -76,6 +64,24 @@ const usePollingUpdate = (runEffect, getDependencies, time = 0) => {
     loop();
     return () => timer && clearTimeout(timer);
   }, [getDependencies, setDenpencies, time]);
+};
+
+const useDOM = (ref = {}) => {
+  const [, setState] = useState(null);
+  const { current } = ref;
+
+  // trigger refresh when ref changes
+  useEffect(() => {
+    setState({});
+  }, [ref, current]);
+
+  usePollingUpdate(
+    () => setState({}),
+    () => [findDOMNode(ref.current)],
+    100,
+  );
+
+  return findDOMNode(ref.current);
 };
 
 export const ConfigContext = createContext({});
@@ -150,12 +156,6 @@ export const useContainer = (ref, data) => {
   useEffect(
     () => addListener(dom, data),
     [dom, data, addListener],
-  );
-
-  usePollingUpdate(
-    () => {},
-    () => [findDOMNode(ref.current), data],
-    100,
   );
 };
 
@@ -331,13 +331,9 @@ const createDndHooks = (type = ITEM) => {
 
     const { isDragging } = info;
 
-    usePollingUpdate(
-      () => {
-        dom && drag(drop(dom));
-      },
-      () => [findDOMNode(ref.current), data],
-      100,
-    );
+    useEffect(() => {
+      dom && drag(drop(dom));
+    }, [dom, data]);
 
     useEffect(
       () => addListener(dom, data),
