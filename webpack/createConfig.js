@@ -22,6 +22,7 @@ module.exports = (opts = {}) => {
       path: path.resolve(folder, 'lib'),
       publicPath: '/',
       libraryTarget: 'umd',
+      globalObject: 'this',
     },
     resolve: {
       modules: [
