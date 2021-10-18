@@ -463,6 +463,7 @@ export const useTriggers = (props = {}, ref) => {
   ];
 
   const onKeyDownCapture = useEventCallback((e) => {
+    const { target } = e;
     const { current } = ref;
 
     if (!current) {
@@ -476,6 +477,12 @@ export const useTriggers = (props = {}, ref) => {
     });
 
     if (!hovered) {
+      return;
+    }
+
+    const included = hoveredElements.includes(target);
+
+    if (!included) {
       return;
     }
 
