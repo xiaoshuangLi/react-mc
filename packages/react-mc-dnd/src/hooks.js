@@ -151,12 +151,17 @@ export const useContainer = (ref, data) => {
   check(data);
 
   const dom = useDOM(ref);
+  const config = useConfig();
   const addListener = useListener();
+
+  const { onRender } = config;
 
   useEffect(
     () => addListener(dom, data),
     [dom, data, addListener],
   );
+
+  useEffect(() => onRender(dom, data));
 };
 
 export const useDrag = (ref, data) => {
