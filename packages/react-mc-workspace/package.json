@@ -1,6 +1,6 @@
 {
   "name": "react-mc-workspace",
-  "version": "1.1.0-alpha.16",
+  "version": "1.1.0-alpha.17",
   "description": "Easy to build your own visual programming tool, just like Scratch-Blocks or Apple Shortcut. ",
   "keywords": [
     "react",
@@ -32,7 +32,7 @@
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
-    "react-mc-dnd": "^1.1.0-alpha.16"
+    "react-mc-dnd": "^1.1.0-alpha.17"
   },
   "gitHead": "85625b681bf044f3e5ec6cafd8cf48bc21d4afc7"
 }
