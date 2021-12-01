@@ -150,25 +150,27 @@ const Render = (props = {}) => {
   const { current: listenersMap = {} } = listenersRef;
   const { current: dependenciesMap = {} } = dependenciesRef;
 
-  traverse(value, (componentId) => {
-    const prevDependencies = dependenciesMap[componentId];
-    const nextDependencies = getDependencies(componentId) || [];
+  useMemo(() => {
+    traverse(value, (componentId) => {
+      const prevDependencies = dependenciesMap[componentId];
+      const nextDependencies = getDependencies(componentId) || [];
 
-    const same = prevDependencies === undefined
-      ? false
-      : isSame(prevDependencies, nextDependencies);
+      const same = prevDependencies === undefined
+        ? false
+        : isSame(prevDependencies, nextDependencies);
 
-    if (same) {
-      return;
-    }
+      if (same) {
+        return;
+      }
 
-    const listeners = listenersMap[componentId] || [];
-    const shouldRender = prevDependencies !== undefined && listeners.length;
+      const listeners = listenersMap[componentId] || [];
+      const shouldRender = prevDependencies !== undefined && listeners.length;
 
-    dependenciesMap[componentId] = nextDependencies;
-    shouldRender && listeners.forEach(
-      (listener) => listener && listener(),
-    );
+      dependenciesMap[componentId] = nextDependencies;
+      shouldRender && listeners.forEach(
+        (listener) => listener && listener(),
+      );
+    });
   });
 
   useEffect(() => {
