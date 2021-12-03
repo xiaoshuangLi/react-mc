@@ -19,12 +19,12 @@
   "peerDependencies": {
     "react": ">=16.8.6",
     "react-dnd": ">=10.0.2",
-    "react-dom": ">=16.8.6"
+    "react-dom": ">=16.8.6",
+    "react-frame-component": ">4.1.1"
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "prop-types": "^15.7.2",
-    "react-frame-component": "^4.1.1"
+    "prop-types": "^15.7.2"
   },
   "gitHead": "85625b681bf044f3e5ec6cafd8cf48bc21d4afc7"
 }
