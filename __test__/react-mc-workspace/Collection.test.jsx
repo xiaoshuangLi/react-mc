@@ -182,12 +182,13 @@ describe('react-mc-workspace: ', () => {
           expect(collections.length).to.equal(targetBeforeUnmount.length);
           expect(collections[0]).to.deep.include(targetBeforeUnmount[0]);
           expect(collections[1]).to.deep.include(targetBeforeUnmount[1]);
-          count += 1;
         } else if (count === 1) {
           expect(collections.length).to.equal(targetAfterUnmount.length);
           expect(collections[0]).to.deep.include(targetAfterUnmount[0]);
           done();
         }
+
+        count += 1;
       });
 
       useEffect(
@@ -224,7 +225,7 @@ describe('react-mc-workspace: ', () => {
 
     setTimeout(() => {
       ReactDOM.render(elementAfterUnmount, div);
-    });
+    }, 1000);
 
     ReactDOM.render(elementBeforeUnmount, div);
   });

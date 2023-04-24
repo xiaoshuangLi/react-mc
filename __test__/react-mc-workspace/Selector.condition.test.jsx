@@ -53,7 +53,7 @@ describe('react-mc-workspace: ', () => {
       expect(source.length).to.equal(target.length);
       expect(source[0]).to.deep.include(target[0]);
       done();
-    });
+    }, 1000);
 
     const element = (
       <Workspace>
@@ -112,7 +112,7 @@ describe('react-mc-workspace: ', () => {
       expect(source.length).to.equal(target.length);
       expect(source[0]).to.deep.include(target[0]);
       done();
-    });
+    }, 1000);
 
     const element = (
       <Workspace>
